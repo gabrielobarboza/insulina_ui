@@ -4,7 +4,9 @@
 //
 // import { User } from 'path/to/interfaces';
 
-export type User = {
-  id: number
+export type Table = {
+  id: string
   name: string
+  starts: number
+  values: number[]
 }
