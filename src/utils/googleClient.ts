@@ -4,7 +4,7 @@ import env from './enviroments'
    *  Initializes the API client library and sets up sign-in state
    *  listeners.
 */
-export const getGoogleApiClient = ():any => window.hasOwnProperty('gapi') && window['gapi'];
+export const getGoogleApiClient = ():any => window?.hasOwnProperty('gapi') && window['gapi'];
 
 export const initGoogleClient = (updateSigninStatus) => {
     const gapi = getGoogleApiClient();
