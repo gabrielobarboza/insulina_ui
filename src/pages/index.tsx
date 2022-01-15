@@ -1,24 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { validateUnits, getGoogleApiClient, initGoogleClient} from '@/utils'
 import { tableData } from '@/utils/data'
 
 const IndexPage = () => {
   const [value, setValue] = useState<string>('')
   const [units, setUnits] = useState<number>(0)
-  const gapi = getGoogleApiClient()
+  const [gapi, setGapi] = useState<any>({})
+ 
   
-  const handleClientLoad = () => {
+  const handleClientLoad = useCallback(() => {
     gapi?.load('client:auth2', initGoogleClient);
-  };
+  }, [gapi]);
 
-  const handleSubmit = ev => {
+  const handleSubmit = useCallback(ev => {
     ev.preventDefault()
 
     if(value)
       validateUnits(tableData[0], Number(value)).then(result => {
         setUnits(result)
       }).catch(err => console.warn(err))    
-  }
+  }, [value])
+
+  useEffect(() => {
+    setGapi(getGoogleApiClient(window))
+  }, [])
 
   return (
     <>
