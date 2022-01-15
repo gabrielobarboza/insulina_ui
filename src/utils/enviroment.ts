@@ -12,6 +12,9 @@ const env = {
     },
     getGoogleScopes: () => {
         return process.env.NEXT_PUBLIC_GOOGLE_SCOPES
+    },
+    getGoogleApiCLientScript: () => {
+        return process.env.NEXT_PUBLIC_GOOGLE_API_CLIENT_SCRIPT
     }
 }
 

@@ -1,15 +1,20 @@
 import { useState, useEffect, useCallback } from 'react'
-import { validateUnits, getGoogleApiClient, initGoogleClient} from '@/utils'
+import { validateUnits } from '@/utils'
 import { tableData } from '@/utils/data'
-
+import { useGoogleApi } from '@/contexts/GoogleApi'
 const IndexPage = () => {
   const [value, setValue] = useState<string>('')
   const [units, setUnits] = useState<number>(0)
-  const [gapi, setGapi] = useState<any>({})
- 
+
+  const {gapi, initGoogleClient } = useGoogleApi()
   
+  const handleUpdateState = data => {
+    console.log("handleUpdateState =>", data)
+  }
+
   const handleClientLoad = useCallback(() => {
-    gapi?.load('client:auth2', initGoogleClient);
+    console.log("handleClientLoad")
+    gapi?.load('client:auth2', () => initGoogleClient(handleUpdateState));
   }, [gapi]);
 
   const handleSubmit = useCallback(ev => {
@@ -20,10 +25,6 @@ const IndexPage = () => {
         setUnits(result)
       }).catch(err => console.warn(err))    
   }, [value])
-
-  useEffect(() => {
-    setGapi(getGoogleApiClient(window))
-  }, [])
 
   return (
     <>

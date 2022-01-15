@@ -1,8 +1,7 @@
 import validateUnits from './validateUnits'
-import { initGoogleClient, getGoogleApiClient }  from './googleClient'
+import enviroment from './enviroment'
 
 export {
-    initGoogleClient,
-    getGoogleApiClient,
-    validateUnits
+    validateUnits,
+    enviroment
 }
