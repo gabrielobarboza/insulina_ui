@@ -1,17 +1,17 @@
-import React from 'react'
-import Head from 'next/head'
 import type { AppProps } from 'next/app'
-import { GoogleApiProvider } from '@/contexts/GoogleApi'
+import { CalcTablesProvider } from '@/contexts/CalcTables'
+import Head from 'next/head'
 
 const App = ({ Component, pageProps }:AppProps) => {
 
   return (
-    <GoogleApiProvider>
+    <CalcTablesProvider>
         <Head>
             <title>Insulina UI</title>
+            <link rel="shortcut icon" href="./public/assets/icon-p.png" />
         </Head>
         <Component {...pageProps} />
-    </GoogleApiProvider>
+    </CalcTablesProvider>
   )
 }
 

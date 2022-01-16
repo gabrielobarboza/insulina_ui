@@ -1,11 +1,17 @@
-import { Table } from '@/interfaces'
+import { TableList } from '@/interfaces'
 
 /** Dummy Table data. */
-export const tableData: Table[] = [
+export const mockedTables: TableList = [
   {
-    id: "12345",
+    id: "1010",
     name: "Café da Manha",
-    starts: 2,
+    initial: 2,
     values: [ 80, 170, 260 ] 
+  },
+  {
+    id: "2020",
+    name: "Almoço",
+    initial: 3,
+    values: [ 70 ] 
   }
 ]

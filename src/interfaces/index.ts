@@ -4,9 +4,11 @@
 //
 // import { User } from 'path/to/interfaces';
 
-export type Table = {
+export interface Table {
   id: string
   name: string
-  starts: number
+  initial: number
   values: number[]
 }
+
+export type TableList = Table[]
