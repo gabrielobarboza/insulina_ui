@@ -8,7 +8,7 @@ const App = ({ Component, pageProps }:AppProps) => {
     <CalcTablesProvider>
         <Head>
             <title>Insulina UI</title>
-            <link rel="shortcut icon" href="./public/assets/icon-p.png" />
+            <link rel="shortcut icon" href="./assets/icon-p.png" />
         </Head>
         <Component {...pageProps} />
     </CalcTablesProvider>
