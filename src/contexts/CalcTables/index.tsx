@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid'
 type CalcTablesContextType = {
     dataTables: TableList,
     getCalcTable: (_id:string) => Table,
-    editCalcTable: (params:Table) => Table
+    editCalcTable: (params:Table) => Promise<Table>
     setDataTables: (tableList:TableList) => any
 }
   
@@ -21,14 +21,14 @@ export const CalcTablesProvider = ({ children }) => {
     const [ dataTables, setDataTables ] = useState<TableList|null>(null)
     // const [ dataTables, setDataTables ] = useState<TableList>(mockedTables)
     const getCalcTable = _id => _id ? dataTables.find(table => table.id === _id) : null
-    const editCalcTable = params => {
-      const tableList:TableList = [...dataTables]
+    const editCalcTable = async params => {
+      const tableList:TableList = dataTables ? [...dataTables] : []
       let table:Table|null = null
 
       if(params?.id) {
         table = getCalcTable(params.id)
         table.name = params.name
-        table.initial = params.initial
+        table.units = params.units
         table.values = params.values
 
       } else {
@@ -40,7 +40,7 @@ export const CalcTablesProvider = ({ children }) => {
       }
 
       console.log("editCalcTable =>", tableList)
-      setDataTables(tableList)
+      await setDataTables(tableList)
       
       return table
     }

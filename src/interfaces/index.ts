@@ -4,11 +4,17 @@
 //
 // import { User } from 'path/to/interfaces';
 
+
+export interface TableValues {
+  list: number[]
+  custom?: number
+}
+
 export interface Table {
   id?: string
   name: string
-  initial: number
-  values: number[]
+  units: number
+  values: TableValues
 }
 
 export type TableList = Table[]

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { validateUnits } from '@/utils'
 
 import { Table } from "@/interfaces"
@@ -12,6 +12,10 @@ const IndexPage = () => {
   const [table, setTable] = useState<Table|null>(null)
   const [showConfig, setShowConfig] = useState<boolean>(false)
   const { dataTables } = useCalcTables()
+
+  useEffect(() => {
+    setUnits(0)
+  }, [value, table])
   
   const handleSelect = ev => {
     const targetId = ev.target.value
