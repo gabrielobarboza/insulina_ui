@@ -38,8 +38,6 @@ export const ConfigProvider = ({ children }) => {
 
     useEffect(() => {
       const _token = store.get(tokenActions.key)
-      console.log("StoredToken =>", _token)
-
       if(_token && _token !== token) setStoredToken(_token)
       
     }, [])
@@ -49,7 +47,6 @@ export const ConfigProvider = ({ children }) => {
     }, [storedToken])
 
     useEffect(() => {
-      console.log("token =>", token)
       if(token) {
         const storedTables = readToken()
         setConfig(conf => ({
@@ -68,7 +65,6 @@ export const ConfigProvider = ({ children }) => {
     useEffect(() => {
       if(dataTables) {
         const dataToken = genToken();
-        console.log("dataToken =>", dataToken)
 
         if(dataToken !== token) setToken(dataToken)
 

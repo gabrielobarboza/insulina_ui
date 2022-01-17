@@ -20,7 +20,6 @@ const IndexPage = () => {
   const handleSelect = ev => {
     const targetId = ev.target.value
     const targetTable = dataTables.find(({id}) => id === targetId)
-    console.log("targetTable =>", targetTable)
     
     if(targetTable) setTable(targetTable)
   }
@@ -28,8 +27,6 @@ const IndexPage = () => {
   const handleSubmit = useCallback(ev => {
     ev.preventDefault()
     const currValue = Number(value)
-
-    console.log("handleSubmit =>", currValue, table)
 
     if(currValue)
       validateUnits(currValue, table).then(result => {

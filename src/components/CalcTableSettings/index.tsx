@@ -52,7 +52,6 @@ const CalcTableSettings = ({ table, onClose }:CalcTableSettingsProps) => {
             }
         }
         if(table) calcTable.id = table.id
-        console.log("handleSubmit =>", calcTable)
 
         editCalcTable(calcTable).then(()=> {
             resetFields()
@@ -92,10 +91,7 @@ const CalcTableSettings = ({ table, onClose }:CalcTableSettingsProps) => {
 
         return table ? unchanged : !isFilled;
     }, [name, units, values, table])
-    
-
-    console.log("disable =>", disableSubmit)
-    
+        
     return (
         <form onSubmit={handleSubmit}>
         <p>

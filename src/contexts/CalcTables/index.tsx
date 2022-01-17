@@ -39,9 +39,7 @@ export const CalcTablesProvider = ({ children }) => {
         tableList.push(table)
       }
 
-      console.log("editCalcTable =>", tableList)
       await setDataTables(tableList)
-      
       return table
     }
   
