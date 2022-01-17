@@ -5,10 +5,21 @@
 // import { User } from 'path/to/interfaces';
 
 export interface Table {
-  id: string
+  id?: string
   name: string
   initial: number
   values: number[]
 }
 
 export type TableList = Table[]
+
+export class TableItem {
+  static create(params:Table) {
+    return params
+  }
+}
+
+export interface AppConfig {
+  token: string,
+  dataTables: TableList
+}

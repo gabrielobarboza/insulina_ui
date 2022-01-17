@@ -1,9 +1,14 @@
 import { createContext, useState, useContext, useEffect } from 'react'
-import { TableList } from "@/interfaces";
+import { TableList, Table, TableItem } from "@/interfaces";
 import { mockedTables } from "@/utils/data"
+import { nanoid } from 'nanoid'
+
 
 type CalcTablesContextType = {
-    dataTables: TableList
+    dataTables: TableList,
+    getCalcTable: (_id:string) => Table,
+    editCalcTable: (params:Table) => Table
+    setDataTables: (tableList:TableList) => any
 }
   
 export const CalcTablesContext = createContext({} as CalcTablesContextType);
@@ -13,15 +18,37 @@ export const useCalcTables = () => {
 }
 
 export const CalcTablesProvider = ({ children }) => {
-    const [ dataTables, setDataTAbles ] = useState<TableList>([])
+    const [ dataTables, setDataTables ] = useState<TableList|null>(null)
+    // const [ dataTables, setDataTables ] = useState<TableList>(mockedTables)
+    const getCalcTable = _id => _id ? dataTables.find(table => table.id === _id) : null
+    const editCalcTable = params => {
+      const tableList:TableList = [...dataTables]
+      let table:Table|null = null
 
-    useEffect(() => {
-        setDataTAbles(mockedTables)
-    }, [])
+      if(params?.id) {
+        table = getCalcTable(params.id)
+        table.name = params.name
+        table.initial = params.initial
+        table.values = params.values
+
+      } else {
+        table = TableItem.create({
+          ...params,
+          id: nanoid(),
+        })
+        tableList.push(table)
+      }
+
+      console.log("editCalcTable =>", tableList)
+      setDataTables(tableList)
+      
+      return table
+    }
+  
   return (
     <>
         <CalcTablesContext.Provider
-            value={{ dataTables }}
+            value={{ dataTables, editCalcTable, setDataTables, getCalcTable }}
         >
         {children}
         </CalcTablesContext.Provider>
