@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useCalcTables } from '@/contexts/CalcTables'
 import CalcTableSettings from '../CalcTableSettings'
-import { Table } from "@/interfaces"
 
 const CalcTableList = () => {
   const { dataTables, getCalcTable } = useCalcTables()

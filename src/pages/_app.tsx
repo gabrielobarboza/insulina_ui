@@ -9,7 +9,7 @@ const App = ({ Component, pageProps }:AppProps) => {
       <ConfigProvider>
         <Head>
             <title>Insulina UI</title>
-            <link rel="shortcut icon" href="./assets/icon-p.png" />
+            <link rel="shortcut icon" href="./assets/icon-insulina-ui.png" />
         </Head>
         <Component {...pageProps} />
       </ConfigProvider>
