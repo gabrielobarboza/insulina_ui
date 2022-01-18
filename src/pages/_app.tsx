@@ -15,11 +15,6 @@ import {
   SideBar
 } from '@/components';
 
-import {
-  serviceWorker
-} from '@/utils';
-
-
 const theme = createTheme(themeUi);
 
 function SafeHydrate({ children }) {
@@ -37,8 +32,6 @@ const App = ({ Component, pageProps } : AppProps) => {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
-    // Register serviceWorker
-    // serviceWorker()
   }, []);
 
   return (
