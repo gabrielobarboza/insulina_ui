@@ -3,12 +3,12 @@
     "name": "Insulina UI",
     "icons": [
       {
-        "src": "/icons/icon-insulina-ui.svg",
+        "src": "/logo/logo-insulina-ui.svg",
         "type": "image/svg+xml",
         "sizes": "512x512"
       },
       {
-        "src": "/icons/icon-insulina-ui.svg",
+        "src": "/logo/logo-insulina-ui.svg",
         "type": "image/svg+xml",
         "sizes": "192x192"
       }
