@@ -7,10 +7,10 @@ import { useCalcTables } from '@/contexts/CalcTablesProvider';
 import CalcTableList from '../CalcTableList'
 
 const CalcTableSettings = () => {
-    const { newCalcTable } = useCalcTables()
+    const { createCalcTable } = useCalcTables()
 
-    const handleNewTable = () => {
-        newCalcTable({
+    const handleCreateNewTable = () => {
+        createCalcTable({
             id: '',
             name: '',
             units: 0,
@@ -34,9 +34,9 @@ const CalcTableSettings = () => {
                         color="primary"
                         size="large"
                         startIcon={<AddIcon />}
-                        onClick={handleNewTable}
+                        onClick={handleCreateNewTable}
                     >
-                        Criar tabela de cálculo
+                        Nova tabela
                     </Button>
                 </Grid>
             </Grid>

@@ -7,7 +7,8 @@ import { nanoid } from 'nanoid'
 type CalcTablesContextType = {
   dataTables: TableList,
   getCalcTable: (_id?:string) => Promise<Table|null>,
-  newCalcTable: (table:Table) => Table,
+  deleteCalcTable: (_id?:string) => void,
+  createCalcTable: (table:Table) => Table,
   saveCalcTable: (table:Table) => Promise<Table>,
   setDataTables: (tableList:TableList) => any,
   selectCalcTable: (_id?:string) => Promise<Table|null>,
@@ -23,13 +24,13 @@ export const CalcTablesProvider = ({ children }) => {
   const [ selectedTable, setSelectedTable ] = useState<Table|null>(null)
   // const [ dataTables, setDataTables ] = useState<TableList>(mockedTables)
   const getCalcTable = async _id => await _id ? dataTables.find(table => table.id === _id) : null
-  const newCalcTable = params => {
+  const createCalcTable = params => {
     const newTable =  TableItem.create({ ...params})
     setSelectedTable(newTable)
     return newTable
   }
 
-  const saveCalcTable = async params => {
+  const saveCalcTable = async params => {    
     const tableList:TableList = dataTables ? [...dataTables] : []
     const _id = params?.id
     let currTable:Table|null = null
@@ -39,7 +40,7 @@ export const CalcTablesProvider = ({ children }) => {
         ...params
       }
       const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
-      dataTables[tableIndex] = { ...currTable }
+      tableList[tableIndex] = { ...currTable }
     }
 
     if(!_id) {
@@ -64,6 +65,12 @@ export const CalcTablesProvider = ({ children }) => {
       return null
     }
   }
+
+  const deleteCalcTable = (_id) => {
+    if(_id)
+      setSelectedTable(null)
+      setDataTables(dataTables.filter(({ id }) => (_id !== id)))
+  }
   
   return (
     <>
@@ -71,7 +78,8 @@ export const CalcTablesProvider = ({ children }) => {
             value={{
               dataTables,
               getCalcTable,
-              newCalcTable,
+              deleteCalcTable,
+              createCalcTable,
               saveCalcTable,
               setDataTables,
               selectCalcTable,

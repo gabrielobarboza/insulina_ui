@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
-import { IconButton, Fade, Paper } from '@material-ui/core';
-import { Help as HelpIcon } from '@material-ui/icons';
+import { Popper, IconButton, Fade, Paper, Grid, Typography } from '@material-ui/core';
+import { Help as HelpIcon, Cancel as CancelIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,8 +9,11 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'flex',
     },
     popper: {
-        maxWidth: '80vw',
+        top: '50% !important',
+        left: '50% !important',
+        width: '80vw',
         zIndex: 1500,
+        transform: 'translate(-50%, -50%) !important'
     },
     paper: {
         padding: theme.spacing(1)
@@ -20,36 +22,46 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface HelperTypes {
+    title: string
     icon?: React.ReactNode,
     children: React.ReactNode
 }
 
-export default function Helper({ icon, children }: HelperTypes) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState<PopperPlacementType>();
+export default function Helper({ title, icon, children }: HelperTypes) {
+  const [open, setOpen] = useState(false);
   const classes = useStyles();
 
-  const handleClick = (newPlacement: PopperPlacementType) => (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
-  };
+  const handleClick = useCallback(() => {
+    setOpen(!open)
+  }, [open]);
+
+  interface HelperHeadTypes {
+    inside?: boolean
+  }
+
+  const HelperHead = ({ inside }:HelperHeadTypes) => (
+    <Grid container alignContent='center' justifyContent='space-between' >
+      <Typography variant="h6">{title}</Typography>
+      <IconButton style={{ padding: '0.25rem' }} color="primary" aria-label="Info" onClick={handleClick}>
+        {inside ? <CancelIcon /> : (icon ? icon : <HelpIcon />)}
+      </IconButton>
+    </Grid>
+  )
 
   return (
     <div className={classes.root}>
-        <Popper open={open} anchorEl={anchorEl} placement={placement} transition className={classes.popper}>
+        <HelperHead/>
+        <Popper open={open} placement={'bottom'} transition className={classes.popper}>
             {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={300}>
-                <Paper elevation={3} className={classes.paper}>{children}</Paper>
+                <Paper elevation={3} className={classes.paper}>
+                  <HelperHead inside/>
+                  <hr/>
+                  {children}
+                </Paper>
             </Fade>
             )}
-        </Popper>
-        <IconButton style={{ padding: '0.25rem' }} color="inherit" aria-label="Info" onClick={handleClick('bottom')}>
-            {icon ? icon : <HelpIcon />}
-        </IconButton>
+        </Popper>        
     </div>
   );
 }

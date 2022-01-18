@@ -12,7 +12,7 @@ export const formStyles = makeStyles((theme: Theme) =>
           }
       },
     },
-    card: {
+    spaceTop: {
       marginTop: theme.spacing(2),
     }
   }),

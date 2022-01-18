@@ -43,7 +43,8 @@ const App = ({ Component, pageProps } : AppProps) => {
             <MuiThemeProvider theme={theme}>
               <Head>
                   <title>Insulina UI</title>
-                  <link rel="shortcut icon" href="./icon-insulina-ui.png" />
+                  <meta http-equiv="ScreenOrientation" content="autoRotate:disabled" />
+                  <link rel="shortcut icon" href="./icons/icon-insulina-ui.svg" />
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
                   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
               </Head>
