@@ -3,7 +3,7 @@
     "name": "Insulina UI",
     "icons": [
       {
-        "src": "/logo/square/square-logo-insulina-ui.svg",
+        "src": "/icons/icon-insulina-ui.svg",
         "type": "image/svg+xml",
         "sizes": "512x512"
       },      
@@ -19,7 +19,7 @@
       }
     ],
     "start_url": "/",
-    "background_color": "#82368C",
+    "background_color": "#FFFFFF",
     "display": "standalone",
     "scope": "/",
     "theme_color": "#82368C",
@@ -31,7 +31,7 @@
             "url": "/",
             "icons": [
                 {
-                  "src": "/logo/square/logo-insulina-ui-192.png",
+                  "src": "/logo/logo-insulina-ui.svg",
                   "sizes": "192x192"
                 }
             ]
