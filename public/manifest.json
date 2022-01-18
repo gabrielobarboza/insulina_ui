@@ -1,44 +1,39 @@
 {
-    "short_name": "Insulina UI",
     "name": "Insulina UI",
+    "short_name": "UI",
+    "scope": "/",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#82368C",
+    "background_color": "#FFFFFF",
+    "description": "Gerencie tabelas de cálculo para administrar Insulina",
     "icons": [
       {
         "src": "/icons/icon-insulina-ui.svg",
         "type": "image/svg+xml",
-        "sizes": "512x512"
+        "sizes": "512x"
       },      
       {
         "src": "/icons/icon-insulina-ui-192.png",
         "type": "image/png",
-        "sizes": "192x192"
+        "sizes": "192x"
+      },
+      {
+        "src": "/icons/icon-insulina-ui-256.png",
+        "type": "image/png",
+        "sizes": "256x"
+      },
+      {
+        "src": "/icons/icon-insulina-ui-384.png",
+        "type": "image/png",
+        "sizes": "384x"
       },
       {
         "src": "/icons/icon-insulina-ui-512.png",
         "type": "image/png",
-        "sizes": "512x512"
+        "sizes": "512x"
       }
     ],
-    "start_url": "/",
-    "background_color": "#FFFFFF",
-    "display": "standalone",
-    "scope": "/",
-    "theme_color": "#82368C",
-    "shortcuts": [
-        {
-            "name": "Home - Insulina UI",
-            "short_name": "Home",
-            "description": "Gerencie tabelas de cálculo para administrar Insulina",
-            "url": "/",
-            "icons": [
-                {
-                  "src": "/icons/icon-insulina-ui-192.png",
-                  "type": "image/png",
-                  "sizes": "192x192"
-                }
-            ]
-        }
-    ],
-    "description": "Gerencie tabelas de cálculo para administrar Insulina",
     "screenshots": [
       {
         "src": "/screenshots/home.png",
