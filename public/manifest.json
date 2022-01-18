@@ -8,14 +8,9 @@
         "sizes": "512x512"
       },      
       {
-        "src": "/logo/square/square-logo-insulina-ui-192.png",
-        "type": "image/png",
+        "src": "/icons/icon-insulina-ui.svg",
+        "type": "image/svg+xml",
         "sizes": "192x192"
-      },
-      {
-        "src": "/logo/square/square-logo-insulina-ui-512.png",
-        "type": "image/png",
-        "sizes": "512x512"
       }
     ],
     "start_url": "/",
@@ -32,6 +27,7 @@
             "icons": [
                 {
                   "src": "/logo/logo-insulina-ui.svg",
+                  "type": "image/svg+xml",
                   "sizes": "192x192"
                 }
             ]
