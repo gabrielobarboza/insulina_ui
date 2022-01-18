@@ -69,8 +69,7 @@ const CalcForm = () => {
                 <FormHelperText>Selecione uma tabela de cálaculo para verificar quantas unidades de insulina devem ser administradas.</FormHelperText>
             </FormControl>
             <TextField
-                required
-                label="Glicemia"
+                label="Glicemia atual"
                 type="number"
                 placeholder="mg/dL"
                 InputLabelProps={{
