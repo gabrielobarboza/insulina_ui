@@ -15,7 +15,7 @@ const CalcTableSettings = () => {
             name: '',
             units: 0,
             values: {
-                list: [],
+                list: [0],
                 custom: 0
             }
         })

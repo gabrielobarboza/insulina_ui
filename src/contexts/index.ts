@@ -1,9 +1,9 @@
 import CalcTablesProvider from './CalcTablesProvider'
-import ConfigProvider from './ConfigProvider'
+import ConfigTokenProvider from './ConfigTokenProvider'
 import SideBarProvider from './SideBarProvider'
 
 export {
-    ConfigProvider,
+    ConfigTokenProvider,
     CalcTablesProvider,
     SideBarProvider
 }

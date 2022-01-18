@@ -17,6 +17,7 @@ import {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+        marginTop: theme.spacing(6)
     },
     heading: {
         fontSize: theme.typography.pxToRem(18)

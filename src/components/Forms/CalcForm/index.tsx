@@ -1,7 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 import {
     Button,
     FormControl,
@@ -17,29 +15,14 @@ import { validateUnits } from '@/utils'
 
 import { Table } from "@/interfaces"
 import { useCalcTables } from '@/contexts/CalcTablesProvider'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-        marginTop: theme.spacing(4),
-        '& .MuiTextField-root': {
-            marginTop: theme.spacing(2),
-            width: '100%',
-            '& .MuiInputBase-input': {
-                fontSize:'large'
-            }
-        },
-    },
-  }),
-);
+import { formStyles } from '../formStyles';
 
 const CalcForm = () => {
-    const classes = useStyles();
-    const { dataTables } = useCalcTables()
-
+    const classes = formStyles();
     const [mgdL, setMgdL] = useState<string>('')
     const [units, setUnits] = useState<number>(0)
     const [table, setTable] = useState<Table|null>(null)
+    const { dataTables } = useCalcTables()
 
     useEffect(() => {
         setUnits(0)
@@ -87,8 +70,9 @@ const CalcForm = () => {
             </FormControl>
             <TextField
                 required
-                label="mg/dL"
+                label="Glicemia"
                 type="number"
+                placeholder="mg/dL"
                 InputLabelProps={{
                     shrink: true,
                 }}

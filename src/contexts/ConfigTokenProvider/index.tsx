@@ -11,17 +11,17 @@ import { useCalcTables } from '@/contexts/CalcTablesProvider'
 import { TableList, AppConfig } from "@/interfaces"
 import { isEqual } from 'lodash'
 
-type ConfigContextType = {
+type ConfigTokenContextType = {
     token: string,
     genToken: () => string
     readToken: () => TableList
 }
   
-export const ConfigContext = createContext({} as ConfigContextType);
+export const ConfigTokenContext = createContext({} as ConfigTokenContextType);
 
-export const useConfig = () => useContext(ConfigContext)
+export const useConfigToken = () => useContext(ConfigTokenContext)
 
-const ConfigProvider = ({ children }) => {
+const ConfigTokenProvider = ({ children }) => {
     const [ token, setToken ] = useState<string>('')
     const [ storedToken, setStoredToken ] = useState<string>('')
     const { dataTables, setDataTables } = useCalcTables()
@@ -75,13 +75,13 @@ const ConfigProvider = ({ children }) => {
 
   return (
     <>
-        <ConfigContext.Provider
+        <ConfigTokenContext.Provider
             value={{ token, genToken, readToken }}
         >
         {children}
-        </ConfigContext.Provider>
+        </ConfigTokenContext.Provider>
     </>
   )
 }
 
-export default ConfigProvider
+export default ConfigTokenProvider

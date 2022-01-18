@@ -1,8 +1,8 @@
 import AppBar from './AppBar'
-import CalcForm from './CalcForm'
-import CalcTableForm from './CalcTableForm'
 import CalcTableList from './CalcTableList'
 import CalcTableSettings from './CalcTableSettings'
+import { CalcForm, CalcTableForm } from './Forms'
+import Helper from './Helper'
 import SideBar from './SideBar'
 
 export {
@@ -11,5 +11,6 @@ export {
     CalcTableForm,
     CalcTableList,
     CalcTableSettings,
+    Helper,
     SideBar
 }

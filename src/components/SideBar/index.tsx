@@ -14,7 +14,7 @@ import { Close as CloseIcon } from '@material-ui/icons';
 import { useCalcTables } from '@/contexts/CalcTablesProvider'
 import { useSidebar } from '@/contexts/SideBarProvider';
 
-import CalcTableForm from '../CalcTableForm'
+import { CalcTableForm } from '../Forms'
 import CalcTableSettings from '../CalcTableSettings'
 import { common } from '@material-ui/core/colors';
 
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
         width: '75vw',
         margin: theme.spacing(2),
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(5),
     },
   }),
 );

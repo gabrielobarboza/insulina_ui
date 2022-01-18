@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { AppProps } from 'next/app'
 import {
   CalcTablesProvider,
-  ConfigProvider,
+  ConfigTokenProvider,
   SideBarProvider
 } from '@/contexts'
 import Head from 'next/head'
@@ -38,7 +38,7 @@ const App = ({ Component, pageProps } : AppProps) => {
   return (
     <SafeHydrate>
       <CalcTablesProvider>
-        <ConfigProvider>
+        <ConfigTokenProvider>
           <SideBarProvider>
             <MuiThemeProvider theme={theme}>
               <Head>
@@ -52,7 +52,7 @@ const App = ({ Component, pageProps } : AppProps) => {
               <Component {...pageProps} />
             </MuiThemeProvider>
           </SideBarProvider>
-        </ConfigProvider>
+        </ConfigTokenProvider>
       </CalcTablesProvider>
     </SafeHydrate>
 
