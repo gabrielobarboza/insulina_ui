@@ -8,9 +8,14 @@
         "sizes": "512x512"
       },      
       {
-        "src": "/icons/icon-insulina-ui.svg",
-        "type": "image/svg+xml",
+        "src": "/icons/icon-insulina-ui-192.png",
+        "type": "image/png",
         "sizes": "192x192"
+      },
+      {
+        "src": "/icons/icon-insulina-ui-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
       }
     ],
     "start_url": "/",
@@ -26,8 +31,7 @@
             "url": "/",
             "icons": [
                 {
-                  "src": "/logo/logo-insulina-ui.svg",
-                  "type": "image/svg+xml",
+                  "src": "/icons/icon-insulina-ui-192.png",
                   "sizes": "192x192"
                 }
             ]
