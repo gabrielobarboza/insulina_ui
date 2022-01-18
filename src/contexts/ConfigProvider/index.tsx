@@ -7,8 +7,8 @@ import {
 } from 'react'
 import store from 'store'
 import { tokenActions } from '@/utils'
-import { useCalcTables } from '@/contexts/CalcTables'
-import { TableList, AppConfig } from "@/interfaces";
+import { useCalcTables } from '@/contexts/CalcTablesProvider'
+import { TableList, AppConfig } from "@/interfaces"
 import { isEqual } from 'lodash'
 
 type ConfigContextType = {
@@ -19,11 +19,9 @@ type ConfigContextType = {
   
 export const ConfigContext = createContext({} as ConfigContextType);
 
-export const useConfig = () => {
-  return useContext(ConfigContext)
-}
+export const useConfig = () => useContext(ConfigContext)
 
-export const ConfigProvider = ({ children }) => {
+const ConfigProvider = ({ children }) => {
     const [ token, setToken ] = useState<string>('')
     const [ storedToken, setStoredToken ] = useState<string>('')
     const { dataTables, setDataTables } = useCalcTables()
@@ -38,8 +36,7 @@ export const ConfigProvider = ({ children }) => {
 
     useEffect(() => {
       const _token = store.get(tokenActions.key)
-      if(_token && _token !== token) setStoredToken(_token)
-      
+      if(_token && _token !== token) setStoredToken(_token)      
     }, [])
 
     useEffect(() => {
@@ -74,7 +71,6 @@ export const ConfigProvider = ({ children }) => {
             dataTables
           }))
       }
-
     }, [dataTables])
 
   return (
@@ -87,3 +83,5 @@ export const ConfigProvider = ({ children }) => {
     </>
   )
 }
+
+export default ConfigProvider

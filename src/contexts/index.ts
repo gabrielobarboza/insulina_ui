@@ -1,7 +1,9 @@
-import { CalcTablesProvider } from '@/contexts/CalcTables'
-import { ConfigProvider } from '@/contexts/Config'
+import CalcTablesProvider from './CalcTablesProvider'
+import ConfigProvider from './ConfigProvider'
+import SideBarProvider from './SideBarProvider'
 
 export {
     ConfigProvider,
-    CalcTablesProvider
+    CalcTablesProvider,
+    SideBarProvider
 }
