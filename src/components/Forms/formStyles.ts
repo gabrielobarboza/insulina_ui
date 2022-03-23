@@ -1,6 +1,6 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 
-export const formStyles = makeStyles((theme: Theme) =>
+export const formStyles = makeStyles((theme: any) =>
   createStyles({
     root: {
       marginTop: theme.spacing(4),

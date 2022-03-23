@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Popper, IconButton, Fade, Paper, Grid, Typography } from '@material-ui/core';
-import { Help as HelpIcon, Cancel as CancelIcon } from '@material-ui/icons';
+import { makeStyles, createStyles } from '@mui/styles';
+import { Popper, IconButton, Fade, Paper, Grid, Typography } from '@mui/material';
+import { Help as HelpIcon, Cancel as CancelIcon } from '@mui/icons-material';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: any) =>
   createStyles({
     root: {
         display: 'flex',

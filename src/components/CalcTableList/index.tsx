@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import { useCalcTables } from '@/contexts/CalcTablesProvider';
 import {
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
     DeleteForever as DeleteIcon
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
     Accordion,
     AccordionSummary,
@@ -16,26 +16,16 @@ import {
     IconButton,
     Container,
     TextField
-} from '@material-ui/core';
+} from '@mui/material';
 import { Table } from '@/interfaces';
 
 import CustomDialog from '../CustomDialog'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: any) =>
   createStyles({
-    root: {
-        marginTop: theme.spacing(6)
-    },
     heading: {
         fontSize: theme.typography.pxToRem(18)
-    },
-    spaceTop: {
-        marginTop: theme.spacing(2)
-    },
-    spaceY: {
-        marginTop: theme.spacing(4),
-        marginBottom: theme.spacing(4)
-    },
+    },    
     row: {
         flexDirection: 'column'
     },
@@ -45,12 +35,39 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function CalctableList() {
+const renderUnitsRow = units => (
+    <Grid item xs={12}>
+        <Typography variant="caption" display='inline' color='textSecondary'>{`Insulina inicial (UI):`}</Typography>
+        <Typography variant="subtitle2" display='inline'>{` ${units} `}</Typography>
+    </Grid>
+)
+
+const renderValuesRow = values => (
+    <Grid item xs={12}>
+        <Typography variant="caption" display='inline' color='textSecondary'>{`Valor glicemico (mg/dL):`}</Typography>
+        <Typography variant="subtitle2" display='inline'>{` ${values.toString()} `}</Typography>
+    </Grid>
+)
+const renderCustomRow = custom => (
+    custom ? (
+        <Grid item xs={12}>
+            <hr />
+            <Typography variant="caption" display='inline' color='textSecondary' >{`Aumentar unidades a cada (mg/dL):`}</Typography>
+            <Typography variant="subtitle2" display='inline'>{` ${custom} `}</Typography>
+        </Grid>
+    ) : <></>
+)
+interface CalcTableListProps {
+    editable?: boolean,
+    list?: Table[]
+}
+const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) => {
     const classes = useStyles();
     const { dataTables, selectCalcTable, deleteCalcTable } = useCalcTables()
     const [expandTable, setExpandTable] = useState<Table>(null)
     const [openDialog, setOpenDialog] = useState<boolean>(false)
     const [deleteTableName, setDeleteTableName] = useState<string>('')
+    const tableList = list || dataTables
 
     const handleExcludeConfirm = useCallback(() => {
         if(expandTable?.name === deleteTableName) {
@@ -69,37 +86,11 @@ export default function CalctableList() {
         setExpandTable(isExpanded ? _t : null);
     };
 
-    const renderUnitsRow = units => (
-        <Grid item xs={12}>
-            <Typography variant="caption" display='inline' color='textSecondary'>{`Insulina inicial =`}</Typography>
-            <Typography variant="subtitle2" display='inline'>{` ${units} `}</Typography>
-            <Typography variant="caption" display='inline' color='textSecondary'>(UI)</Typography>
-        </Grid>
-    )
-
-    const renderValuesRow = values => (
-        <Grid item xs={12}>
-            <Typography variant="caption" display='inline' color='textSecondary'>{`Valor glicemico =`}</Typography>
-            <Typography variant="subtitle2" display='inline'>{` ${values.toString()} `}</Typography>
-            <Typography variant="caption" display='inline' color='textSecondary' gutterBottom>(mg/dL)</Typography>
-        </Grid>
-    )
-    const renderCustomRow = custom => (
-        custom ? (
-            <Grid item xs={12}>
-                <hr />
-                <Typography variant="caption" display='inline' color='textSecondary' >{`Aumentar unidades a cada`}</Typography>
-                <Typography variant="subtitle2" display='inline'>{` ${custom} `}</Typography>
-                <Typography variant="caption" display='inline' color='textSecondary'>(mg/dL)</Typography>
-            </Grid>
-        ) : <></>
-    )
-
     const handleEdit =  (id:string) => selectCalcTable(id)
 
     return (
-        <div className={classes.root}>
-            {dataTables?.map(table => {
+        <>
+            {tableList?.map(table => {
                 const { id, name, units, values } = table;
 
                 return (
@@ -118,73 +109,91 @@ export default function CalctableList() {
                                 {renderValuesRow(values.list)}
                                 {renderCustomRow(values.custom)}
                             </Grid>
-                            <Grid container spacing={0} className={classes.spaceTop} justifyContent='space-between'>
-                                <Button
-                                    color={'primary'}
-                                    type="button"
-                                    variant="contained"
-                                    size="small"
-                                    startIcon={<EditIcon />}
-                                    onClick={() => handleEdit(id)}
+                            {editable && (
+                                <Grid container spacing={0} mt={2} justifyContent='space-between'>
+                                    <Button
+                                        color={'primary'}
+                                        type="button"
+                                        variant="contained"
+                                        size="small"
+                                        startIcon={<EditIcon />}
+                                        onClick={() => handleEdit(id)}
+                                        >
+                                        Editar tabela
+                                    </Button>
+                                    <IconButton
+                                        size="small"
+                                        aria-label="Excluir"
+                                        onClick={handleDialog}
                                     >
-                                    Editar tabela
-                                </Button>
-                                <IconButton
-                                    size="small"
-                                    aria-label="Excluir"
-                                    onClick={handleDialog}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Grid>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Grid>
+                            )}
                         </AccordionDetails>
                     </Accordion>
                 )}
             )}
-            <CustomDialog open={openDialog} onClose={handleDialog}>
-                <Container className={classes.spaceY}>
-                    <Grid container spacing={0} justifyContent='center'>
-                        <Grid item xs={10} className={classes.spaceTop}>
-                            <Typography variant="body2" align='center'>A tabela de cáculo <b className={classes.noWrap}>"{expandTable?.name}"</b> sera removida permanentemente.</Typography>
+            {editable && (
+                <CustomDialog open={openDialog} onClose={handleDialog}>
+                    <Container>
+                        <Grid container spacing={0} justifyContent='center' mt={4}>
+                            <Grid item xs={10} mt={2} >
+                                <Typography variant="body2" align='center'>A tabela de cáculo <b className={classes.noWrap}>"{expandTable?.name}"</b> sera removida permanentemente.</Typography>
+                            </Grid>
+                            <Grid item xs={10} mt={2} mb={2}>
+                                <Typography variant="subtitle2" align='center'> Para confirmar a ação, digite abaixo o nome exato da tabela; </Typography>
+                            </Grid>
+                            <TextField
+                                label="Confirmar o nome da tabela"
+                                type="text"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                variant="outlined"
+                                value={deleteTableName}
+                                onChange={e => setDeleteTableName(e.target.value)}
+                            />
                         </Grid>
-                        <Grid item xs={10} className={classes.spaceTop}>
-                            <Typography variant="subtitle2" align='center'> Para confirmar a ação, digite abaixo o nome exato da tabela; </Typography>
+                        <Grid
+                            container
+                            justifyContent="center"
+                            alignItems="center"
+                            mt={2}
+                            mb={4}
+                        >
+                            <Grid item justifyContent='center' xs={4}>
+                                <Grid container justifyContent="center">
+                                    <Button
+                                        color={'primary'}
+                                        type="button"
+                                        variant="contained"
+                                        size="small"
+                                        onClick={handleExcludeConfirm}
+                                        disabled={expandTable?.name !== deleteTableName}
+                                        >
+                                        Confirmar
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid item justifyContent='center' xs={4}>
+                                <Grid container justifyContent="center">
+                                    <Button
+                                        type="button"
+                                        variant="contained"
+                                        size="small"
+                                        onClick={handleDialog}
+                                    >
+                                        Cancelar
+                                    </Button>                                
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        <TextField
-                            className={classes.spaceTop}
-                            label="Confirmar o nome da tabela"
-                            type="text"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
-                            value={deleteTableName}
-                            onChange={e => setDeleteTableName(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid container spacing={0} justifyContent='space-evenly' className={classes.spaceTop}>
-                        <Button
-                            color={'primary'}
-                            type="button"
-                            variant="contained"
-                            size="small"
-                            onClick={handleExcludeConfirm}
-                            disabled={expandTable?.name !== deleteTableName}
-                        >
-                            Confirmar
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            size="small"
-                            onClick={handleDialog}
-                        >
-                            Cancelar
-                        </Button>
-                    </Grid>
-                </Container>
-
-            </CustomDialog>
-        </div>
+                    </Container>
+                </CustomDialog>
+            )}
+        </>
     );
 }
+
+export default CalcTableList

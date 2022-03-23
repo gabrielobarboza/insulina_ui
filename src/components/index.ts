@@ -4,6 +4,7 @@ import CalcTableSettings from './CalcTableSettings'
 import { CalcForm, CalcTableForm } from './Forms'
 import Helper from './Helper'
 import SideBar from './SideBar'
+import ResultScreen from './ResultScreen'
 
 export {
     AppBar,
@@ -12,5 +13,6 @@ export {
     CalcTableList,
     CalcTableSettings,
     Helper,
-    SideBar
+    SideBar,
+    ResultScreen,
 }

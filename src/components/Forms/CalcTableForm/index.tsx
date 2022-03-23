@@ -17,18 +17,16 @@ import {
     Switch,
     TextField,
     Typography
-} from '@material-ui/core'
+} from '@mui/material'
 import {
     Add as AddIcon,
     CheckCircle as CheckIcon,
     HighlightOff as OffIcon
-
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 const CalcTableForm = () => {
     const classes = formStyles();
     const {
-        getCalcTable,
         saveCalcTable,
         selectCalcTable,
         selectedTable: table,

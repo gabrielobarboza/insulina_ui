@@ -1,8 +1,8 @@
 import {
     Button,
     Grid,
-} from '@material-ui/core'
-import { Add as AddIcon } from '@material-ui/icons';
+} from '@mui/material'
+import { Add as AddIcon } from '@mui/icons-material';
 import { useCalcTables } from '@/contexts/CalcTablesProvider';
 import CalcTableList from '../CalcTableList'
 
@@ -23,8 +23,8 @@ const CalcTableSettings = () => {
     
     return (
         <Grid container spacing={4}>                    
-            <Grid item xs={12}>
-                <CalcTableList />
+            <Grid item xs={12} mt={6}>
+                <CalcTableList/>
             </Grid>
             <Grid item xs={12}>
                 <Grid container spacing={0} justifyContent="center" alignItems="center">

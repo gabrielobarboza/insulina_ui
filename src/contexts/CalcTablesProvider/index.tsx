@@ -2,7 +2,22 @@ import { createContext, useState, useContext, useEffect } from 'react'
 import { TableList, Table, TableItem } from "@/interfaces";
 import { nanoid } from 'nanoid'
 
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+} from '@mui/material'
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 // import { mockedTables } from "@/utils/data"
+type Components = {
+  [key:string]: any
+}
+
+interface TableSelectProps extends React.Component {
+  helperText?: string
+}
 
 type CalcTablesContextType = {
   dataTables: TableList,
@@ -12,7 +27,8 @@ type CalcTablesContextType = {
   saveCalcTable: (table:Table) => Promise<Table>,
   setDataTables: (tableList:TableList) => any,
   selectCalcTable: (_id?:string) => Promise<Table|null>,
-  selectedTable: Table
+  selectedTable: Table,
+  components: Components
 }
 
 export const CalcTablesContext = createContext({} as CalcTablesContextType);
@@ -71,6 +87,34 @@ export const CalcTablesProvider = ({ children }) => {
       setSelectedTable(null)
       setDataTables(dataTables.filter(({ id }) => (_id !== id)))
   }
+
+  const TableSelect = ({ helperText } : TableSelectProps) => {
+    const handleSelect = (ev:SelectChangeEvent) => {
+      const targetId = ev.target.value      
+      if(targetId) selectCalcTable(targetId)
+    }
+
+    return (
+      <FormControl fullWidth>
+        <InputLabel id="calc-table-label">
+            Tabela de Cálculo
+        </InputLabel>
+        <Select
+            labelId="calc-table-label"
+            id="calc-table-label-input"
+            value={selectedTable?.id || ""}   
+            label="Tabela de Cálculo"
+            onChange={handleSelect}
+            >
+            <MenuItem value=""><em>Selecione</em></MenuItem>
+            {dataTables?.map(({ id, name }) => 
+                <MenuItem key={id} value={id}>{name}</MenuItem>
+            )}                   
+        </Select>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
+    </FormControl>
+    )
+  }
   
   return (
     <>
@@ -84,6 +128,9 @@ export const CalcTablesProvider = ({ children }) => {
               setDataTables,
               selectCalcTable,
               selectedTable,
+              components: {
+                TableSelect
+              }
             }}
         >
         {children}

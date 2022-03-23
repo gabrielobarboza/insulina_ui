@@ -1,6 +1,6 @@
 import { Table } from "@/interfaces";
 
-interface ValidateUnitsInput {
+export interface ValidateUnitsInput {
     (curr: number, table: Table) : Promise<number>
 }
 

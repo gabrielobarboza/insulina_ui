@@ -4,7 +4,7 @@ import {
     Toolbar,
     IconButton,
     Grid    
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { Settings as SettingsIcon } from '@material-ui/icons';
 import InsulinaUiLogo from '@/assets/images/logo-insulina-ui.jpg'

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
     AppBar,
     Toolbar,
@@ -8,17 +8,17 @@ import {
     Grid,
     IconButton,
     Typography,
-} from '@material-ui/core'
-import { Close as CloseIcon } from '@material-ui/icons';
+} from '@mui/material'
+import { Close as CloseIcon } from '@mui/icons-material';
 
 import { useCalcTables } from '@/contexts/CalcTablesProvider'
 import { useSidebar } from '@/contexts/SideBarProvider';
 
 import { CalcTableForm } from '../Forms'
 import CalcTableSettings from '../CalcTableSettings'
-import { common } from '@material-ui/core/colors';
+import { common } from '@mui/material/colors';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: any) =>
   createStyles({
     container: {
         width: '75vw',
@@ -41,7 +41,7 @@ const SideBar = () => {
     }
 
     useEffect(() => {
-        setSidebarTitle(selectedTable ? (selectedTable?.name || "Nova Tabela") : "Configurações")
+        setSidebarTitle(selectedTable ? (selectedTable?.name || "Nova Tabela") : "Configurar Tabelas")
     }, [selectedTable])
 
     return (
