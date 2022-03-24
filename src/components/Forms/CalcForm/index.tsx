@@ -15,7 +15,7 @@ const CalcForm = () => {
     const [mgdL, setMgdL] = useState<string>('')
     // const [unites, setUnites] = useState<number>(0)
 
-    const { components: { TableSelect }, selectedTable } = useCalcTables()
+    const { components: { TableSelect }, tableSelected } = useCalcTables()
     const {
         setResultValue,
         validateUnits,
@@ -24,20 +24,20 @@ const CalcForm = () => {
 
     useEffect(() => {
         setResultValue(null)
-    }, [mgdL, selectedTable])
+    }, [mgdL, tableSelected])
        
     const handleSubmit = useCallback(ev => {
         ev.preventDefault()
         const currMgdL = Number(mgdL)
     
         if(currMgdL)
-          validateUnits(currMgdL, selectedTable).then(result => {
+          validateUnits(currMgdL, tableSelected).then(result => {
             setResultValue(result)
           }).catch(err => console.warn(err))    
-    }, [mgdL, selectedTable])
+    }, [mgdL, tableSelected])
 
     return viewResult ? (
-        <ResultScreen table={selectedTable} mgdL={mgdL}/> 
+        <ResultScreen table={tableSelected} mgdL={mgdL}/> 
     ) : (
         <form onSubmit={handleSubmit} className={classes.root} autoComplete="off">
             <Grid container spacing={2}>
@@ -56,7 +56,7 @@ const CalcForm = () => {
                         }}
                         variant="outlined"
                         value={mgdL}
-                        disabled={!selectedTable?.id}
+                        disabled={!tableSelected?.id}
                         onChange={e => setMgdL(e.target.value)}
                         helperText="Valor em mg/dL resultante da medição(Dextro)."
                     />

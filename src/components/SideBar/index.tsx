@@ -33,16 +33,16 @@ const SideBar = () => {
   const [ sidebarTitle, setSidebarTitle ] = useState<string>('')
 
   const { viewSidebar, setViewSidebar } = useSidebar();
-  const { selectedTable, selectCalcTable } = useCalcTables()
+  const { selectedConfig, selectTableConfig } = useCalcTables()
 
     const handleCose = () => {
         setViewSidebar(false)
-        selectCalcTable(null)
+        selectTableConfig(null)
     }
 
     useEffect(() => {
-        setSidebarTitle(selectedTable ? (selectedTable?.name || "Nova Tabela") : "Configurar Tabelas")
-    }, [selectedTable])
+        setSidebarTitle(selectedConfig ? (selectedConfig?.name || "Nova Tabela") : "Configurar Tabelas")
+    }, [selectedConfig])
 
     return (
         <Drawer anchor={'right'} open={viewSidebar} onClose={handleCose}>
@@ -62,7 +62,7 @@ const SideBar = () => {
                     </Toolbar>
                 </AppBar>
                 
-                {selectedTable ? <CalcTableForm /> : <CalcTableSettings/>}
+                {selectedConfig ? <CalcTableForm /> : <CalcTableSettings/>}
             </div>
         </Drawer>
     )

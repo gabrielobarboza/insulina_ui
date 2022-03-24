@@ -28,8 +28,8 @@ const CalcTableForm = () => {
     const classes = formStyles();
     const {
         saveCalcTable,
-        selectCalcTable,
-        selectedTable: table,
+        selectTableConfig,
+        selectedConfig: table,
     } = useCalcTables()    
 
     const [name, setName] = useState<string>('')
@@ -39,6 +39,8 @@ const CalcTableForm = () => {
     const [mgdlAditionalValues, setAditionalValues] = useState<number[]>([0])
     const [useMgdlAditional, setMgdlAditional] = useState<boolean>(false)
     const [useMgdlIncrement, setMgdlIncrement] = useState<boolean>(false)
+    const [useUnitLimit, setUnitLimit] = useState<boolean>(false)
+    const [unitLimitValue, setUnitLimitValue] = useState<number>(0)
 
     useEffect(() => {
         if(table) {
@@ -54,6 +56,11 @@ const CalcTableForm = () => {
                 setIncrementValue(table.values.custom)
                 setMgdlIncrement(true)
             }
+
+            if(table.limit) {
+                setUnitLimit(true)
+                setUnitLimitValue(table.limit)
+            }
         }
     }, [])
 
@@ -65,16 +72,19 @@ const CalcTableForm = () => {
             units,
             values: {
                 list: [mgdlInitial]
-            }
+            }            
         }
+
+        if(useUnitLimit && unitLimitValue) 
+            calcTable.limit = unitLimitValue
 
         if(useMgdlAditional)
             calcTable.values.list = [
                 mgdlInitial,
-                ...(mgdlAditionalValues.filter(v => v > 0))
+                ...(mgdlAditionalValues.filter(v => v > mgdlInitial))
             ]
 
-        if(useMgdlIncrement)
+        if(useMgdlIncrement && mgdlIncrementValue)
             calcTable.values.custom =  mgdlIncrementValue
 
         return calcTable
@@ -88,7 +98,7 @@ const CalcTableForm = () => {
         useMgdlIncrement
     ])
 
-    const switchuseMgdlIncrement = useCallback(() => {
+    const switchUseMgdlIncrement = useCallback(() => {
         if(useMgdlIncrement) {
             setIncrementValue(0)
         }
@@ -103,7 +113,7 @@ const CalcTableForm = () => {
 
     const handleCancel = () => {
         resetFields()
-        selectCalcTable(null)
+        selectTableConfig(null)
     }
 
     const handleSubmit = useCallback(ev => {
@@ -129,7 +139,7 @@ const CalcTableForm = () => {
         ])
     }
 
-    const handleMgdlAditionals = useCallback(() => {
+    const switchUseMgdlAditionals = useCallback(() => {
         const mgdlAditional = !useMgdlAditional
         if(mgdlAditional){
             if(!mgdlAditionalValues.length)
@@ -147,6 +157,10 @@ const CalcTableForm = () => {
 
         return !isFilled || unchanged;
     }, [name, units, mgdlInitial, table, currentTable])
+
+    const switchUseUnitLimit = useCallback(() => {
+        setUnitLimit(!useUnitLimit)
+    }, [useUnitLimit])
         
     return (
         <form onSubmit={handleSubmit} className={classes.root} autoComplete="off">
@@ -174,7 +188,34 @@ const CalcTableForm = () => {
                 onChange={e => setUnits(Number(e.target.value))}
                 helperText={'Unidades de insulina que devem ser administradas conforme à area "Valores de Medição"'}
             />
-
+            <FormControl component="fieldset" variant="standard">
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                color="primary"
+                                checked={useUnitLimit}
+                                onChange={switchUseUnitLimit}
+                                name="Limite de UI"
+                            />
+                        }
+                        label="Usar Limite de UI"
+                    />
+                </FormGroup>
+                <FormHelperText>Adicione um limite para unidades de insulina que devem ser administradas</FormHelperText>
+            </FormControl>
+            {useUnitLimit && (
+                <TextField
+                    label="Limite de UI"
+                    type="number"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    variant="outlined"
+                    value={unitLimitValue||''}
+                    onChange={e => setUnitLimitValue(Number(e.target.value))}
+                />
+            )}
             <Card className={classes.spaceTop}>
                 <CardContent>
                     <Helper title="Valores de Medição">
@@ -250,7 +291,7 @@ const CalcTableForm = () => {
                                     <Switch
                                         color="primary"
                                         checked={useMgdlAditional}
-                                        onChange={handleMgdlAditionals}
+                                        onChange={switchUseMgdlAditionals}
                                         name="mg/dL Adicionais"
                                         disabled={useMgdlIncrement}
                                     />
@@ -268,7 +309,7 @@ const CalcTableForm = () => {
                                         color="primary"
                                         checked={useMgdlIncrement}
                                         name="mg/dL Incremental"
-                                        onChange={switchuseMgdlIncrement}
+                                        onChange={switchUseMgdlIncrement}
                                         disabled={useMgdlAditional}
                                     />
                                 }

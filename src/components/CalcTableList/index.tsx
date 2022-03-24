@@ -42,6 +42,15 @@ const renderUnitsRow = units => (
     </Grid>
 )
 
+const renderLimitRow = limit => (
+    limit ? (
+        <Grid item xs={12}>
+            <Typography variant="caption" display='inline' color='textSecondary'>{`Limit de unidades (UI):`}</Typography>
+            <Typography variant="subtitle2" display='inline'>{` ${limit} `}</Typography>
+        </Grid>
+    ): <></>
+)
+
 const renderValuesRow = values => (
     <Grid item xs={12}>
         <Typography variant="caption" display='inline' color='textSecondary'>{`Valor glicemico (mg/dL):`}</Typography>
@@ -63,7 +72,7 @@ interface CalcTableListProps {
 }
 const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) => {
     const classes = useStyles();
-    const { dataTables, selectCalcTable, deleteCalcTable } = useCalcTables()
+    const { dataTables, selectTableConfig, deleteCalcTable } = useCalcTables()
     const [expandTable, setExpandTable] = useState<Table>(null)
     const [openDialog, setOpenDialog] = useState<boolean>(false)
     const [deleteTableName, setDeleteTableName] = useState<string>('')
@@ -86,12 +95,12 @@ const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) =>
         setExpandTable(isExpanded ? _t : null);
     };
 
-    const handleEdit =  (id:string) => selectCalcTable(id)
+    const handleEdit =  (id:string) => selectTableConfig(id)
 
     return (
         <>
             {tableList?.map(table => {
-                const { id, name, units, values } = table;
+                const { id, name, units, limit, values } = table;
 
                 return (
                     <Accordion key={id} expanded={expandTable?.id === id} onChange={handleExpand(table)}>
@@ -106,6 +115,7 @@ const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) =>
                         <AccordionDetails className={classes.row}>
                             <Grid container spacing={0}>
                                 {renderUnitsRow(units)}
+                                {renderLimitRow(limit)}
                                 {renderValuesRow(values.list)}
                                 {renderCustomRow(values.custom)}
                             </Grid>

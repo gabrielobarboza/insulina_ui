@@ -26,8 +26,10 @@ type CalcTablesContextType = {
   createCalcTable: (table:Table) => Table,
   saveCalcTable: (table:Table) => Promise<Table>,
   setDataTables: (tableList:TableList) => any,
-  selectCalcTable: (_id?:string) => Promise<Table|null>,
-  selectedTable: Table,
+  selectTableConfig: (_id?:string) => Promise<Table|null>,
+  selectTable: (_id?:string) => Promise<Table|null>,  
+  selectedConfig: Table,
+  tableSelected: Table,
   components: Components
 }
 
@@ -37,12 +39,14 @@ export const useCalcTables = () => useContext(CalcTablesContext)
 
 export const CalcTablesProvider = ({ children }) => {
   const [ dataTables, setDataTables ] = useState<TableList|null>(null)
-  const [ selectedTable, setSelectedTable ] = useState<Table|null>(null)
+  const [ selectedConfig, setSelectedConfig ] = useState<Table|null>(null)
+  const [ tableSelected, setTableSelected ] = useState<Table|null>(null)
+
   // const [ dataTables, setDataTables ] = useState<TableList>(mockedTables)
   const getCalcTable = async _id => await _id ? dataTables.find(table => table.id === _id) : null
   const createCalcTable = params => {
     const newTable =  TableItem.create({ ...params})
-    setSelectedTable(newTable)
+    setSelectedConfig(newTable)
     return newTable
   }
 
@@ -50,9 +54,9 @@ export const CalcTablesProvider = ({ children }) => {
     const tableList:TableList = dataTables ? [...dataTables] : []
     const _id = params?.id
     let currTable:Table|null = null
-    if(_id && selectedTable && (selectedTable.id === _id)) {
+    if(_id && selectedConfig && (selectedConfig.id === _id)) {
       currTable = {
-        ...selectedTable,
+        ...selectedConfig,
         ...params
       }
       const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
@@ -71,27 +75,38 @@ export const CalcTablesProvider = ({ children }) => {
     return currTable
   }
 
-  const selectCalcTable = async (_id) => {
+  const selectTableConfig = async (_id) => {
     if(_id) {
       const targetTable = await getCalcTable(_id)            
-      setSelectedTable(targetTable)
+      setSelectedConfig(targetTable)
       return targetTable
     } else {
-      setSelectedTable(null)
+      setSelectedConfig(null)
+      return null
+    }
+  }
+
+  const selectTable = async (_id) => {
+    if(_id) {
+      const targetTable = await getCalcTable(_id)            
+      setTableSelected(targetTable)
+      return targetTable
+    } else {
+      setTableSelected(null)
       return null
     }
   }
 
   const deleteCalcTable = (_id) => {
     if(_id)
-      setSelectedTable(null)
+      setSelectedConfig(null)
       setDataTables(dataTables.filter(({ id }) => (_id !== id)))
   }
 
   const TableSelect = ({ helperText } : TableSelectProps) => {
     const handleSelect = (ev:SelectChangeEvent) => {
       const targetId = ev.target.value      
-      if(targetId) selectCalcTable(targetId)
+      if(targetId) selectTable(targetId)
     }
 
     return (
@@ -102,7 +117,7 @@ export const CalcTablesProvider = ({ children }) => {
         <Select
             labelId="calc-table-label"
             id="calc-table-label-input"
-            value={selectedTable?.id || ""}   
+            value={tableSelected?.id || ""}   
             label="Tabela de Cálculo"
             onChange={handleSelect}
             >
@@ -126,8 +141,10 @@ export const CalcTablesProvider = ({ children }) => {
               createCalcTable,
               saveCalcTable,
               setDataTables,
-              selectCalcTable,
-              selectedTable,
+              selectTableConfig,
+              selectTable,
+              selectedConfig,
+              tableSelected,
               components: {
                 TableSelect
               }

@@ -15,6 +15,7 @@ export interface Table {
   name: string
   units: number
   values: TableValues
+  limit?: number
 }
 
 export type TableList = Table[]

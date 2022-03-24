@@ -16,10 +16,10 @@ export const useSidebar = () => useContext(SidebarContext)
 
 const SideBarProvider = ({ children }) => {
     const [ viewSidebar, setSidebar] = useState<boolean>(false)
-    const { selectCalcTable } = useCalcTables()    
+    const { selectTableConfig } = useCalcTables()    
 
   const setViewSidebar = (val:boolean) => {
-    selectCalcTable(null)
+    selectTableConfig(null)
     setSidebar(val)
   }
   
