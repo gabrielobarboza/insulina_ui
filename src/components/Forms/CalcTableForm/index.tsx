@@ -95,7 +95,9 @@ const CalcTableForm = () => {
         mgdlAditionalValues,
         mgdlIncrementValue,
         useMgdlAditional,
-        useMgdlIncrement
+        useMgdlIncrement,
+        useUnitLimit,
+        unitLimitValue
     ])
 
     const switchUseMgdlIncrement = useCallback(() => {
@@ -273,7 +275,7 @@ const CalcTableForm = () => {
                     
                     <TextField
                         required
-                        label="Valor Inicial"
+                        label="Nível de glicose base"
                         placeholder="mg/dL"
                         type="number"
                         InputLabelProps={{

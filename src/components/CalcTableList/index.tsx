@@ -181,7 +181,7 @@ const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) =>
                                         size="small"
                                         onClick={handleExcludeConfirm}
                                         disabled={expandTable?.name !== deleteTableName}
-                                        >
+                                    >
                                         Confirmar
                                     </Button>
                                 </Grid>
