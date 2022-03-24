@@ -6,7 +6,7 @@ import {
     Grid    
 } from '@mui/material'
 
-import { Settings as SettingsIcon } from '@material-ui/icons';
+import { Settings as SettingsIcon } from '@mui/icons-material';
 import InsulinaUiLogo from '@/assets/images/logo-insulina-ui.jpg'
 import Image from 'next/image';
 
