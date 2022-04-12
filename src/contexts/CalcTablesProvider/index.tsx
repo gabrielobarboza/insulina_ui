@@ -56,7 +56,6 @@ export const CalcTablesProvider = ({ children }) => {
     let currTable:Table|null = null
     if(_id && selectedConfig && (selectedConfig.id === _id)) {
       currTable = {
-        ...selectedConfig,
         ...params
       }
       const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
