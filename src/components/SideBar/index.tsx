@@ -22,9 +22,10 @@ const useStyles = makeStyles((theme: any) =>
   createStyles({
     container: {
         width: '75vw',
+        maxWidth: '550px',
         margin: theme.spacing(2),
         marginTop: theme.spacing(5),
-    },
+    }
   }),
 );
 
@@ -49,11 +50,11 @@ const SideBar = () => {
             <div className={classes.container}>
                 <AppBar position="absolute">
                     <Toolbar>
-                        <Grid container spacing={0} justifyContent="space-between" alignItems="center">
+                        <Grid container spacing={0} justifyContent="space-between" alignItems="center" sx={{ maxWidth: '550px' }}>
                             <Grid item xs={10}>
                                 <Typography variant="h5">{sidebarTitle}</Typography>
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 <IconButton onClick={handleCose} aria-label="close">
                                     <CloseIcon  style={{ color: common['white'] }} />
                                 </IconButton>

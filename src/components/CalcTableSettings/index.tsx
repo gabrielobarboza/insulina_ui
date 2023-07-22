@@ -22,7 +22,7 @@ const CalcTableSettings = () => {
     }
     
     return (
-        <Grid container spacing={4}>                    
+        <Grid container spacing={4} >                    
             <Grid item xs={12} mt={6}>
                 <CalcTableList/>
             </Grid>

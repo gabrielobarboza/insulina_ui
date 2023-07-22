@@ -13,7 +13,17 @@ const useStyles = makeStyles((theme: any) =>
         left: '50% !important',
         width: '80vw',
         zIndex: 1500,
-        transform: 'translate(-50%, -50%) !important'
+        transform: 'translate(-50%, -50%) !important',
+    },
+    overlay: {
+      position: 'fixed',
+      top: '50% !important',
+      left: '50% !important',
+      width: '100vw',
+      height: '100vh',
+      zIndex: 1499,
+      transform: 'translate(-50%, -50%) !important',
+      backgroundColor: 'rgba(0,0,0,.5)'
     },
     paper: {
         padding: theme.spacing(1)
@@ -54,14 +64,17 @@ export default function Helper({ title, icon, children }: HelperTypes) {
         <Popper open={open} placement={'bottom'} transition className={classes.popper}>
             {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={300}>
+              
                 <Paper elevation={3} className={classes.paper}>
                   <HelperHead inside/>
                   <hr/>
                   {children}
                 </Paper>
+              
             </Fade>
             )}
-        </Popper>        
+        </Popper>
+        <div className={classes.overlay} style={{ display: open ? 'block' : 'none' }}/>   
     </div>
   );
 }

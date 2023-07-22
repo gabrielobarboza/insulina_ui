@@ -22,7 +22,7 @@ export default function HeadAppBar() {
                     <Grid item xs={1}>
                         <Image src={InsulinaUiLogo} width={178} height={128} />
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <IconButton edge="start" color="inherit" aria-label="Settings" onClick={() => setViewSidebar(!viewSidebar)}>
                             <SettingsIcon />
                         </IconButton>

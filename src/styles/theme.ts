@@ -5,8 +5,8 @@ export const themeOptions = {
         light: '#951B81',
         main: '#82368C',
         dark: '#662483',
-        contrastText: '#ffffff'
-    },    
+        contrastText: '#ffffff',
+    }
   },
 };
 

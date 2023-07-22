@@ -218,7 +218,7 @@ const CalcTableForm = () => {
                     onChange={e => setUnitLimitValue(Number(e.target.value))}
                 />
             )}
-            <Card className={classes.spaceTop}>
+            <Card className={classes.spaceTop} >
                 <CardContent>
                     <Helper title="Valores de Medição">
                         <Typography variant="caption" component="p">
@@ -260,7 +260,7 @@ const CalcTableForm = () => {
                             <b>- Cenário</b>: <i><b>ui</b>(UI Inicial) = </i>3; <i><b>mgdli</b>(mg/dL Inicial) = </i>80; <i><b>mg/dL Adicionais</b></i> 120, 170 e 210; <i><b>mgdlc</b>(Glicemia - mg/dL informado) = </i>198;
                         </Typography>
                         <Typography gutterBottom variant="caption" component="p">
-                            <b>- Resultado</b>: Cada campo <b>mg/dL Adicional</b> configurado é como um novo gatinho, e quando o <i><b>mgdlc</b></i> atinge ou ultrapassa esse gatilho, nosso <i><b>ui</b></i> é incrementado;
+                            <b>- Resultado</b>: Cada campo <b>mg/dL Adicional</b> configurado é como um novo gatinho, e o valor de <i><b>ui</b></i> do resultado será incrementado quando o <i><b>mgdlc</b></i> atinge ou ultrapassa esse gatilho;
                         </Typography>
                         <Typography gutterBottom variant="caption" component="p">
                             O resultado será <b>5 <i>UI</i></b>.
@@ -271,8 +271,7 @@ const CalcTableForm = () => {
                         Valores em <b>mg/dL</b> para incrementar a <b>UI</b> resultante, baseando-se no valor do campo <b>UI Inicial</b>;
                         O campo <b>mg/dL Inicial</b> funciona como gatilho para administrar a <b>UI Inicial</b>; 
                         A <b>UI</b> resultante será o valor de <b>UI Inicial</b> incrementado em <b>+1</b><i>(mais um)</i> conforme o valor <b>Glicemia</b><i>(mg/dL)</i> informado no momento do cálculo for  excedente aos valores de configuração da tabela.
-                    </Typography>
-                    
+                    </Typography>                    
                     <TextField
                         required
                         label="Nível de glicose base"
@@ -303,6 +302,7 @@ const CalcTableForm = () => {
                         </FormGroup>
                         <FormHelperText>Adicionar mais limitadores para incremetar a UI resultante</FormHelperText>
                     </FormControl>
+                    <br />
                     <FormControl component="fieldset" variant="standard" className={classes.spaceTop}>
                         <FormGroup>
                             <FormControlLabel
