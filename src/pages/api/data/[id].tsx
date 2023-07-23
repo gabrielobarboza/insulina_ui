@@ -12,7 +12,8 @@ const serviceAccountAuth = new JWT({
 });
 
 export default async function handler(req, res) {
-  const doc = new GoogleSpreadsheet("1SjrURUTPx-iUIILSqnRClU31FJXL4ElvNajKz-vdtyQ", serviceAccountAuth);
+  const dataUser = new GoogleSpreadsheet(process.env.NEXT_PUBLIC_USERS_SHEET_ID, serviceAccountAuth);
+  const dataTables = new GoogleSpreadsheet(process.env.NEXT_PUBLIC_TABLES_SHEET_ID, serviceAccountAuth);
   const {
     query: { id }
   } = req;
@@ -20,21 +21,20 @@ export default async function handler(req, res) {
   try {
     if (!id) throw new Error();
 
-    await doc.loadInfo(true); // loads document properties and worksheets
-
-    const { USERS, TABLES } = doc.sheetsByTitle;
+    await dataUser.loadInfo(true);
+    const { USERS } = dataUser.sheetsByTitle;
     const usersRows = await USERS.getRows();
+    
     const userRow = usersRows.find(r => r.get('ID') === id)
-
-    if (!userRow) throw new Error();
     const user = {
       id: userRow?.get('ID'),
       email: userRow?.get('EMAIL')
     };
     
+    await dataTables.loadInfo(true);
+    const { TABLES } = dataTables.sheetsByTitle;
     const tablesRows = await TABLES.getRows();
     const userTablesRows: any[] = tablesRows.filter(r => r.get('USER_ID') === id) || []
-    
     const tables = userTablesRows.map((r, index) => ({
       id: r.get('ID'),
       name: r.get('NAME'),
@@ -48,7 +48,6 @@ export default async function handler(req, res) {
     
     res.status(200).json({ user, tables, tablesCount: tables.length});
   } catch (error) {
-    console.log("ERROR catch");
     res.status(500).json(error);
   }
 }
