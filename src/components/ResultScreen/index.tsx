@@ -5,7 +5,7 @@ import {
   ArrowBackIos as ArrowBackIcon
 } from '@mui/icons-material';
 
-import { useCalcResult } from '@/contexts/CalcResultProvider'
+import { useCalcResult } from '@/contexts'
 import CalcTableList from '../CalcTableList';
 import { Table } from '@/interfaces';
 import {

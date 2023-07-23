@@ -1,11 +1,18 @@
-import CalcTablesProvider from './CalcTablesProvider'
-import ConfigTokenProvider from './ConfigTokenProvider'
-import SideBarProvider from './SideBarProvider'
-import CalcResultProvider from './CalcResultProvider'
+import CalcTablesProvider, { useCalcTables } from './CalcTablesProvider'
+import ConfigTokenProvider, { useConfigToken } from './ConfigTokenProvider'
+import SideBarProvider, { useSidebar } from './SideBarProvider'
+import CalcResultProvider, { useCalcResult } from './CalcResultProvider'
+import AuthProvider, { useAuth } from './AuthProvider'
 
 export {
-    ConfigTokenProvider,
+    AuthProvider,
     CalcResultProvider,
     CalcTablesProvider,
+    ConfigTokenProvider,
     SideBarProvider,
+    useAuth,
+    useCalcResult,
+    useCalcTables,
+    useConfigToken,
+    useSidebar
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import { useCalcTables } from '@/contexts/CalcTablesProvider'
+import { useCalcTables } from '@/contexts'
 import { Table } from "@/interfaces"
 import { isEqual } from 'lodash'
 import { formStyles } from '../formStyles';
@@ -366,7 +366,7 @@ const CalcTableForm = () => {
                 </CardContent>
             </Card>
             <Grid container spacing={2} className={classes.spaceTop} justifyContent='space-around'>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{ justifyContent: 'center', display: 'flex' }}>
                     <Button
                         type="button"
                         variant="contained"
@@ -376,7 +376,7 @@ const CalcTableForm = () => {
                         Cancelar
                     </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{ justifyContent: 'center', display: 'flex' }}>
                     <Button
                         type="submit"
                         variant="contained"

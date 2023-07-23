@@ -8,44 +8,56 @@ import {
     Grid,
     IconButton,
     Typography,
+    Button,
 } from '@mui/material'
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, ExitToApp as ExitIcon } from '@mui/icons-material';
+import { common } from '@mui/material/colors';
 
-import { useCalcTables } from '@/contexts/CalcTablesProvider'
-import { useSidebar } from '@/contexts/SideBarProvider';
+import { useCalcTables, useSidebar } from '@/contexts';
 
 import { CalcTableForm } from '../Forms'
 import CalcTableSettings from '../CalcTableSettings'
-import { common } from '@mui/material/colors';
+
+import { useAuth } from '@/contexts'
 
 const useStyles = makeStyles((theme: any) =>
   createStyles({
     container: {
         width: '75vw',
+        height: '100vh',
         maxWidth: '550px',
         margin: theme.spacing(2),
         marginTop: theme.spacing(5),
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     }
   }),
 );
 
 const SideBar = () => {
-  const classes = useStyles();
-  const [ sidebarTitle, setSidebarTitle ] = useState<string>('')
+    const { handleLogout, authorized } = useAuth()
+    const classes = useStyles();
+    const [ sidebarTitle, setSidebarTitle ] = useState<string>('')
 
-  const { viewSidebar, setViewSidebar } = useSidebar();
-  const { selectedConfig, selectTableConfig } = useCalcTables()
+    const { viewSidebar, setViewSidebar } = useSidebar();
+    const { selectedConfig, selectTableConfig } = useCalcTables()
 
     const handleCose = () => {
         setViewSidebar(false)
         selectTableConfig(null)
     }
 
+    const onLogout = () => {
+        handleCose()
+        handleLogout()
+    }
+
     useEffect(() => {
         setSidebarTitle(selectedConfig ? (selectedConfig?.name || "Nova Tabela") : "Configurar Tabelas")
     }, [selectedConfig])
 
-    return (
+    return authorized ? (
         <Drawer anchor={'right'} open={viewSidebar} onClose={handleCose}>
             <div className={classes.container}>
                 <AppBar position="absolute">
@@ -63,10 +75,32 @@ const SideBar = () => {
                     </Toolbar>
                 </AppBar>
                 
-                {selectedConfig ? <CalcTableForm /> : <CalcTableSettings/>}
+                {selectedConfig ? (
+                    <>
+                        <CalcTableForm />
+                    </>
+                ) : (
+                    <>
+                        <CalcTableSettings/>
+                        <Grid item xs={12}>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                startIcon={<ExitIcon />}
+                                onClick={onLogout}
+                                fullWidth
+                            >
+                                Sair
+                            </Button>
+                        </Grid>
+                    </>
+                )}
+
             </div>
         </Drawer>
-    )
+    ) : <></>
 }
 
 export default SideBar;

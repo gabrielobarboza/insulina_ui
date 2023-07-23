@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
-import { useCalcTables } from '@/contexts/CalcTablesProvider';
+import { useCalcTables } from '@/contexts';
 import {
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,

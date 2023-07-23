@@ -7,7 +7,7 @@ import {
 } from 'react'
 import store from 'store'
 import { tokenActions } from '@/utils'
-import { useCalcTables } from '@/contexts/CalcTablesProvider'
+import { useCalcTables } from '@/contexts'
 import { TableList, AppConfig } from "@/interfaces"
 import { isEqual } from 'lodash'
 

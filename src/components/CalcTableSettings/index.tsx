@@ -3,7 +3,7 @@ import {
     Grid,
 } from '@mui/material'
 import { Add as AddIcon } from '@mui/icons-material';
-import { useCalcTables } from '@/contexts/CalcTablesProvider';
+import { useCalcTables } from '@/contexts';
 import CalcTableList from '../CalcTableList'
 
 const CalcTableSettings = () => {

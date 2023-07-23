@@ -5,9 +5,8 @@ import {
     TextField,
 } from '@mui/material'
 import { Forward as ForwardIcon } from '@mui/icons-material';
-import { useCalcTables } from '@/contexts/CalcTablesProvider'
-import { useCalcResult } from '@/contexts/CalcResultProvider'
-import {ResultScreen} from '@/components'
+import { useCalcTables, useCalcResult } from '@/contexts'
+import { ResultScreen } from '@/components'
 import { formStyles } from '../formStyles';
 
 const CalcForm = () => {
@@ -40,13 +39,13 @@ const CalcForm = () => {
         <ResultScreen table={tableSelected} mgdL={mgdL}/> 
     ) : (
         <form onSubmit={handleSubmit} className={classes.root} autoComplete="off">
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
+            <Grid container spacing={2} justifyContent={'center'}>
+                <Grid item xs={8}>
                     <TableSelect
                         helperText="Selecione uma tabela de cálaculo para verificar quantas unidades de insulina devem ser administradas."
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={8}>
                     <TextField
                         label="Nível de glicose"
                         type="number"
@@ -61,7 +60,7 @@ const CalcForm = () => {
                         helperText="Valor em mg/dL resultante da medição(Dextro)."
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={8}>
                     <Button
                         type="submit"
                         variant="contained"
@@ -72,7 +71,7 @@ const CalcForm = () => {
                     >
                         Calcular
                     </Button>
-                </Grid>               
+                </Grid>
             </Grid>
         </form>                      
     )

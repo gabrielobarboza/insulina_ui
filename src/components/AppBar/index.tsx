@@ -10,10 +10,11 @@ import { Settings as SettingsIcon } from '@mui/icons-material';
 import InsulinaUiLogo from '@/assets/images/logo-insulina-ui.jpg'
 import Image from 'next/image';
 
-import { useSidebar } from '@/contexts/SideBarProvider';
+import { useAuth, useSidebar } from '@/contexts';
 
 export default function HeadAppBar() {
     const { viewSidebar, setViewSidebar } = useSidebar();
+    const { authorized } = useAuth()
 
     return (
         <AppBar position="static">
@@ -23,9 +24,9 @@ export default function HeadAppBar() {
                         <Image src={InsulinaUiLogo} width={178} height={128} />
                     </Grid>
                     <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <IconButton edge="start" color="inherit" aria-label="Settings" onClick={() => setViewSidebar(!viewSidebar)}>
+                        {authorized ? <IconButton edge="start" color="inherit" aria-label="Settings" onClick={() => setViewSidebar(!viewSidebar)}>
                             <SettingsIcon />
-                        </IconButton>
+                        </IconButton> : <></>}
                     </Grid>
                 </Grid>
             </Toolbar>
