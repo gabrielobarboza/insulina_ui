@@ -1,4 +1,3 @@
-export * from './parseTableData'
-export * from './parseUser'
-export * from './serviceAuth'
-export * from './sheetConnect'
+export * from './parsers'
+export * from './connectors'
+export * from './service'

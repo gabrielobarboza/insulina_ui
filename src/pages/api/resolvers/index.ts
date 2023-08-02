@@ -1,21 +1,10 @@
-import { connection, parseTableData, parseUser } from "../utils";
+import { connections, parseTableData, parseUser } from "../utils";
 
-const dataUser = connection.users;
-const dataTables = connection.tables;
+const dataUser = connections.users;
+const dataTables = connections.tables;
 
 export const resolvers = {
   Query: {
-    getUsers: async () => {
-      try {
-        await dataUser.loadInfo(true);
-        const { USERS } = dataUser.sheetsByTitle;
-        const usersRows = await USERS.getRows();
-        
-        return usersRows.map(parseUser);
-      } catch (error) {
-        throw error;
-      }
-    },
     getUser: async (_, args) => {
       try {
         await dataUser.loadInfo(true);
