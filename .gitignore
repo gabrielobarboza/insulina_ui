@@ -105,3 +105,6 @@ dist
 
 # Wrokspace files
 *.code-workspace
+
+# Service ACC
+service-account.json
