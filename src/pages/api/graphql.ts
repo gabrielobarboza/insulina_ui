@@ -3,8 +3,18 @@ import { ApolloServer } from "apollo-server-micro";
 import { PageConfig } from "next";
 import { typeDefs } from "./schemas";
 import { resolvers } from "./resolvers";
+import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+const isProduction =  process.env.NODE_ENV === 'production'
+
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: !isProduction,
+  plugins: isProduction
+    ? [ ApolloServerPluginLandingPageDisabled() ]
+    : []
+});
 
 export const config: PageConfig = {
   api: {

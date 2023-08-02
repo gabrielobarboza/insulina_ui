@@ -1,5 +1,5 @@
 import React, { useState, createContext, useMemo, useEffect, useContext } from 'react'
-import { CredentialResponse } from '@react-oauth/google'
+import { CredentialResponse, googleLogout } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
 import {
   JwtData,
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
 
     const _d = new Date()
     // Add ten days to current date
-    setTokenExp(_d.setDate(_d.getDate() + 10))
+    setTokenExp(jwtData?.exp)
 
     setUserData({
       email: jwtData?.email || '',
@@ -49,7 +49,8 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     return _auth
   }, [inuiToken])
 
-  const onLoginSuccess = ({ credential }: CredentialResponse) => {
+  const onLoginSuccess = ({ credential, ...data }: CredentialResponse) => {
+    console.log('onLoginSuccess =>', data, credential)
     if (credential) handleToken(credential)
   }
 
@@ -67,6 +68,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
 
     setToken('')
     setTokenExp(0)
+    googleLogout()
   }
 
   return (
