@@ -1,0 +1,11 @@
+overwrite: true
+schema: 'http://localhost:9090/api/graphql'
+documents: 'src/pages/api/schemas/**/*.gql'
+generates:
+  src/api/graphql.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      pureMagicComment: true

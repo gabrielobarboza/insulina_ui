@@ -1,0 +1,24 @@
+type User {
+  id: ID!
+  email: String!
+}
+
+type Table {
+  id: ID!
+  name: String!
+  initial_ui: Int!
+  initial_mgdl: Int!
+  limit_ui: Int
+  increment_mgdl: Int
+  triggers_mgdl: [Int]
+}
+
+type UserTables {
+  tables: [Table]
+  tablesCount: Int
+}
+
+type Query {
+  getUser(id: ID!): User!
+  getUserTables(id: ID!): UserTables
+}

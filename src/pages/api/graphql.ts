@@ -1,9 +1,9 @@
 import Cors from "micro-cors";
 import { ApolloServer } from "apollo-server-micro";
 import { PageConfig } from "next";
-import { typeDefs } from "./schemas";
 import { resolvers } from "./resolvers";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
+import { typeDefs } from './schemas'
 
 const isProduction =  process.env.NODE_ENV === 'production'
 

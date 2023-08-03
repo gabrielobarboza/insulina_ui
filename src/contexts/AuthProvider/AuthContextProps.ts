@@ -4,7 +4,7 @@ export interface JwtData {
   [key: string]: any
 }
 
-type UserDataKeys = 'name' | 'picture' | 'email'
+type UserDataKeys = 'name' | 'picture' | 'email' | "id"
 export interface UserData extends Partial<Record<UserDataKeys, string>> {}
 
 export type AuthContextType = {

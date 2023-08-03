@@ -1,5 +1,5 @@
 import CalcTablesProvider, { useCalcTables } from './CalcTablesProvider'
-import ConfigTokenProvider, { useConfigToken } from './ConfigTokenProvider'
+import SettingsProvider, { useSettings } from './SettingsProvider'
 import SideBarProvider, { useSidebar } from './SideBarProvider'
 import CalcResultProvider, { useCalcResult } from './CalcResultProvider'
 import AuthProvider, { useAuth } from './AuthProvider'
@@ -8,11 +8,11 @@ export {
     AuthProvider,
     CalcResultProvider,
     CalcTablesProvider,
-    ConfigTokenProvider,
+    SettingsProvider,
     SideBarProvider,
     useAuth,
     useCalcResult,
     useCalcTables,
-    useConfigToken,
+    useSettings,
     useSidebar
 }

@@ -20,15 +20,15 @@ export async function handleGetUserTables(id: string) {
       tablesCount: tables.length
     }
   } catch(err) {
-    return console.error(err)
+    console.error(err)
+    throw err
   }  
 }
 
-export const getUserTables = async (_, args) => {
+export async function getUserTables(_, args) {
   try {
-    const dataUser = await handleGetUserTables(args.id)
-
-    return dataUser;
+    const dataUserTables = await handleGetUserTables(args.id)
+    return dataUserTables;
   } catch (err) {
     throw err;
   }

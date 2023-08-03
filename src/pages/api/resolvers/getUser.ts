@@ -5,7 +5,6 @@ const dataUser = connections.users;
 export async function handleGetUser(id: string) {
   try {
     if(!id) return {}
-
     await dataUser.loadInfo(true);
     const { USERS } = dataUser.sheetsByTitle;
     const usersRows = await USERS.getRows();
@@ -14,11 +13,12 @@ export async function handleGetUser(id: string) {
     
     return parseUser(userRow)
   } catch(err) {
-    return console.error(err)
+    console.error(err)
+    throw err;
   }
 }
 
-export const getUser = async (_, args) => {
+export async function getUser(_, args) {
   try {
     const dataUser = await handleGetUser(args.id)
 

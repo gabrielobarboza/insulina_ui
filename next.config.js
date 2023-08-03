@@ -1,14 +1,13 @@
 const withPWA = require("next-pwa");
 const withImages = require('next-images');
 
-const isProduction =  process.env.NODE_ENV === 'production'
 
 module.exports = withPWA(
   withImages({
     pwa: {
       dest: "public",
-      register: true,
-      disable: isProduction ? false : true
+      // register: true,
+      // disable: process.env.NODE_ENV === 'production' ? false : true
     },
     fileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
     reactStrictMode: false,
@@ -17,6 +16,12 @@ module.exports = withPWA(
       disableStaticImages: true
     },
     webpack(config, _options) {
+      config.module.rules.push({
+        test: /\.(graphql|gql)/,
+        exclude: /node_modules/,
+        loader: "graphql-tag/loader"
+      });
+  
       return config
     },
     build: {

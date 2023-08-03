@@ -1,4 +1,4 @@
-import React, { useState, createContext, useMemo, useEffect, useContext } from 'react'
+import React, { useState, createContext, useEffect, useContext, useMemo, useCallback } from 'react'
 import { CredentialResponse, googleLogout } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
 import {
@@ -26,22 +26,27 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     }
   }, [inuiToken, tokenExp])
 
-  const handleToken = async (token: string) => {
-    const jwtData: JwtData = (await jwtDecode(token)) || {}
-    setToken(token)
+  const handleToken = useCallback((token: string) => {   
+    if(token) {
+      const jwtData: JwtData = jwtDecode(token) || {}
+      
+      setUserData({
+        id: jwtData?.sub || '',
+        email: jwtData?.email || '',
+        picture: jwtData?.picture || '',
+        name: jwtData?.given_name || jwtData?.name || ''
+      })
 
-    const _d = new Date()
-    // Add ten days to current date
-    setTokenExp(jwtData?.exp)
+      if(token !== inuiToken){
+        setToken(token)
+        const _d = new Date()
+        // Add one day to current date
+        setTokenExp(_d.setDate(_d.getDate() + 1))
+      }
+    }
 
-    setUserData({
-      email: jwtData?.email || '',
-      picture: jwtData?.picture || '',
-      name: jwtData?.given_name || jwtData?.name || ''
-    })
-
-    return jwtData
-  }
+    return token
+  }, [inuiToken])
 
   const authorized = useMemo(() => {
     const _auth = Boolean(inuiToken)
@@ -49,8 +54,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     return _auth
   }, [inuiToken])
 
-  const onLoginSuccess = ({ credential, ...data }: CredentialResponse) => {
-    console.log('onLoginSuccess =>', data, credential)
+  const onLoginSuccess = ({ credential }: CredentialResponse) => {
     if (credential) handleToken(credential)
   }
 

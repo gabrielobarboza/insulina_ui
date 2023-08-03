@@ -1,0 +1,14 @@
+query getUserTables($id: ID!){
+    getUserTables(id: $id){
+        tables{
+            id
+            name
+            initial_ui
+            initial_mgdl
+            limit_ui
+            increment_mgdl
+            triggers_mgdl
+        }
+        tablesCount
+    }
+}
