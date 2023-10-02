@@ -108,3 +108,8 @@ dist
 
 # Service ACC
 service-account.json
+
+# PWA
+public/sw.js
+public/workbox-*.js
+public/fallback-*.js

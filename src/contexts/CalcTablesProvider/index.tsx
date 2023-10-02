@@ -63,23 +63,41 @@ export const CalcTablesProvider = ({ children }) => {
       currTable = {
         ...params
       }
-      const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
-      tableList[tableIndex] = { ...currTable }
     }
-
+    
     if(!_id) {
       currTable = TableItem.create({ ...params })
-
-      await saveUserTable({
-        variables: {
-          user: userData.id,
-          table: currTable
-        }
-      }).then(data => {
-        console.log('saveUserTable =>', data)
-        tableList.push(currTable)
-      })
     }
+
+    console.log('currTable =>', currTable)
+    const valuesList = [...currTable?.values?.list]
+
+    await saveUserTable({
+      variables: {
+        user: userData.id,
+        table: {
+          ...(currTable?.id ? {id: currTable.id} : {}),
+          ...(currTable?.name ? {name: currTable.name} : {}),
+          ...(currTable?.units ? {initial_ui: currTable.units} : {}),
+          ...(currTable?.units ? {initial_ui: currTable.units} : {}),
+          ...(currTable?.values?.custom ? {increment_mgdl: currTable.values.custom} : {}),
+          ...(currTable?.limit ? {limit_ui: currTable.limit} : {}),
+          ...(valuesList?.length ? {
+            initial_mgdl: valuesList.shift(),
+            triggers_mgdl: valuesList
+          } : {})
+        }
+      }
+    }).then(data => {
+      const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
+      if(tableIndex === -1)
+        tableList.push({
+          ...currTable,
+          id: data?.data?.saveUserTable?.id
+        })
+      else
+        tableList[tableIndex] = { ...currTable }
+    })
 
     await setDataTables(tableList)
     return currTable

@@ -1,12 +1,11 @@
 mutation saveUserTable($user: ID!, $table: TableInput!){
     saveUserTable(user: $user, table: $table){
-        ID
-        NAME
-        INITIAL_UI
-        LIMIT_UI
-        INITIAL_MGDL
-        INCREMENT_MGDL
-        TRIGGERS_MGDL
-        USER_ID
+        id
+        name
+        initial_ui
+        initial_mgdl
+        limit_ui
+        increment_mgdl
+        triggers_mgdl
     }
 }

@@ -78,7 +78,7 @@ const App = ({ Component, pageProps } : AppProps) => {
                           <meta name='msapplication-TileColor' content='#82368C' />
                           <meta name='msapplication-tap-highlight' content='no' />
 
-                          <link rel="manifest" href="./manifest.json"></link>
+                          <link rel="manifest" href="./manifest.webmanifest"></link>
                         
                           <link rel="shortcut icon" href="./icons/icon-insulina-ui.svg" />
                           <link

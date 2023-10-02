@@ -62,7 +62,7 @@ const CalcTableForm = () => {
                 setUnitLimitValue(table.limit)
             }
         }
-    }, [])
+    }, [table])
 
     const currentTable = useMemo(() => {
         const { id } = table
@@ -165,7 +165,7 @@ const CalcTableForm = () => {
     }, [useUnitLimit])
         
     return (
-        <form onSubmit={handleSubmit} className={classes.root} autoComplete="off">
+        <form onSubmit={handleSubmit} className={classes.root} autoComplete="off" style={{ marginBottom: '20px' }}>
             <TextField
                 required
                 label="Nome da Tabela"

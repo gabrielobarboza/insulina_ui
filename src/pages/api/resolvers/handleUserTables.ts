@@ -51,12 +51,12 @@ export async function saveUserTable(_, { user, table: { id, ...table} }): Promis
       await parseTableInput(table, select)
       return parseTableData(select)
     } else {
-      const NEW_TABLE_DATA: TableInputData = await parseTableInput(table)
-     
-      return parseTableData(await TABLES.addRow({
+      const NEW_TABLE_DATA = await TABLES.addRow({
         USER_ID: user,
-        ...NEW_TABLE_DATA
-      }))
+        ...await parseTableInput(table)
+      })
+     
+      return parseTableData(NEW_TABLE_DATA)
     }
 
   } catch (_err) {

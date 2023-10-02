@@ -19,7 +19,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  saveUserTable?: Maybe<TableData>;
+  saveUserTable?: Maybe<Table>;
   setUser: User;
 };
 
@@ -62,18 +62,6 @@ export type Table = {
   triggers_mgdl?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
 };
 
-export type TableData = {
-  __typename?: 'TableData';
-  ID?: Maybe<Scalars['String']['output']>;
-  INCREMENT_MGDL?: Maybe<Scalars['String']['output']>;
-  INITIAL_MGDL?: Maybe<Scalars['String']['output']>;
-  INITIAL_UI?: Maybe<Scalars['String']['output']>;
-  LIMIT_UI?: Maybe<Scalars['String']['output']>;
-  NAME?: Maybe<Scalars['String']['output']>;
-  TRIGGERS_MGDL?: Maybe<Scalars['String']['output']>;
-  USER_ID?: Maybe<Scalars['String']['output']>;
-};
-
 export type TableInput = {
   id?: InputMaybe<Scalars['ID']['input']>;
   increment_mgdl?: InputMaybe<Scalars['Int']['input']>;
@@ -102,7 +90,7 @@ export type SaveUserTableMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserTableMutation = { __typename?: 'Mutation', saveUserTable?: { __typename?: 'TableData', ID?: string | null, NAME?: string | null, INITIAL_UI?: string | null, LIMIT_UI?: string | null, INITIAL_MGDL?: string | null, INCREMENT_MGDL?: string | null, TRIGGERS_MGDL?: string | null, USER_ID?: string | null } | null };
+export type SaveUserTableMutation = { __typename?: 'Mutation', saveUserTable?: { __typename?: 'Table', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null };
 
 export type SetUserMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -130,14 +118,13 @@ export type GetUserTablesQuery = { __typename?: 'Query', getUserTables?: { __typ
 export const SaveUserTableDocument = /*#__PURE__*/ gql`
     mutation saveUserTable($user: ID!, $table: TableInput!) {
   saveUserTable(user: $user, table: $table) {
-    ID
-    NAME
-    INITIAL_UI
-    LIMIT_UI
-    INITIAL_MGDL
-    INCREMENT_MGDL
-    TRIGGERS_MGDL
-    USER_ID
+    id
+    name
+    initial_ui
+    initial_mgdl
+    limit_ui
+    increment_mgdl
+    triggers_mgdl
   }
 }
     `;
