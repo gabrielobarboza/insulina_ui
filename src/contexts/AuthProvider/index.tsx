@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     }
   }, [inuiToken, tokenExp])
 
-  const handleToken = useCallback((token: string) => {   
+  const handleToken = useCallback((token: string) => {
     if(token) {
       const jwtData: JwtData = jwtDecode(token) || {}
       
@@ -74,6 +74,10 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     setTokenExp(0)
     googleLogout()
   }
+
+  useEffect(() => {
+    console.log('userData ->', userData, inuiToken ? jwtDecode(inuiToken) : {})
+  }, [userData, inuiToken])
 
   return (
     <AuthContext.Provider

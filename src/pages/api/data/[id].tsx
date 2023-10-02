@@ -1,5 +1,5 @@
-import { handleGetUser } from "../resolvers/getUser";
-import { handleGetUserTables } from "../resolvers/getUserTables";
+import { handleGetUser } from "../resolvers/handleUser";
+import { handleGetUserTables } from "../resolvers/handleUserTables";
 
 export default async function handler(req, res) {
   const {

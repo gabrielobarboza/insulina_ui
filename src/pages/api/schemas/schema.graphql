@@ -18,7 +18,22 @@ type UserTables {
   tablesCount: Int
 }
 
+input TableInput {
+  id: ID
+  name: String
+  initial_ui: Int
+  initial_mgdl: Int
+  limit_ui: Int
+  increment_mgdl: Int
+  triggers_mgdl: [Int]
+}
+
 type Query {
   getUser(id: ID!): User!
   getUserTables(id: ID!): UserTables
+}
+
+type Mutation {
+  setUser(id: ID!, email: String!): User!
+  saveUserTable(user: ID!, table: TableInput!): Table
 }

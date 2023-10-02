@@ -1,6 +1,6 @@
-import { createContext, useState, useContext, useEffect } from 'react'
+import { createContext, useState, useContext, useEffect, useCallback } from 'react'
 import { TableList, Table, TableItem } from "@/interfaces";
-import { nanoid } from 'nanoid'
+import { useAuth } from '@/contexts'
 
 import {
   FormControl,
@@ -9,6 +9,9 @@ import {
   MenuItem,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import {
+ useSaveUserTableMutation
+} from '@/api/graphql'
 
 // import { mockedTables } from "@/utils/data"
 type Components = {
@@ -41,8 +44,10 @@ export const CalcTablesProvider = ({ children }) => {
   const [ dataTables, setDataTables ] = useState<TableList|null>(null)
   const [ selectedConfig, setSelectedConfig ] = useState<Table|null>(null)
   const [ tableSelected, setTableSelected ] = useState<Table|null>(null)
+  const { userData } = useAuth()
 
-  // const [ dataTables, setDataTables ] = useState<TableList>(mockedTables)
+  const [saveUserTable, { loading: loadingSaveTable }] = useSaveUserTableMutation()
+
   const getCalcTable = async _id => await _id ? dataTables.find(table => table.id === _id) : null
   const createCalcTable = params => {
     const newTable =  TableItem.create({ ...params})
@@ -50,7 +55,7 @@ export const CalcTablesProvider = ({ children }) => {
     return newTable
   }
 
-  const saveCalcTable = async params => {    
+  const saveCalcTable = useCallback(async params => {    
     const tableList:TableList = dataTables ? [...dataTables] : []
     const _id = params?.id
     let currTable:Table|null = null
@@ -63,16 +68,22 @@ export const CalcTablesProvider = ({ children }) => {
     }
 
     if(!_id) {
-      currTable = TableItem.create({
-        ...params,
-        id: nanoid(),
+      currTable = TableItem.create({ ...params })
+
+      await saveUserTable({
+        variables: {
+          user: userData.id,
+          table: currTable
+        }
+      }).then(data => {
+        console.log('saveUserTable =>', data)
+        tableList.push(currTable)
       })
-      tableList.push(currTable)
     }
 
     await setDataTables(tableList)
     return currTable
-  }
+  }, [dataTables, selectedConfig])
 
   const selectTableConfig = async (_id) => {
     if(_id) {
@@ -133,21 +144,21 @@ export const CalcTablesProvider = ({ children }) => {
   return (
     <>
         <CalcTablesContext.Provider
-            value={{
-              dataTables,
-              getCalcTable,
-              deleteCalcTable,
-              createCalcTable,
-              saveCalcTable,
-              setDataTables,
-              selectTableConfig,
-              selectTable,
-              selectedConfig,
-              tableSelected,
-              components: {
-                TableSelect
-              }
-            }}
+          value={{
+            dataTables,
+            getCalcTable,
+            deleteCalcTable,
+            createCalcTable,
+            saveCalcTable,
+            setDataTables,
+            selectTableConfig,
+            selectTable,
+            selectedConfig,
+            tableSelected,
+            components: {
+              TableSelect
+            }
+          }}
         >
         {children}
         </CalcTablesContext.Provider>

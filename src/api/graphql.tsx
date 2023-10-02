@@ -17,6 +17,24 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  saveUserTable?: Maybe<TableData>;
+  setUser: User;
+};
+
+
+export type MutationSaveUserTableArgs = {
+  table: TableInput;
+  user: Scalars['ID']['input'];
+};
+
+
+export type MutationSetUserArgs = {
+  email: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getUser: User;
@@ -44,6 +62,28 @@ export type Table = {
   triggers_mgdl?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
 };
 
+export type TableData = {
+  __typename?: 'TableData';
+  ID?: Maybe<Scalars['String']['output']>;
+  INCREMENT_MGDL?: Maybe<Scalars['String']['output']>;
+  INITIAL_MGDL?: Maybe<Scalars['String']['output']>;
+  INITIAL_UI?: Maybe<Scalars['String']['output']>;
+  LIMIT_UI?: Maybe<Scalars['String']['output']>;
+  NAME?: Maybe<Scalars['String']['output']>;
+  TRIGGERS_MGDL?: Maybe<Scalars['String']['output']>;
+  USER_ID?: Maybe<Scalars['String']['output']>;
+};
+
+export type TableInput = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  increment_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_ui?: InputMaybe<Scalars['Int']['input']>;
+  limit_ui?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  triggers_mgdl?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
@@ -55,6 +95,22 @@ export type UserTables = {
   tables?: Maybe<Array<Maybe<Table>>>;
   tablesCount?: Maybe<Scalars['Int']['output']>;
 };
+
+export type SaveUserTableMutationVariables = Exact<{
+  user: Scalars['ID']['input'];
+  table: TableInput;
+}>;
+
+
+export type SaveUserTableMutation = { __typename?: 'Mutation', saveUserTable?: { __typename?: 'TableData', ID?: string | null, NAME?: string | null, INITIAL_UI?: string | null, LIMIT_UI?: string | null, INITIAL_MGDL?: string | null, INCREMENT_MGDL?: string | null, TRIGGERS_MGDL?: string | null, USER_ID?: string | null } | null };
+
+export type SetUserMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  email: Scalars['String']['input'];
+}>;
+
+
+export type SetUserMutation = { __typename?: 'Mutation', setUser: { __typename?: 'User', id: string, email: string } };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -71,6 +127,82 @@ export type GetUserTablesQueryVariables = Exact<{
 export type GetUserTablesQuery = { __typename?: 'Query', getUserTables?: { __typename?: 'UserTables', tablesCount?: number | null, tables?: Array<{ __typename?: 'Table', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null> | null } | null };
 
 
+export const SaveUserTableDocument = /*#__PURE__*/ gql`
+    mutation saveUserTable($user: ID!, $table: TableInput!) {
+  saveUserTable(user: $user, table: $table) {
+    ID
+    NAME
+    INITIAL_UI
+    LIMIT_UI
+    INITIAL_MGDL
+    INCREMENT_MGDL
+    TRIGGERS_MGDL
+    USER_ID
+  }
+}
+    `;
+export type SaveUserTableMutationFn = Apollo.MutationFunction<SaveUserTableMutation, SaveUserTableMutationVariables>;
+
+/**
+ * __useSaveUserTableMutation__
+ *
+ * To run a mutation, you first call `useSaveUserTableMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveUserTableMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveUserTableMutation, { data, loading, error }] = useSaveUserTableMutation({
+ *   variables: {
+ *      user: // value for 'user'
+ *      table: // value for 'table'
+ *   },
+ * });
+ */
+export function useSaveUserTableMutation(baseOptions?: Apollo.MutationHookOptions<SaveUserTableMutation, SaveUserTableMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveUserTableMutation, SaveUserTableMutationVariables>(SaveUserTableDocument, options);
+      }
+export type SaveUserTableMutationHookResult = ReturnType<typeof useSaveUserTableMutation>;
+export type SaveUserTableMutationResult = Apollo.MutationResult<SaveUserTableMutation>;
+export type SaveUserTableMutationOptions = Apollo.BaseMutationOptions<SaveUserTableMutation, SaveUserTableMutationVariables>;
+export const SetUserDocument = /*#__PURE__*/ gql`
+    mutation setUser($id: ID!, $email: String!) {
+  setUser(id: $id, email: $email) {
+    id
+    email
+  }
+}
+    `;
+export type SetUserMutationFn = Apollo.MutationFunction<SetUserMutation, SetUserMutationVariables>;
+
+/**
+ * __useSetUserMutation__
+ *
+ * To run a mutation, you first call `useSetUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setUserMutation, { data, loading, error }] = useSetUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useSetUserMutation(baseOptions?: Apollo.MutationHookOptions<SetUserMutation, SetUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetUserMutation, SetUserMutationVariables>(SetUserDocument, options);
+      }
+export type SetUserMutationHookResult = ReturnType<typeof useSetUserMutation>;
+export type SetUserMutationResult = Apollo.MutationResult<SetUserMutation>;
+export type SetUserMutationOptions = Apollo.BaseMutationOptions<SetUserMutation, SetUserMutationVariables>;
 export const GetUserDocument = /*#__PURE__*/ gql`
     query getUser($id: ID!) {
   getUser(id: $id) {
