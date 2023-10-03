@@ -14,6 +14,13 @@ export const formStyles = makeStyles((theme: any) =>
     },
     spaceTop: {
       marginTop: theme.spacing(2),
+    },
+    spaceBottom: {
+      marginBottom: theme.spacing(2),
+    },
+    spaceY: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
     }
   }),
 );

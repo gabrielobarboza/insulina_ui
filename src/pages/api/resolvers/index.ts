@@ -1,6 +1,6 @@
 // import { connections } from "../utils";
 import { getUser, setUser } from './handleUser'
-import { getUserTables, saveUserTable } from './handleUserTables'
+import { getUserTables, saveUserTable, deleteUserTable } from './handleUserTables'
 
 export const resolvers = {
   Query: {
@@ -9,6 +9,7 @@ export const resolvers = {
   },
   Mutation: {
     setUser,
-    saveUserTable
+    saveUserTable,
+    deleteUserTable
   }
 };

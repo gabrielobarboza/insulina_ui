@@ -5,6 +5,7 @@ import {
   CalcTablesProvider,
   SettingsProvider,
   SideBarProvider,
+  LoadingProvider
 } from '@/contexts'
 import Head from 'next/head'
 
@@ -58,6 +59,7 @@ const App = ({ Component, pageProps } : AppProps) => {
       <GoogleOAuthProvider {...OAuthProps} >
         <AuthProvider>
           <ApolloProvider client={apolloClient}>
+            <LoadingProvider>
             <CalcTablesProvider>
               <SettingsProvider>
                 <CalcResultProvider>
@@ -111,6 +113,7 @@ const App = ({ Component, pageProps } : AppProps) => {
                 </CalcResultProvider>
               </SettingsProvider>
             </CalcTablesProvider>
+            </LoadingProvider>
           </ApolloProvider>
         </AuthProvider>        
       </GoogleOAuthProvider>

@@ -36,4 +36,5 @@ type Query {
 type Mutation {
   setUser(id: ID!, email: String!): User!
   saveUserTable(user: ID!, table: TableInput!): Table
+  deleteUserTable(id: ID!): Boolean
 }

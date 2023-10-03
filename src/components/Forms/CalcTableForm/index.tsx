@@ -365,7 +365,7 @@ const CalcTableForm = () => {
                     )}
                 </CardContent>
             </Card>
-            <Grid container spacing={2} className={classes.spaceTop} justifyContent='space-around'>
+            <Grid container spacing={2} className={classes.spaceY} justifyContent='space-around'>
                 <Grid item xs={6} style={{ justifyContent: 'center', display: 'flex' }}>
                     <Button
                         type="button"

@@ -29,7 +29,6 @@ export async function handleGetUserTables(id: string): Promise<UserTables> {
     const tablesRows = await TABLES.getRows();
     const userTablesRows: any[] = tablesRows.filter(r => r.get('USER_ID') === id) || []
     const tables: PartialTableList = userTablesRows.map((r) => parseTableData(r))
-
     return {
       tables,
       tablesCount: tables.length
@@ -46,7 +45,7 @@ export async function saveUserTable(_, { user, table: { id, ...table} }): Promis
     const TABLES = await tableSheet()
     const tablesRows = await TABLES.getRows();
     const select = id ? tablesRows.find(r => r.get('ID') === id) : null
-
+    
     if(select) {
       await parseTableInput(table, select)
       return parseTableData(select)
@@ -64,6 +63,24 @@ export async function saveUserTable(_, { user, table: { id, ...table} }): Promis
     return {}
   }
 }
+
+export async function deleteUserTable(_, { id }): Promise<Boolean> {
+  try {
+    const TABLES = await tableSheet()
+    const tablesRows = await TABLES.getRows();
+    const select = id ? tablesRows.find(r => r.get('ID') === id) : null
+    
+    if(select) {
+      await select.delete()
+      return true
+    } else
+      return false
+  } catch (_err) {
+    // throw _err;
+    return false
+  }
+}
+
 
 export async function getUserTables(_, args) {
   try {

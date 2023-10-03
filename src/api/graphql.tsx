@@ -19,8 +19,14 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteUserTable?: Maybe<Scalars['Boolean']['output']>;
   saveUserTable?: Maybe<Table>;
   setUser: User;
+};
+
+
+export type MutationDeleteUserTableArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -84,6 +90,13 @@ export type UserTables = {
   tablesCount?: Maybe<Scalars['Int']['output']>;
 };
 
+export type DeleteUserTableMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteUserTableMutation = { __typename?: 'Mutation', deleteUserTable?: boolean | null };
+
 export type SaveUserTableMutationVariables = Exact<{
   user: Scalars['ID']['input'];
   table: TableInput;
@@ -115,6 +128,37 @@ export type GetUserTablesQueryVariables = Exact<{
 export type GetUserTablesQuery = { __typename?: 'Query', getUserTables?: { __typename?: 'UserTables', tablesCount?: number | null, tables?: Array<{ __typename?: 'Table', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null> | null } | null };
 
 
+export const DeleteUserTableDocument = /*#__PURE__*/ gql`
+    mutation deleteUserTable($id: ID!) {
+  deleteUserTable(id: $id)
+}
+    `;
+export type DeleteUserTableMutationFn = Apollo.MutationFunction<DeleteUserTableMutation, DeleteUserTableMutationVariables>;
+
+/**
+ * __useDeleteUserTableMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserTableMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserTableMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserTableMutation, { data, loading, error }] = useDeleteUserTableMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteUserTableMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserTableMutation, DeleteUserTableMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserTableMutation, DeleteUserTableMutationVariables>(DeleteUserTableDocument, options);
+      }
+export type DeleteUserTableMutationHookResult = ReturnType<typeof useDeleteUserTableMutation>;
+export type DeleteUserTableMutationResult = Apollo.MutationResult<DeleteUserTableMutation>;
+export type DeleteUserTableMutationOptions = Apollo.BaseMutationOptions<DeleteUserTableMutation, DeleteUserTableMutationVariables>;
 export const SaveUserTableDocument = /*#__PURE__*/ gql`
     mutation saveUserTable($user: ID!, $table: TableInput!) {
   saveUserTable(user: $user, table: $table) {

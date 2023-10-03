@@ -9,7 +9,7 @@ import { dataToken } from '@/utils'
 import { TableList, AppConfig } from "@/interfaces"
 import { isEqual } from 'lodash'
 import { useLocalStorage } from '@/hooks'
-import { useCalcTables } from '@/contexts'
+import { useCalcTables, useLoading } from '@/contexts'
 
 import { parseDataTable } from '@/utils'
 import { useAuth } from '@/contexts'
@@ -22,7 +22,8 @@ import {
 type SettingsContextType = {
     token: string,
     configToken: string
-    storedTables: TableList
+    storedTables: TableList,
+    loadingConfig: boolean
 }
   
 export const SettingsContext = createContext({} as SettingsContextType);
@@ -32,8 +33,9 @@ export const useSettings = () => useContext(SettingsContext)
 const SettingsProvider = ({ children }) => {
   const [ token, setToken ] = useState<string>('')
   const [ storedToken, setStoredToken ] = useLocalStorage<string>(dataToken.key, '')
-  const { dataTables, setDataTables } = useCalcTables()
-    
+  const { dataTables, setDataTables, loadingTables } = useCalcTables()
+  const { setLoading, loading} = useLoading()
+
   const [ config, setConfig ] = useState<AppConfig>({
     token,
     dataTables
@@ -51,10 +53,6 @@ const SettingsProvider = ({ children }) => {
   useEffect(() => {
     if(!token && storedToken !== token) setToken(storedToken)
   }, [storedToken])
-
-  useEffect(() => {
-    console.log('storedTables ->', storedTables)
-  }, [storedTables])
 
   useEffect(() => {
     if(token) {
@@ -97,7 +95,7 @@ const SettingsProvider = ({ children }) => {
   })
   const {
     data: tablesQuery,
-    loading: loadingTables
+    loading: loadingUserTables
   } = useGetUserTablesQuery({
     variables: {
       id: userData.id
@@ -105,14 +103,10 @@ const SettingsProvider = ({ children }) => {
     skip: !userData.id
   })
   const [setUser, { loading: loadingSetUser }] = useSetUserMutation()
-  // console.log('userQuery ==>', userQuery, loadingUser)
-  // console.log('tablesQuery ==>', tablesQuery, loadingTables)
-  // console.log('parsed data ==>', tablesQuery?.getUserTables?.tables?.map(t => parseDataTable(t)))
-  // console.log('dataTables ==>', dataTables)
 
-  const loading = useMemo(
-    () => loadingSetUser|| loadingUser || loadingTables,
-  [loadingSetUser, loadingUser, loadingTables])
+  const loadingConfig = useMemo(
+    () => loadingTables || loadingSetUser || loadingUser || loadingUserTables,
+  [loadingTables, loadingSetUser, loadingUser, loadingUserTables])
 
   useEffect(() => {
     if(
@@ -131,17 +125,19 @@ const SettingsProvider = ({ children }) => {
   }, [userQuery, loadingUser, callUser])
 
   useEffect(() => {
-    if(tablesQuery?.getUserTables?.tables?.length && !loading){
+    if(tablesQuery?.getUserTables?.tables?.length && !loadingConfig){
       setDataTables(tablesQuery.getUserTables.tables.map(t => parseDataTable(t)))
     }
-  }, [tablesQuery, loading])
+  }, [tablesQuery, loadingConfig])
 
-  
+  useEffect(() => {
+    if(loading !== loadingConfig) setLoading(loadingConfig)
+  }, [loadingConfig])  
 
   return (
     <>
         <SettingsContext.Provider
-          value={{ token, configToken, storedTables }}
+          value={{ token, configToken, storedTables, loadingConfig }}
         >
         {children}
         </SettingsContext.Provider>

@@ -75,10 +75,6 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     googleLogout()
   }
 
-  useEffect(() => {
-    console.log('userData ->', userData, inuiToken ? jwtDecode(inuiToken) : {})
-  }, [userData, inuiToken])
-
   return (
     <AuthContext.Provider
       value={{

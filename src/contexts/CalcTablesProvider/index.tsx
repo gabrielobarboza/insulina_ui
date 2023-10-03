@@ -1,4 +1,11 @@
-import { createContext, useState, useContext, useEffect, useCallback } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { TableList, Table, TableItem } from "@/interfaces";
 import { useAuth } from '@/contexts'
 
@@ -10,7 +17,8 @@ import {
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
- useSaveUserTableMutation
+  useDeleteUserTableMutation,
+  useSaveUserTableMutation
 } from '@/api/graphql'
 
 // import { mockedTables } from "@/utils/data"
@@ -24,13 +32,14 @@ interface TableSelectProps extends React.Component {
 
 type CalcTablesContextType = {
   dataTables: TableList,
-  getCalcTable: (_id?:string) => Promise<Table|null>,
-  deleteCalcTable: (_id?:string) => void,
   createCalcTable: (table:Table) => Table,
+  deleteCalcTable: (_id?:string) => void,
+  getCalcTable: (_id?:string) => Promise<Table|null>,
+  loadingTables: boolean,
   saveCalcTable: (table:Table) => Promise<Table>,
   setDataTables: (tableList:TableList) => any,
   selectTableConfig: (_id?:string) => Promise<Table|null>,
-  selectTable: (_id?:string) => Promise<Table|null>,  
+  selectTable: (_id?:string) => Promise<Table|null>,
   selectedConfig: Table,
   tableSelected: Table,
   components: Components
@@ -47,6 +56,7 @@ export const CalcTablesProvider = ({ children }) => {
   const { userData } = useAuth()
 
   const [saveUserTable, { loading: loadingSaveTable }] = useSaveUserTableMutation()
+  const [deleteUserTable, { loading: loadingDeleteTable }] = useDeleteUserTableMutation()
 
   const getCalcTable = async _id => await _id ? dataTables.find(table => table.id === _id) : null
   const createCalcTable = params => {
@@ -69,7 +79,6 @@ export const CalcTablesProvider = ({ children }) => {
       currTable = TableItem.create({ ...params })
     }
 
-    console.log('currTable =>', currTable)
     const valuesList = [...currTable?.values?.list]
 
     await saveUserTable({
@@ -125,10 +134,18 @@ export const CalcTablesProvider = ({ children }) => {
     }
   }
 
-  const deleteCalcTable = (_id) => {
-    if(_id)
+  const deleteCalcTable = async (id) => {
+    if(id)
       setSelectedConfig(null)
-      setDataTables(dataTables.filter(({ id }) => (_id !== id)))
+
+      await deleteUserTable({
+        variables: {
+          id
+        }
+      }).then(data => {
+        if(data?.data?.deleteUserTable)
+          setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
+      })     
   }
 
   const TableSelect = ({ helperText } : TableSelectProps) => {
@@ -158,15 +175,20 @@ export const CalcTablesProvider = ({ children }) => {
     </FormControl>
     )
   }
-  
+
+  const loadingTables = useMemo(
+    () => loadingSaveTable|| loadingDeleteTable,
+  [loadingSaveTable, loadingDeleteTable])
+
   return (
     <>
         <CalcTablesContext.Provider
           value={{
             dataTables,
-            getCalcTable,
-            deleteCalcTable,
             createCalcTable,
+            deleteCalcTable,
+            getCalcTable,
+            loadingTables,
             saveCalcTable,
             setDataTables,
             selectTableConfig,

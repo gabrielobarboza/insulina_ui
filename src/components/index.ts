@@ -6,6 +6,7 @@ import Helper from './Helper'
 import SideBar from './SideBar'
 import ResultScreen from './ResultScreen'
 import Authenticator from './Authenticator'
+import Loading from './Loading'
 
 export {
     AppBar,
@@ -15,6 +16,7 @@ export {
     CalcTableList,
     CalcTableSettings,
     Helper,
+    Loading,
     SideBar,
     ResultScreen,
 }
