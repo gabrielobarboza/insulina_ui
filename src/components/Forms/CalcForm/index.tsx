@@ -39,7 +39,7 @@ const CalcForm = () => {
         <ResultScreen table={tableSelected} mgdL={mgdL}/> 
     ) : (
         <form onSubmit={handleSubmit} className={classes.root} autoComplete="off">
-            <Grid container spacing={2} justifyContent={'center'}>
+            <Grid container spacing={2} justifyContent={'center'} className={classes.spaceTop}>
                 <Grid item xs={8}>
                     <TableSelect
                         helperText="Selecione uma tabela de cálaculo para verificar quantas unidades de insulina devem ser administradas."

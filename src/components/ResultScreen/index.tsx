@@ -26,12 +26,13 @@ const useStyles = makeStyles((theme: any) => {
     return createStyles({
       title:{
         color: theme.palette.primary.main,
+        marginTop: theme.spacing(4)
       },
       result: {
         color: theme.palette.primary.main,
         fontWeight: 900,
         borderBottom: `10px solid ${theme.palette.primary.main}`,
-        padding: `${theme.spacing(2)} ${theme.spacing(4)}`
+        padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
       },
       arrow: {
         fill: theme.palette.primary.main,
