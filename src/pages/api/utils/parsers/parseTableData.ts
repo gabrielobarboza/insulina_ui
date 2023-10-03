@@ -50,7 +50,7 @@ export const parseTableInput = async (table: Partial<Table>, curr?: SpreadsheetT
   const INITIAL_MGDL: string = table.initial_mgdl?.toString()
   const LIMIT_UI: string = table.limit_ui?.toString()
   const INCREMENT_MGDL: string = table.increment_mgdl?.toString()
-  const TRIGGERS_MGDL: string = table?.triggers_mgdl?.join()
+  const TRIGGERS_MGDL: string = `${table?.triggers_mgdl?.join()},`
 
   const input: TableInputData = {
     ...(NAME ? { NAME } : {}),

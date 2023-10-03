@@ -1,5 +1,5 @@
 import { parseDataTable } from "@/utils";
-import { TableInputData, connections, parseTableData, parseTableInput } from "../utils";
+import { connections, parseTableData, parseTableInput } from "../utils";
 import { Table } from "@/interfaces";
 
 const dataTables = connections.tables;
@@ -45,7 +45,6 @@ export async function saveUserTable(_, { user, table: { id, ...table} }): Promis
     const TABLES = await tableSheet()
     const tablesRows = await TABLES.getRows();
     const select = id ? tablesRows.find(r => r.get('ID') === id) : null
-    
     if(select) {
       await parseTableInput(table, select)
       return parseTableData(select)

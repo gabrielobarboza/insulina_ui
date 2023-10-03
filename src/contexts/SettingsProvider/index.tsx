@@ -138,7 +138,6 @@ const SettingsProvider = ({ children }) => {
 
   const handlers = {
     saveCalcTable: useCallback(({ status }) => {
-      console.log('Handler saveCalcTable =>', status)
       if(status) refetchTables()
     },[refetchTables])
   }
