@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme: any) =>
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
+    },
+    spaceY: {
+        padding: `${theme.spacing(2)} 0`,
     }
   }),
 );
@@ -86,8 +89,8 @@ const SideBar = () => {
                 ) : (
                     <>
                         <CalcTableSettings/>
-                        <Grid item xs={12}>
-                            <Button
+                        <Grid item xs={12} className={classes.spaceY}>
+                            <Button                               
                                 type="button"
                                 variant="contained"
                                 color="primary"

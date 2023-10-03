@@ -145,7 +145,6 @@ export const CalcTablesProvider = ({ children }) => {
           id
         }
       }).then(data => {
-        console.log(data)
         if(data?.data?.deleteUserTable)
           setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
         sendMessage('saveCalcTable', { status: true }) 
