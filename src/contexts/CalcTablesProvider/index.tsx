@@ -20,6 +20,7 @@ import {
   useDeleteUserTableMutation,
   useSaveUserTableMutation
 } from '@/api/graphql'
+import { sendMessage } from '@/utils';
 
 // import { mockedTables } from "@/utils/data"
 type Components = {
@@ -106,9 +107,13 @@ export const CalcTablesProvider = ({ children }) => {
         })
       else
         tableList[tableIndex] = { ...currTable }
+      
+      sendMessage('saveCalcTable', { status: true })      
+    }).catch(() => {      
+      sendMessage('saveCalcTable', { status: false })
     })
 
-    await setDataTables(tableList)
+    setDataTables(tableList)
     return currTable
   }, [dataTables, selectedConfig])
 

@@ -1,9 +1,11 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import React,{ useState, useCallback, useEffect, useMemo } from 'react'
 import { useCalcTables } from '@/contexts'
 import { Table } from "@/interfaces"
 import { isEqual } from 'lodash'
 import { formStyles } from '../formStyles';
 import { Helper } from '@/components';
+import { DisabledByDefault as DisabledByDefaultIcon  } from '@mui/icons-material';
+import { common } from '@mui/material/colors';
 
 import {
     Button,
@@ -14,6 +16,7 @@ import {
     FormGroup,
     FormHelperText,
     Grid,
+    IconButton,
     Switch,
     TextField,
     Typography
@@ -139,6 +142,14 @@ const CalcTableForm = () => {
             ...prev,
             0
         ])
+    }
+
+    const removeMgdlAditionalValue = (index) => {
+        setAditionalValues(prev => {
+            const _values = [...prev]
+            _values.splice(index, 1)
+            return _values
+        })
     }
 
     const switchUseMgdlAditionals = useCallback(() => {
@@ -323,18 +334,26 @@ const CalcTableForm = () => {
                     {useMgdlAditional && (
                         <>
                             {mgdlAditionalValues.map((value, i) => (
-                                    <TextField
-                                        key={`value_${i}`}
-                                        label="Valor Adicional"
-                                        placeholder="mg/dL"
-                                        type="number"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        variant="outlined"
-                                        value={value||''}
-                                        onChange={e => handleAditionalValue(i, e.target.value)}
-                                    />
+                                    <div key={`value_${i}`} style={{display: 'flex', alignItems: 'center'}}>
+                                        <TextField                                            
+                                            label="Valor Adicional"
+                                            placeholder="mg/dL"
+                                            type="number"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            variant="outlined"
+                                            value={value||''}
+                                            onChange={e => handleAditionalValue(i, e.target.value)}
+                                        />
+                                        <IconButton
+                                            aria-label="remove"
+                                            onClick={() => removeMgdlAditionalValue(i)}
+                                            className={i ? classes.spaceTop : classes.hidden}
+                                        >
+                                            <DisabledByDefaultIcon  style={{ color: common['black'] }} />
+                                        </IconButton>
+                                    </div>
                                 )
                             )}
                             <Button

@@ -21,6 +21,10 @@ export const formStyles = makeStyles((theme: any) =>
     spaceY: {
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
+    },
+    hidden: {
+      pointerEvents: 'none',
+      opacity: 0
     }
   }),
 );

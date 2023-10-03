@@ -1,9 +1,10 @@
 import {
   createContext,
-  useState,
+  useCallback,
   useContext,
   useEffect,
-  useMemo
+  useMemo,
+  useState
 } from 'react'
 import { dataToken } from '@/utils'
 import { TableList, AppConfig } from "@/interfaces"
@@ -95,6 +96,7 @@ const SettingsProvider = ({ children }) => {
   })
   const {
     data: tablesQuery,
+    refetch: refetchTables,
     loading: loadingUserTables
   } = useGetUserTablesQuery({
     variables: {
@@ -132,7 +134,27 @@ const SettingsProvider = ({ children }) => {
 
   useEffect(() => {
     if(loading !== loadingConfig) setLoading(loadingConfig)
-  }, [loadingConfig])  
+  }, [loadingConfig])
+
+  const handlers = {
+    saveCalcTable: useCallback(({ status }) => {
+      console.log('Handler saveCalcTable =>', status)
+      if(status) refetchTables()
+    },[refetchTables])
+  }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined')
+      window.addEventListener(
+        'message',
+        (event: MessageEvent<{ type: string; message: string }>) => {
+          if (event.origin !== window.origin) return
+          if (typeof event.data !== 'object') return
+          if (!event.data.type) return
+          if (handlers[event.data.type]) handlers[event.data.type](event.data)
+        }
+      )
+  }, [])
 
   return (
     <>
