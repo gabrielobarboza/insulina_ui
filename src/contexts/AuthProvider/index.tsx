@@ -63,17 +63,22 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     console.error(error)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUserData({
       email: '',
       picture: '',
       name: ''
     })
-
-    setToken('')
-    setTokenExp(0)
-    googleLogout()
+    
+    setTimeout(() => {
+      setTokenExp(0)
+      setToken('')
+    }, 1000)
   }
+
+  useEffect(() => {
+    if(!inuiToken) googleLogout()
+  }, [inuiToken])
 
   return (
     <AuthContext.Provider

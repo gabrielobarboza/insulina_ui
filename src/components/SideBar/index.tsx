@@ -13,7 +13,7 @@ import {
 import { Close as CloseIcon, ExitToApp as ExitIcon } from '@mui/icons-material';
 import { common } from '@mui/material/colors';
 
-import { useCalcTables, useSidebar } from '@/contexts';
+import { useCalcTables, useLoading, useSettings, useSidebar } from '@/contexts';
 
 import { CalcTableForm } from '../Forms'
 import CalcTableSettings from '../CalcTableSettings'
@@ -37,11 +37,13 @@ const useStyles = makeStyles((theme: any) =>
 
 const SideBar = () => {
     const { handleLogout, authorized } = useAuth()
+    const { setLoading } = useLoading()
     const classes = useStyles();
     const [ sidebarTitle, setSidebarTitle ] = useState<string>('')
 
     const { viewSidebar, setViewSidebar } = useSidebar();
     const { selectedConfig, selectTableConfig } = useCalcTables()
+    const { cleanStoredToken } = useSettings();
 
     const handleCose = () => {
         setViewSidebar(false)
@@ -49,6 +51,8 @@ const SideBar = () => {
     }
 
     const onLogout = () => {
+        setLoading(true)
+        cleanStoredToken()
         handleCose()
         handleLogout()
     }

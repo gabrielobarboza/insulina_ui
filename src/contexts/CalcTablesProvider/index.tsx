@@ -99,7 +99,7 @@ export const CalcTablesProvider = ({ children }) => {
         }
       }
     }).then(data => {
-      const tableIndex = dataTables.findIndex(({ id }) => id === currTable.id)
+      const tableIndex = (dataTables || [])?.findIndex(({ id }) => id === currTable.id)
       if(tableIndex === -1)
         tableList.push({
           ...currTable,
@@ -107,12 +107,9 @@ export const CalcTablesProvider = ({ children }) => {
         })
       else
         tableList[tableIndex] = { ...currTable }
-      
-      sendMessage('saveCalcTable', { status: true })      
-    }).catch(() => {      
-      sendMessage('saveCalcTable', { status: false })
     })
 
+    sendMessage('saveCalcTable', { status: true })  
     setDataTables(tableList)
     return currTable
   }, [dataTables, selectedConfig])
@@ -148,8 +145,10 @@ export const CalcTablesProvider = ({ children }) => {
           id
         }
       }).then(data => {
+        console.log(data)
         if(data?.data?.deleteUserTable)
           setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
+        sendMessage('saveCalcTable', { status: true }) 
       })     
   }
 

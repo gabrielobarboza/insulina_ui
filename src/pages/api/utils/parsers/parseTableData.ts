@@ -58,7 +58,7 @@ export const parseTableInput = async (table: Partial<Table>, curr?: SpreadsheetT
     ...(INITIAL_MGDL ? { INITIAL_MGDL } : {}),
     ...(LIMIT_UI ? { LIMIT_UI } : {}),
     ...(INCREMENT_MGDL ? { INCREMENT_MGDL } : {}),
-    ...(TRIGGERS_MGDL ? { TRIGGERS_MGDL } : {}),
+    ...(TRIGGERS_MGDL && TRIGGERS_MGDL !== ','? { TRIGGERS_MGDL } : {}),
   }
 
   if(!curr) {

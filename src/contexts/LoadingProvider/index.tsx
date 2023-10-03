@@ -31,7 +31,7 @@ const LoadingProvider = ({ children }) => {
               pointerEvents: loading ? 'initial' : 'none',
               position: 'fixed',
               top: 0,
-              transition: 'all 0.5s ease-in-out',
+              transition: 'all 0.25s ease-in-out',
               width: '100vw',
               zIndex: 1300
             }}>

@@ -24,7 +24,8 @@ type SettingsContextType = {
     token: string,
     configToken: string
     storedTables: TableList,
-    loadingConfig: boolean
+    loadingConfig: boolean,
+    cleanStoredToken: () => void
 }
   
 export const SettingsContext = createContext({} as SettingsContextType);
@@ -36,6 +37,10 @@ const SettingsProvider = ({ children }) => {
   const [ storedToken, setStoredToken ] = useLocalStorage<string>(dataToken.key, '')
   const { dataTables, setDataTables, loadingTables } = useCalcTables()
   const { setLoading, loading} = useLoading()
+
+  const cleanStoredToken = () => {
+    setStoredToken('')
+  }
 
   const [ config, setConfig ] = useState<AppConfig>({
     token,
@@ -102,7 +107,8 @@ const SettingsProvider = ({ children }) => {
     variables: {
       id: userData.id
     },
-    skip: !userData.id
+    skip: !userData.id,
+    fetchPolicy: 'no-cache'
   })
   const [setUser, { loading: loadingSetUser }] = useSetUserMutation()
 
@@ -137,8 +143,8 @@ const SettingsProvider = ({ children }) => {
   }, [loadingConfig])
 
   const handlers = {
-    saveCalcTable: useCallback(({ status }) => {
-      if(status) refetchTables()
+    saveCalcTable: useCallback(() => {
+      refetchTables()
     },[refetchTables])
   }
 
@@ -158,7 +164,13 @@ const SettingsProvider = ({ children }) => {
   return (
     <>
         <SettingsContext.Provider
-          value={{ token, configToken, storedTables, loadingConfig }}
+          value={{
+            token,
+            configToken,
+            storedTables,
+            loadingConfig,
+            cleanStoredToken
+          }}
         >
         {children}
         </SettingsContext.Provider>
