@@ -21,11 +21,11 @@ type UserDocuments {
 input DocumentInput {
   id: ID
   name: String
-  initial_ui: String
-  initial_mgdl: String
-  limit_ui: String
-  increment_mgdl: String
-  triggers_mgdl: [String]
+  initial_ui: Int
+  initial_mgdl: Int
+  limit_ui: Int
+  increment_mgdl: Int
+  triggers_mgdl: [Int]
 }
 
 type Query {
