@@ -1,7 +1,7 @@
-import { TableList } from '@/interfaces'
+import { DocumentList } from '@/interfaces'
 
-/** Dummy Table data. */
-export const mockedTables: TableList = [
+/** Dummy Document data. */
+export const mockedDocuments: DocumentList = [
   {
     id: "1010",
     name: "Café da Manha",
