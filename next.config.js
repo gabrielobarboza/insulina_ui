@@ -27,6 +27,7 @@ module.exports = withPWA(
     build: {
       env: {
         NEXT_PUBLIC_APP_KEY: process.env.NEXT_PUBLIC_APP_KEY,
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
         NEXT_PUBLIC_OAUTH_ID: process.env.NEXT_PUBLIC_OAUTH_ID,
         NODE_ENV: process.env.NODE_ENV
       },
