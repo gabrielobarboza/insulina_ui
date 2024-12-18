@@ -7,7 +7,7 @@ import {
 
 import { useCalcResult } from '@/contexts'
 import CalcTableList from '../CalcTableList';
-import { Table } from '@/interfaces';
+import { Document } from '@/interfaces';
 import {
   Button,
   Container,
@@ -18,7 +18,7 @@ import {
 import { makeStyles, createStyles } from '@mui/styles';
 
 interface ResultScreenProps {
-  table: Table,
+  table: Document,
   mgdL: string
 }
 

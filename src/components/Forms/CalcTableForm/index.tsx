@@ -1,6 +1,6 @@
 import React,{ useState, useCallback, useEffect, useMemo } from 'react'
 import { useCalcTables } from '@/contexts'
-import { Table } from "@/interfaces"
+import { Document } from "@/interfaces"
 import { isEqual } from 'lodash'
 import { formStyles } from '../formStyles';
 import { Helper } from '@/components';
@@ -69,7 +69,7 @@ const CalcTableForm = () => {
 
     const currentTable = useMemo(() => {
         const { id } = table
-        const calcTable:Table = {
+        const calcTable:Document = {
             id,
             name,
             units,

@@ -1,7 +1,7 @@
 import jwt from 'jwt-simple'
-import { enviroments as env } from './enviroments'
+import { config } from 'config'
 
-const key = env.getAppKey()
+const key = config.AppKey
 export const dataToken = {
     key,
     gen: config => jwt.encode(config, key),

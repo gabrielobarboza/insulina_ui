@@ -1,5 +1,5 @@
-mutation saveUserTable($user: ID!, $table: TableInput!){
-    saveUserTable(user: $user, table: $table){
+mutation saveUserDocument($user: ID!, $document: DocumentInput!){
+    saveUserDocument(user: $user, document: $document){
         id
         name
         initial_ui

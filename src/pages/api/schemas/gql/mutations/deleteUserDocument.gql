@@ -1,0 +1,3 @@
+mutation deleteUserDocument($id: ID!, $user: ID!){
+    deleteUserDocument(id: $id, user: $user)
+}

@@ -1,7 +1,7 @@
-import { Table } from "@/interfaces";
+import { Document } from "@/interfaces";
 
 export interface ValidateUnitsInput {
-    (curr: number, table: Table) : Promise<number>
+    (curr: number, table: Document) : Promise<number>
 }
 
 export const validateUnits: ValidateUnitsInput = async (curr, { units, limit, values: { list = [], custom } }) => {

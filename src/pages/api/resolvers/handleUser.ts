@@ -1,28 +1,55 @@
-import { connections, parseUser } from "../utils";
+// import { randomUUID } from 'crypto';
+import { marshall } from "@aws-sdk/util-dynamodb";
+import {
+  client,
+  parseUser,
+  PutOrUpdate
+} from "../utils";
+import { GetItemCommand } from '@aws-sdk/client-dynamodb';
 
-const dataUser = connections.users;
+const dataUserInput = payload => ({
+  TableName: process.env.AWS_USER_TABLE,
+  ...payload
+});
 
 const defaultUserData = {
   id: '',
   email: ''
 }
 
-async function userSheet(){
-  await dataUser.loadInfo(true);
-  const { USERS } = dataUser.sheetsByTitle;
-  return USERS
-}
-
 export async function handleGetUser(id: string) {
   try {
     if(!id) return defaultUserData
-    const USERS = await userSheet()
-    const usersRows = await USERS.getRows();
-   
-    const userRow = usersRows.find(r => r.get('ID') === id)
+    const { Item } = await client.send(
+      new GetItemCommand(dataUserInput({
+        Key: marshall({
+          uid: id
+        })
+      }))
+    );
     
-    return parseUser(userRow)
+    return parseUser(Item)
   } catch(err) {
+    // throw err;
+    console.error(err)
+    throw err;
+  }
+}
+
+export async function handleSetUser({ id, email }: Record<'id'|'email', string>) {
+  try {
+    if(!id || !email) return {}
+    await PutOrUpdate(dataUserInput({
+      Item: {
+        uid: id,
+        email
+      },
+      primaryKey: 'uid'
+    }));
+
+    return { id, email };
+  } catch(err) {
+    // throw err;
     console.error(err)
     throw err;
   }
@@ -33,29 +60,17 @@ export async function getUser(_, { id }) {
     const data = await handleGetUser(id)
     return data;
   } catch (_err) {
-    // throw _err;
-    return {
-      id: '',
-      email: ''
-    }
+    console.error(_err)
+    return defaultUserData
   }
 }
 
-
 export async function setUser(_, { id, email }) {
   try {
-    if(!id || !email) return {}
-    const USERS = await userSheet()
-    await USERS.addRow({
-      ID: id,
-      EMAIL: email
-    })
-    return {
-      id,
-      email
-    };
+    const data = await handleSetUser({ id, email })
+    return data;
   } catch (_err) {
-    // throw _err;
+    console.error(_err)
     return defaultUserData
   }
 }

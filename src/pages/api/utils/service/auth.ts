@@ -4,6 +4,6 @@ import { JWT } from 'google-auth-library';
 // see "Authentication" section in docs for more info
 export const serviceAccountAuth = new JWT({
   email: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  key: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY,//.replace(/\\n/gm, '\n')
-  scopes: [ 'https://www.googleapis.com/auth/spreadsheets']
+  key: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY,
+  scopes: [ 'https://www.googleapis.com/auth/spreadsheets' ]
 });

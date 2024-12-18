@@ -3,7 +3,7 @@ type User {
   email: String!
 }
 
-type Table {
+type Document {
   id: ID!
   name: String!
   initial_ui: Int!
@@ -13,12 +13,12 @@ type Table {
   triggers_mgdl: [Int]
 }
 
-type UserTables {
-  tables: [Table]
-  tablesCount: Int
+type UserDocuments {
+  documents: [Document]
+  documentsCount: Int
 }
 
-input TableInput {
+input DocumentInput {
   id: ID
   name: String
   initial_ui: Int
@@ -30,11 +30,11 @@ input TableInput {
 
 type Query {
   getUser(id: ID!): User!
-  getUserTables(id: ID!): UserTables
+  getUserDocuments(id: ID!): UserDocuments
 }
 
 type Mutation {
   setUser(id: ID!, email: String!): User!
-  saveUserTable(user: ID!, table: TableInput!): Table
-  deleteUserTable(id: ID!): Boolean
+  saveUserDocument(user: ID!, document: DocumentInput!): Document
+  deleteUserDocument(id: ID!, user: ID!): Boolean
 }

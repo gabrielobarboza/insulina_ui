@@ -3,11 +3,12 @@ import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client'
 import { createUploadLink } from 'apollo-upload-client'
 import { useMemo } from 'react'
 import { setContext } from '@apollo/client/link/context'
+import { config } from 'config'
 
 export let apolloClient
 
 const uploadLink = createUploadLink({
-  uri: process.env.NEXT_PUBLIC_API_URL
+  uri: config.ApiUrl
 })
 
 const authLink = setContext((_, { headers }) => {

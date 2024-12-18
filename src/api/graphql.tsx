@@ -17,21 +17,43 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Document = {
+  __typename?: 'Document';
+  id: Scalars['ID']['output'];
+  increment_mgdl?: Maybe<Scalars['Int']['output']>;
+  initial_mgdl: Scalars['Int']['output'];
+  initial_ui: Scalars['Int']['output'];
+  limit_ui?: Maybe<Scalars['Int']['output']>;
+  name: Scalars['String']['output'];
+  triggers_mgdl?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+};
+
+export type DocumentInput = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  increment_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_ui?: InputMaybe<Scalars['Int']['input']>;
+  limit_ui?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  triggers_mgdl?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  deleteUserTable?: Maybe<Scalars['Boolean']['output']>;
-  saveUserTable?: Maybe<Table>;
+  deleteUserDocument?: Maybe<Scalars['Boolean']['output']>;
+  saveUserDocument?: Maybe<Document>;
   setUser: User;
 };
 
 
-export type MutationDeleteUserTableArgs = {
+export type MutationDeleteUserDocumentArgs = {
   id: Scalars['ID']['input'];
+  user: Scalars['ID']['input'];
 };
 
 
-export type MutationSaveUserTableArgs = {
-  table: TableInput;
+export type MutationSaveUserDocumentArgs = {
+  document: DocumentInput;
   user: Scalars['ID']['input'];
 };
 
@@ -44,7 +66,7 @@ export type MutationSetUserArgs = {
 export type Query = {
   __typename?: 'Query';
   getUser: User;
-  getUserTables?: Maybe<UserTables>;
+  getUserDocuments?: Maybe<UserDocuments>;
 };
 
 
@@ -53,29 +75,8 @@ export type QueryGetUserArgs = {
 };
 
 
-export type QueryGetUserTablesArgs = {
+export type QueryGetUserDocumentsArgs = {
   id: Scalars['ID']['input'];
-};
-
-export type Table = {
-  __typename?: 'Table';
-  id: Scalars['ID']['output'];
-  increment_mgdl?: Maybe<Scalars['Int']['output']>;
-  initial_mgdl: Scalars['Int']['output'];
-  initial_ui: Scalars['Int']['output'];
-  limit_ui?: Maybe<Scalars['Int']['output']>;
-  name: Scalars['String']['output'];
-  triggers_mgdl?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
-};
-
-export type TableInput = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-  increment_mgdl?: InputMaybe<Scalars['Int']['input']>;
-  initial_mgdl?: InputMaybe<Scalars['Int']['input']>;
-  initial_ui?: InputMaybe<Scalars['Int']['input']>;
-  limit_ui?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  triggers_mgdl?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
 };
 
 export type User = {
@@ -84,26 +85,27 @@ export type User = {
   id: Scalars['ID']['output'];
 };
 
-export type UserTables = {
-  __typename?: 'UserTables';
-  tables?: Maybe<Array<Maybe<Table>>>;
-  tablesCount?: Maybe<Scalars['Int']['output']>;
+export type UserDocuments = {
+  __typename?: 'UserDocuments';
+  documents?: Maybe<Array<Maybe<Document>>>;
+  documentsCount?: Maybe<Scalars['Int']['output']>;
 };
 
-export type DeleteUserTableMutationVariables = Exact<{
+export type DeleteUserDocumentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
-}>;
-
-
-export type DeleteUserTableMutation = { __typename?: 'Mutation', deleteUserTable?: boolean | null };
-
-export type SaveUserTableMutationVariables = Exact<{
   user: Scalars['ID']['input'];
-  table: TableInput;
 }>;
 
 
-export type SaveUserTableMutation = { __typename?: 'Mutation', saveUserTable?: { __typename?: 'Table', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null };
+export type DeleteUserDocumentMutation = { __typename?: 'Mutation', deleteUserDocument?: boolean | null };
+
+export type SaveUserDocumentMutationVariables = Exact<{
+  user: Scalars['ID']['input'];
+  document: DocumentInput;
+}>;
+
+
+export type SaveUserDocumentMutation = { __typename?: 'Mutation', saveUserDocument?: { __typename?: 'Document', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null };
 
 export type SetUserMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -120,48 +122,49 @@ export type GetUserQueryVariables = Exact<{
 
 export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, email: string } };
 
-export type GetUserTablesQueryVariables = Exact<{
+export type GetUserDocumentsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetUserTablesQuery = { __typename?: 'Query', getUserTables?: { __typename?: 'UserTables', tablesCount?: number | null, tables?: Array<{ __typename?: 'Table', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null> | null } | null };
+export type GetUserDocumentsQuery = { __typename?: 'Query', getUserDocuments?: { __typename?: 'UserDocuments', documentsCount?: number | null, documents?: Array<{ __typename?: 'Document', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null> | null } | null };
 
 
-export const DeleteUserTableDocument = /*#__PURE__*/ gql`
-    mutation deleteUserTable($id: ID!) {
-  deleteUserTable(id: $id)
+export const DeleteUserDocumentDocument = /*#__PURE__*/ gql`
+    mutation deleteUserDocument($id: ID!, $user: ID!) {
+  deleteUserDocument(id: $id, user: $user)
 }
     `;
-export type DeleteUserTableMutationFn = Apollo.MutationFunction<DeleteUserTableMutation, DeleteUserTableMutationVariables>;
+export type DeleteUserDocumentMutationFn = Apollo.MutationFunction<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>;
 
 /**
- * __useDeleteUserTableMutation__
+ * __useDeleteUserDocumentMutation__
  *
- * To run a mutation, you first call `useDeleteUserTableMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteUserTableMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteUserDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserDocumentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteUserTableMutation, { data, loading, error }] = useDeleteUserTableMutation({
+ * const [deleteUserDocumentMutation, { data, loading, error }] = useDeleteUserDocumentMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      user: // value for 'user'
  *   },
  * });
  */
-export function useDeleteUserTableMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserTableMutation, DeleteUserTableMutationVariables>) {
+export function useDeleteUserDocumentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteUserTableMutation, DeleteUserTableMutationVariables>(DeleteUserTableDocument, options);
+        return Apollo.useMutation<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>(DeleteUserDocumentDocument, options);
       }
-export type DeleteUserTableMutationHookResult = ReturnType<typeof useDeleteUserTableMutation>;
-export type DeleteUserTableMutationResult = Apollo.MutationResult<DeleteUserTableMutation>;
-export type DeleteUserTableMutationOptions = Apollo.BaseMutationOptions<DeleteUserTableMutation, DeleteUserTableMutationVariables>;
-export const SaveUserTableDocument = /*#__PURE__*/ gql`
-    mutation saveUserTable($user: ID!, $table: TableInput!) {
-  saveUserTable(user: $user, table: $table) {
+export type DeleteUserDocumentMutationHookResult = ReturnType<typeof useDeleteUserDocumentMutation>;
+export type DeleteUserDocumentMutationResult = Apollo.MutationResult<DeleteUserDocumentMutation>;
+export type DeleteUserDocumentMutationOptions = Apollo.BaseMutationOptions<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>;
+export const SaveUserDocumentDocument = /*#__PURE__*/ gql`
+    mutation saveUserDocument($user: ID!, $document: DocumentInput!) {
+  saveUserDocument(user: $user, document: $document) {
     id
     name
     initial_ui
@@ -172,33 +175,33 @@ export const SaveUserTableDocument = /*#__PURE__*/ gql`
   }
 }
     `;
-export type SaveUserTableMutationFn = Apollo.MutationFunction<SaveUserTableMutation, SaveUserTableMutationVariables>;
+export type SaveUserDocumentMutationFn = Apollo.MutationFunction<SaveUserDocumentMutation, SaveUserDocumentMutationVariables>;
 
 /**
- * __useSaveUserTableMutation__
+ * __useSaveUserDocumentMutation__
  *
- * To run a mutation, you first call `useSaveUserTableMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSaveUserTableMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSaveUserDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveUserDocumentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [saveUserTableMutation, { data, loading, error }] = useSaveUserTableMutation({
+ * const [saveUserDocumentMutation, { data, loading, error }] = useSaveUserDocumentMutation({
  *   variables: {
  *      user: // value for 'user'
- *      table: // value for 'table'
+ *      document: // value for 'document'
  *   },
  * });
  */
-export function useSaveUserTableMutation(baseOptions?: Apollo.MutationHookOptions<SaveUserTableMutation, SaveUserTableMutationVariables>) {
+export function useSaveUserDocumentMutation(baseOptions?: Apollo.MutationHookOptions<SaveUserDocumentMutation, SaveUserDocumentMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SaveUserTableMutation, SaveUserTableMutationVariables>(SaveUserTableDocument, options);
+        return Apollo.useMutation<SaveUserDocumentMutation, SaveUserDocumentMutationVariables>(SaveUserDocumentDocument, options);
       }
-export type SaveUserTableMutationHookResult = ReturnType<typeof useSaveUserTableMutation>;
-export type SaveUserTableMutationResult = Apollo.MutationResult<SaveUserTableMutation>;
-export type SaveUserTableMutationOptions = Apollo.BaseMutationOptions<SaveUserTableMutation, SaveUserTableMutationVariables>;
+export type SaveUserDocumentMutationHookResult = ReturnType<typeof useSaveUserDocumentMutation>;
+export type SaveUserDocumentMutationResult = Apollo.MutationResult<SaveUserDocumentMutation>;
+export type SaveUserDocumentMutationOptions = Apollo.BaseMutationOptions<SaveUserDocumentMutation, SaveUserDocumentMutationVariables>;
 export const SetUserDocument = /*#__PURE__*/ gql`
     mutation setUser($id: ID!, $email: String!) {
   setUser(id: $id, email: $email) {
@@ -270,10 +273,10 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
-export const GetUserTablesDocument = /*#__PURE__*/ gql`
-    query getUserTables($id: ID!) {
-  getUserTables(id: $id) {
-    tables {
+export const GetUserDocumentsDocument = /*#__PURE__*/ gql`
+    query getUserDocuments($id: ID!) {
+  getUserDocuments(id: $id) {
+    documents {
       id
       name
       initial_ui
@@ -282,35 +285,35 @@ export const GetUserTablesDocument = /*#__PURE__*/ gql`
       increment_mgdl
       triggers_mgdl
     }
-    tablesCount
+    documentsCount
   }
 }
     `;
 
 /**
- * __useGetUserTablesQuery__
+ * __useGetUserDocumentsQuery__
  *
- * To run a query within a React component, call `useGetUserTablesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserTablesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetUserDocumentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserDocumentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUserTablesQuery({
+ * const { data, loading, error } = useGetUserDocumentsQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetUserTablesQuery(baseOptions: Apollo.QueryHookOptions<GetUserTablesQuery, GetUserTablesQueryVariables>) {
+export function useGetUserDocumentsQuery(baseOptions: Apollo.QueryHookOptions<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserTablesQuery, GetUserTablesQueryVariables>(GetUserTablesDocument, options);
+        return Apollo.useQuery<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>(GetUserDocumentsDocument, options);
       }
-export function useGetUserTablesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserTablesQuery, GetUserTablesQueryVariables>) {
+export function useGetUserDocumentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserTablesQuery, GetUserTablesQueryVariables>(GetUserTablesDocument, options);
+          return Apollo.useLazyQuery<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>(GetUserDocumentsDocument, options);
         }
-export type GetUserTablesQueryHookResult = ReturnType<typeof useGetUserTablesQuery>;
-export type GetUserTablesLazyQueryHookResult = ReturnType<typeof useGetUserTablesLazyQuery>;
-export type GetUserTablesQueryResult = Apollo.QueryResult<GetUserTablesQuery, GetUserTablesQueryVariables>;
+export type GetUserDocumentsQueryHookResult = ReturnType<typeof useGetUserDocumentsQuery>;
+export type GetUserDocumentsLazyQueryHookResult = ReturnType<typeof useGetUserDocumentsLazyQuery>;
+export type GetUserDocumentsQueryResult = Apollo.QueryResult<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>;
