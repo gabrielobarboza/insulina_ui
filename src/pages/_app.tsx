@@ -55,8 +55,6 @@ const App = ({ Component, pageProps } : AppProps) => {
 
   const apolloClient = useApollo(pageProps.initialApolloState)
 
-  console.log(`OAuthProps =>`, OAuthProps)
-
   return (
     <SafeHydrate>
       <GoogleOAuthProvider {...OAuthProps} >
