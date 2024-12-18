@@ -8,7 +8,6 @@ import {
   client,
   PutOrUpdate,
 } from "../utils";
-// import { Document } from "@/interfaces";
 import { DocumentInput, Document } from '@/api/graphql';
 
 type PDocument = Partial<Document>
@@ -42,9 +41,13 @@ export async function getUserDocuments(_, { id } : Record<'id', string>) {
     if(!id) return defaultUserDocumentsData
     const { Items } = await client.send(
       new ScanCommand(dataDocumentInput({
-        Key: marshall({
-          user_id: id
-        })
+        FilterExpression: '#USER = :ID',
+        ExpressionAttributeNames: {
+            '#USER': 'user_id',
+        },
+        ExpressionAttributeValues: marshall({
+            ':ID': id,
+        }),
       }))
     );
     return {
