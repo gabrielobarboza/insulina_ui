@@ -1,5 +1,4 @@
 export * from './dataToken'
-export * from './enviroments'
 export * from './isNumber'
 export * from './objectTransform'
 export * from './parseDataTables'

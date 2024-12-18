@@ -3,7 +3,7 @@
   "scripts": {
     "build": "next build",
     "codegen": "graphql-codegen --config codegen.yml",
-    "dev": "next -p 9090",
+    "dev": "next dev -p 9090",
     "gqlgen": "gqlg --schemaFilePath ./src/pages/api/schemas/schema.graphql --destDirPath ./src/pages/api/schemas/gql --depthLimit 5",
     "graphql-generator": "npm run gqlgen && npm run codegen",
     "start": "next start -p 9090",
