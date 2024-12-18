@@ -30,12 +30,12 @@ export type Document = {
 
 export type DocumentInput = {
   id?: InputMaybe<Scalars['ID']['input']>;
-  increment_mgdl?: InputMaybe<Scalars['String']['input']>;
-  initial_mgdl?: InputMaybe<Scalars['String']['input']>;
-  initial_ui?: InputMaybe<Scalars['String']['input']>;
-  limit_ui?: InputMaybe<Scalars['String']['input']>;
+  increment_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_mgdl?: InputMaybe<Scalars['Int']['input']>;
+  initial_ui?: InputMaybe<Scalars['Int']['input']>;
+  limit_ui?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  triggers_mgdl?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  triggers_mgdl?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
 };
 
 export type Mutation = {

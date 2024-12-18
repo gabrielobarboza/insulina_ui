@@ -87,12 +87,12 @@ export const CalcTablesProvider = ({ children }) => {
         document: {
           ...(currTable?.id ? { id: currTable.id } : {}),
           ...(currTable?.name ? { name: currTable.name } : {}),
-          ...(currTable?.units ? { initial_ui: `${currTable.units}` } : {}),
-          ...(currTable?.values?.custom ? { increment_mgdl: `${currTable.values.custom}` } : {}),
-          ...(currTable?.limit ? { limit_ui:  `${currTable.limit}` } : {}),
+          ...(currTable?.units ? { initial_ui: currTable.units } : {}),
+          ...(currTable?.values?.custom ? { increment_mgdl: currTable.values.custom } : {}),
+          ...(currTable?.limit ? { limit_ui:  currTable.limit } : {}),
           ...(valuesList?.length ? {
-            initial_mgdl: `${valuesList.shift()}`,
-            triggers_mgdl: valuesList.map(val=> `${val}`)
+            initial_mgdl: valuesList.shift(),
+            triggers_mgdl: valuesList
           } : {})
         }
       }
