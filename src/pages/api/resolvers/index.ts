@@ -1,15 +1,18 @@
-// import { connections } from "../utils";
 import { getUser, setUser } from './handleUser'
-import { getUserTables, saveUserTable, deleteUserTable } from './handleUserTables'
+import {
+  getUserDocuments,
+  saveUserDocument,
+  deleteUserDocument
+} from './handleUserDocuments'
 
 export const resolvers = {
   Query: {
     getUser,
-    getUserTables
+    getUserDocuments
   },
   Mutation: {
     setUser,
-    saveUserTable,
-    deleteUserTable
+    saveUserDocument,
+    deleteUserDocument
   }
 };

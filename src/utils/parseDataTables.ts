@@ -1,7 +1,7 @@
-import { Table } from "@/api/graphql";
-import { Table as DataTable } from "@/interfaces";
+import { Document } from "@/api/graphql";
+import { Document as DataDocument } from "@/interfaces";
 
-export function parseDataTable({
+export function parseDataDocument({
   id,
   increment_mgdl,
   initial_mgdl,
@@ -9,8 +9,8 @@ export function parseDataTable({
   limit_ui,
   name,
   triggers_mgdl
-}: Table): DataTable {
-  const _table: DataTable = {
+}: Document): DataDocument {
+  const _table: DataDocument = {
     id,
     name,
     units: initial_ui,
@@ -27,14 +27,14 @@ export function parseDataTable({
   return _table
 }
 
-export function dataTableInput({
+export function dataDocumentInput({
   id,
   name,
   units,
   values,
   limit
-}:DataTable):Table{
-  const _table: Table = {
+}:DataDocument):Document{
+  const _table: Document = {
     id,
     name,
     initial_mgdl: values.list[0],

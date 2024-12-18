@@ -1,16 +1,14 @@
-import { GoogleSpreadsheetRow } from "google-spreadsheet";
-import {omit} from 'lodash'
+import { GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 
-type User = {
-  id: string
-  email: string
-} 
+type StringValue = { S: string }
+type IGetItemCommandOutput<T> = Omit<GetItemCommandOutput, "Item"> & T 
+type UserItemInput = IGetItemCommandOutput<{
+  uid: StringValue
+  email: StringValue
+}>
+export type User = Record<'id'|'email', String> 
 
-export const parseUser = (row: GoogleSpreadsheetRow<Record<string, any>>):User => {
-  const rowObject = row.toObject()
-
-  return Object.keys(rowObject).reduce((res, key) => {
-      res[key.toLowerCase()] = rowObject[key]
-    return res
-  }, { id: '', email: ''})
-}
+export const parseUser = (Item: Partial<UserItemInput>): User => ({
+  id: Item.uid.S,
+  email: Item.email.S
+})

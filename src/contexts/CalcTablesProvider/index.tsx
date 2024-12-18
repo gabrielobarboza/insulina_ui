@@ -6,7 +6,7 @@ import {
   useMemo,
   useState
 } from 'react'
-import { TableList, Table, TableItem } from "@/interfaces";
+import { DocumentList, Document, DocumentItem } from "@/interfaces";
 import { useAuth } from '@/contexts'
 
 import {
@@ -17,8 +17,8 @@ import {
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
-  useDeleteUserTableMutation,
-  useSaveUserTableMutation
+  useDeleteUserDocumentMutation,
+  useSaveUserDocumentMutation
 } from '@/api/graphql'
 import { sendMessage } from '@/utils';
 
@@ -32,17 +32,17 @@ interface TableSelectProps extends React.Component {
 }
 
 type CalcTablesContextType = {
-  dataTables: TableList,
-  createCalcTable: (table:Table) => Table,
-  deleteCalcTable: (_id?:string) => void,
-  getCalcTable: (_id?:string) => Promise<Table|null>,
+  dataTables: DocumentList,
+  createCalcTable: (table:Document) => Document,
+  deleteCalcTable: (_id?:string, user?:string) => void,
+  getCalcTable: (_id?:string) => Promise<Document|null>,
   loadingTables: boolean,
-  saveCalcTable: (table:Table) => Promise<Table>,
-  setDataTables: (tableList:TableList) => any,
-  selectTableConfig: (_id?:string) => Promise<Table|null>,
-  selectTable: (_id?:string) => Promise<Table|null>,
-  selectedConfig: Table,
-  tableSelected: Table,
+  saveCalcTable: (table:Document) => Promise<Document>,
+  setDataTables: (tableList:DocumentList) => any,
+  selectTableConfig: (_id?:string) => Promise<Document|null>,
+  selectTable: (_id?:string) => Promise<Document|null>,
+  selectedConfig: Document,
+  tableSelected: Document,
   components: Components
 }
 
@@ -51,25 +51,25 @@ export const CalcTablesContext = createContext({} as CalcTablesContextType);
 export const useCalcTables = () => useContext(CalcTablesContext)
 
 export const CalcTablesProvider = ({ children }) => {
-  const [ dataTables, setDataTables ] = useState<TableList|null>(null)
-  const [ selectedConfig, setSelectedConfig ] = useState<Table|null>(null)
-  const [ tableSelected, setTableSelected ] = useState<Table|null>(null)
+  const [ dataTables, setDataTables ] = useState<DocumentList|null>(null)
+  const [ selectedConfig, setSelectedConfig ] = useState<Document|null>(null)
+  const [ tableSelected, setTableSelected ] = useState<Document|null>(null)
   const { userData } = useAuth()
 
-  const [saveUserTable, { loading: loadingSaveTable }] = useSaveUserTableMutation()
-  const [deleteUserTable, { loading: loadingDeleteTable }] = useDeleteUserTableMutation()
+  const [saveUserTable, { loading: loadingSaveTable }] = useSaveUserDocumentMutation()
+  const [deleteUserTable, { loading: loadingDeleteTable }] = useDeleteUserDocumentMutation()
 
   const getCalcTable = async _id => await _id ? dataTables.find(table => table.id === _id) : null
   const createCalcTable = params => {
-    const newTable =  TableItem.create({ ...params})
+    const newTable = DocumentItem.create({ ...params})
     setSelectedConfig(newTable)
     return newTable
   }
 
   const saveCalcTable = useCallback(async params => {    
-    const tableList:TableList = dataTables ? [...dataTables] : []
+    const tableList:DocumentList = dataTables ? [...dataTables] : []
     const _id = params?.id
-    let currTable:Table|null = null
+    let currTable:Document|null = null
     if(_id && selectedConfig && (selectedConfig.id === _id)) {
       currTable = {
         ...params
@@ -77,7 +77,7 @@ export const CalcTablesProvider = ({ children }) => {
     }
     
     if(!_id) {
-      currTable = TableItem.create({ ...params })
+      currTable = DocumentItem.create({ ...params })
     }
 
     const valuesList = [...currTable?.values?.list]
@@ -85,13 +85,12 @@ export const CalcTablesProvider = ({ children }) => {
     await saveUserTable({
       variables: {
         user: userData.id,
-        table: {
-          ...(currTable?.id ? {id: currTable.id} : {}),
-          ...(currTable?.name ? {name: currTable.name} : {}),
-          ...(currTable?.units ? {initial_ui: currTable.units} : {}),
-          ...(currTable?.units ? {initial_ui: currTable.units} : {}),
-          ...(currTable?.values?.custom ? {increment_mgdl: currTable.values.custom} : {}),
-          ...(currTable?.limit ? {limit_ui: currTable.limit} : {}),
+        document: {
+          ...(currTable?.id ? { id: currTable.id } : {}),
+          ...(currTable?.name ? { name: currTable.name } : {}),
+          ...(currTable?.units ? { initial_ui: currTable.units } : {}),
+          ...(currTable?.values?.custom ? { increment_mgdl: currTable.values.custom } : {}),
+          ...(currTable?.limit ? { limit_ui: currTable.limit } : {}),
           ...(valuesList?.length ? {
             initial_mgdl: valuesList.shift(),
             triggers_mgdl: valuesList
@@ -103,7 +102,7 @@ export const CalcTablesProvider = ({ children }) => {
       if(tableIndex === -1)
         tableList.push({
           ...currTable,
-          id: data?.data?.saveUserTable?.id
+          id: data?.data?.saveUserDocument?.id
         })
       else
         tableList[tableIndex] = { ...currTable }
@@ -136,16 +135,17 @@ export const CalcTablesProvider = ({ children }) => {
     }
   }
 
-  const deleteCalcTable = async (id) => {
+  const deleteCalcTable = async (id, user) => {
     if(id)
       setSelectedConfig(null)
 
       await deleteUserTable({
         variables: {
-          id
+          id,
+          user
         }
       }).then(data => {
-        if(data?.data?.deleteUserTable)
+        if(data?.data?.deleteUserDocument)
           setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
         sendMessage('saveCalcTable', { status: true }) 
       })     

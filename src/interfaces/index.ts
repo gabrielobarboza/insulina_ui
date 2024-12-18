@@ -5,28 +5,28 @@
 // import { User } from 'path/to/interfaces';
 
 
-export interface TableValues {
+export interface DocumentValues {
   list: number[]
   custom?: number
 }
 
-export interface Table {
+export interface Document {
   id?: string
   name: string
   units: number
-  values: TableValues
+  values: DocumentValues
   limit?: number
 }
 
-export type TableList = Table[]
+export type DocumentList = Document[]
 
-export class TableItem {
-  static create(params:Table) {
+export class DocumentItem {
+  static create(params:Document) {
     return params
   }
 }
 
 export interface AppConfig {
   token: string,
-  dataTables: TableList
+  dataTables: DocumentList
 }

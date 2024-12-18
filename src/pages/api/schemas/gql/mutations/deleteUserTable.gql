@@ -1,3 +1,0 @@
-mutation deleteUserTable($id: ID!){
-    deleteUserTable(id: $id)
-}

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
-import { useCalcTables } from '@/contexts';
+import { useAuth, useCalcTables } from '@/contexts';
 import {
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
@@ -17,7 +17,7 @@ import {
     Container,
     TextField
 } from '@mui/material';
-import { Table } from '@/interfaces';
+import { Document } from '@/interfaces';
 
 import CustomDialog from '../CustomDialog'
 
@@ -68,19 +68,21 @@ const renderCustomRow = custom => (
 )
 interface CalcTableListProps {
     editable?: boolean,
-    list?: Table[]
+    list?: Document[]
 }
 const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) => {
     const classes = useStyles();
+    const { userData } = useAuth()
+    
     const { dataTables, selectTableConfig, deleteCalcTable } = useCalcTables()
-    const [expandTable, setExpandTable] = useState<Table>(null)
+    const [expandTable, setExpandTable] = useState<Document>(null)
     const [openDialog, setOpenDialog] = useState<boolean>(false)
     const [deleteTableName, setDeleteTableName] = useState<string>('')
     const tableList = list || dataTables
 
     const handleExcludeConfirm = useCallback(() => {
         if(expandTable?.name === deleteTableName) {
-            deleteCalcTable(expandTable.id)
+            deleteCalcTable(expandTable.id, userData.id)
             setDeleteTableName('')
             setOpenDialog(false)
         }
@@ -91,7 +93,7 @@ const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) =>
         setOpenDialog(!openDialog)
     }, [openDialog])
     
-    const handleExpand = (_t: Table) => (_: React.ChangeEvent<{}>, isExpanded: boolean) => {
+    const handleExpand = (_t: Document) => (_: React.ChangeEvent<{}>, isExpanded: boolean) => {
         setExpandTable(isExpanded ? _t : null);
     };
 

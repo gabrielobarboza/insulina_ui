@@ -1,6 +1,6 @@
-query getUserTables($id: ID!){
-    getUserTables(id: $id){
-        tables{
+query getUserDocuments($id: ID!){
+    getUserDocuments(id: $id){
+        documents{
             id
             name
             initial_ui
@@ -9,6 +9,6 @@ query getUserTables($id: ID!){
             increment_mgdl
             triggers_mgdl
         }
-        tablesCount
+        documentsCount
     }
 }

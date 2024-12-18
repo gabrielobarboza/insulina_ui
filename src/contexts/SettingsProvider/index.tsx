@@ -7,23 +7,23 @@ import {
   useState
 } from 'react'
 import { dataToken } from '@/utils'
-import { TableList, AppConfig } from "@/interfaces"
+import { DocumentList, AppConfig } from "@/interfaces"
 import { isEqual } from 'lodash'
 import { useLocalStorage } from '@/hooks'
 import { useCalcTables, useLoading } from '@/contexts'
 
-import { parseDataTable } from '@/utils'
+import { parseDataDocument } from '@/utils'
 import { useAuth } from '@/contexts'
 import {
   useGetUserQuery,
-  useGetUserTablesQuery,
+  useGetUserDocumentsQuery,
   useSetUserMutation
 } from '@/api/graphql'
 
 type SettingsContextType = {
     token: string,
     configToken: string
-    storedTables: TableList,
+    storedTables: DocumentList,
     loadingConfig: boolean,
     cleanStoredToken: () => void
 }
@@ -103,7 +103,7 @@ const SettingsProvider = ({ children }) => {
     data: tablesQuery,
     refetch: refetchTables,
     loading: loadingUserTables
-  } = useGetUserTablesQuery({
+  } = useGetUserDocumentsQuery({
     variables: {
       id: userData.id
     },
@@ -133,8 +133,8 @@ const SettingsProvider = ({ children }) => {
   }, [userQuery, loadingUser, callUser])
 
   useEffect(() => {
-    if(tablesQuery?.getUserTables?.tables?.length && !loadingConfig){
-      setDataTables(tablesQuery.getUserTables.tables.map(t => parseDataTable(t)))
+    if(tablesQuery?.getUserDocuments?.documents?.length && !loadingConfig){
+      setDataTables(tablesQuery.getUserDocuments.documents.map(t => parseDataDocument(t)))
     }
   }, [tablesQuery, loadingConfig])
 

@@ -19,7 +19,7 @@ const defaultUserTablesData: UserTables  = {
 async function tableSheet(){
   await dataTables.loadInfo(true);
   const { TABLES } = dataTables.sheetsByTitle;
-return TABLES
+  return TABLES
 }
 
 export async function handleGetUserTables(id: string): Promise<UserTables> {

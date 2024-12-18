@@ -23,6 +23,7 @@ import AuthProvider from '@/contexts/AuthProvider';
 import { ApolloProvider } from '@apollo/client'
 import { useApollo } from '@/api/apolloClient';
 
+const clientId = process.env.NEXT_PUBLIC_OAUTH_ID
 const theme = createTheme(themeOptions);
 
 function SafeHydrate({ children }) {
@@ -34,7 +35,7 @@ function SafeHydrate({ children }) {
 }
 
 const OAuthProps = {
-  clientId: process.env.NEXT_PUBLIC_OAUTH_ID as string,
+  clientId,
   onScriptLoadSuccess () {
     console.info("OAuth - script loaded!")
   },
@@ -53,6 +54,8 @@ const App = ({ Component, pageProps } : AppProps) => {
   }, []);
 
   const apolloClient = useApollo(pageProps.initialApolloState)
+
+  console.log(`OAuthProps =>`, OAuthProps)
 
   return (
     <SafeHydrate>
