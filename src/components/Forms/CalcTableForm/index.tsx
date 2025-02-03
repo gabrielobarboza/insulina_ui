@@ -229,7 +229,7 @@ const CalcTableForm = () => {
                     onChange={e => setUnitLimitValue(Number(e.target.value))}
                 />
             )}
-            <Card className={classes.spaceTop} >
+            <Card className={classes.spaceY} >
                 <CardContent>
                     <Helper title="Valores de Medição">
                         <Typography variant="caption" component="p">

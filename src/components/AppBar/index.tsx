@@ -51,7 +51,7 @@ export default function HeadAppBar() {
                         </IconButton> : <></>}
                         {authorized && userData?.picture ? (
                             <div className={classes.avatar}>
-                                <img src={userData?.picture} alt={userData?.name} />
+                                <img src={userData?.picture} alt={userData?.name} referrerPolicy="no-referrer" />
                             </div>
                         ) : <></>}
                     </Grid>
