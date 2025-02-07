@@ -1,6 +1,6 @@
 # Insulina UI
 
-Live: https://insulina-ui.vercel.app/
+Live on Vercel: https://insulina-ui.vercel.app/
 
 > - TypeScript 
 > - MaterialUI
