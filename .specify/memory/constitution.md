@@ -1,50 +1,75 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: (template, unratified) → 1.0.0
+- Modified principles: n/a (initial adoption)
+- Added sections: Core Principles (5), Quality Gates, Governance
+- Removed sections: none
+- Templates requiring updates:
+  - .specify/templates/plan-template.md ⚠ pending manual review (verify Constitution Check gates reference these principles)
+  - .specify/templates/spec-template.md ⚠ pending manual review
+  - .specify/templates/tasks-template.md ⚠ pending manual review
+- Follow-up TODOs: none
+-->
+
+# insulina_ui Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-Before-Code
+Production code changes MUST be preceded by an approved spec. No change to
+application behavior under `src/` (or any production surface) may be made
+without a corresponding spec document that has been reviewed and approved.
+Rationale: this is a medical-adjacent dosing tool; undocumented, unreviewed
+changes to behavior carry outsized risk and must be traceable to an intent.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Dose Calculation Is Frozen Without Characterization Tests (NON-NEGOTIABLE)
+`src/utils/validateUnits.ts` (the insulin dose calculation) MUST NOT be
+modified unless characterization tests already exist that capture its current
+behavior. Any change to this file MUST be accompanied by tests that prove the
+intended behavior change, including explicit before/after cases for every
+altered rule. Rationale: this function directly produces a medication dose;
+regressions here are the highest-severity class of bug in this project.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Green Gates Always
+`yarn test` and `yarn type-check` MUST pass before any change is merged or
+considered complete. A task or PR that leaves either command failing is not
+done, regardless of how much other work it completed. Rationale: a passing
+test/type-check baseline is the minimum signal that nothing provably broke.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. No `any` in New Code
+Newly written or newly modified TypeScript code MUST NOT use the `any` type
+(including implicit `any` escapes such as unchecked casts to `any`). Existing
+`any` usages MAY remain until touched, but any line changed MUST be typed
+properly. Rationale: this codebase computes medical dosing values; type
+safety is a cheap, continuous defense against class-of-bug errors.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Medical Guidance Prevails
+The application is a support/calculation aid, not a medical authority. Where
+any feature, copy, default, or behavior could be read as overriding or
+second-guessing a clinician's or medical team's guidance, the medical
+guidance MUST prevail. Features MUST be designed to assist and inform, never
+to silently replace professional medical judgment. Rationale: user safety and
+legal/ethical responsibility require the app to defer to medical authority.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Quality Gates
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Every PR/change touching `src/utils/validateUnits.ts` MUST reference the
+  spec that authorized it and MUST include or extend characterization tests
+  covering the previous behavior before introducing new behavior.
+- `yarn test` and `yarn type-check` are required CI/local gates; a red run on
+  either blocks merge.
+- Code review MUST reject new `any` usages in changed lines.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes ad-hoc practices for this project. Amendments
+require: (1) a written proposal describing the change and rationale, (2)
+review against existing specs/plans for conflicts, (3) an explicit version
+bump following semantic versioning (MAJOR for incompatible principle removal
+or redefinition, MINOR for new principles or materially expanded guidance,
+PATCH for clarifications/wording). All specs, plans, and PR reviews MUST
+verify compliance with these principles; deviations require documented
+justification in the relevant spec's Complexity Tracking section (or
+equivalent) and reviewer sign-off.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-10-29 | **Last Amended**: 2026-10-29

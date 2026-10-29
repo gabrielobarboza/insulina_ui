@@ -1,0 +1,10 @@
+{
+  "workflow": "companion",
+  "specName": "001-congelar-calculo-dose",
+  "branch": "001-congelar-calculo-dose",
+  "selectedAt": "2026-10-29T14:52:58.459Z",
+  "currentStep": "specify",
+  "status": "draft",
+  "history": [],
+  "telemetryInstanceId": "0e355a86-f3cd-4587-a04a-347ff9bc79fc"
+}
