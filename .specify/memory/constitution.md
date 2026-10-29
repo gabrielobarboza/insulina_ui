@@ -1,13 +1,21 @@
 <!--
 Sync Impact Report
-- Version change: (template, unratified) → 1.0.0
-- Modified principles: n/a (initial adoption)
-- Added sections: Core Principles (5), Quality Gates, Governance
+- Version change: 1.0.0 → 1.1.0 (MINOR: two new principles and one additional gate)
+- Modified principles: none (I–V unchanged)
+- Added principles:
+  - VI. The Server Never Trusts Client-Supplied Identity (NON-NEGOTIABLE)
+  - VII. Secrets Stay on the Server
+- Added sections: Quality Gates — new gate for login / data access / deploy
+  configuration changes (documented rollback + real-device and installed-PWA
+  verification)
 - Removed sections: none
 - Templates requiring updates:
-  - .specify/templates/plan-template.md ⚠ pending manual review (verify Constitution Check gates reference these principles)
-  - .specify/templates/spec-template.md ⚠ pending manual review
-  - .specify/templates/tasks-template.md ⚠ pending manual review
+  - .specify/templates/plan-template.md ⚠ pending manual review (Constitution
+    Check should cover VI, VII and the new rollback/real-device gate)
+  - .specify/templates/spec-template.md ⚠ pending manual review (auth/secrets
+    requirements for features touching login or data access)
+  - .specify/templates/tasks-template.md ⚠ pending manual review (rollback
+    step and real-device/PWA verification tasks)
 - Follow-up TODOs: none
 -->
 
@@ -51,6 +59,22 @@ guidance MUST prevail. Features MUST be designed to assist and inform, never
 to silently replace professional medical judgment. Rationale: user safety and
 legal/ethical responsibility require the app to defer to medical authority.
 
+### VI. The Server Never Trusts Client-Supplied Identity (NON-NEGOTIABLE)
+User identity MUST be derived from a credential verified on the server.
+Identifiers sent by the client (user id, e-mail, name) MUST NOT decide whose
+data is read, written, or deleted. Authentication or authorization failures
+MUST result in an explicit error, never in empty data or default values.
+Rationale: the calculation tables determine the displayed dose; unauthorized
+access to them is a health risk, not merely a privacy issue.
+
+### VII. Secrets Stay on the Server
+Variables prefixed with `NEXT_PUBLIC_` and everything listed under `env` in
+`next.config.js` are public and MUST NOT contain secrets, private keys, or
+credentials. Public identifiers (e.g., the OAuth client ID) are allowed.
+Code, tests, specs, and examples MUST NOT contain real credentials, tokens,
+or health data of real people. Rationale: the repository is public and the
+browser bundle is readable by anyone.
+
 ## Quality Gates
 
 - Every PR/change touching `src/utils/validateUnits.ts` MUST reference the
@@ -59,6 +83,9 @@ legal/ethical responsibility require the app to defer to medical authority.
 - `yarn test` and `yarn type-check` are required CI/local gates; a red run on
   either blocks merge.
 - Code review MUST reject new `any` usages in changed lines.
+- Changes affecting login, data access, or deploy configuration MUST have a
+  documented rollback step and MUST be verified on a real device (including
+  the installed PWA) before being considered complete.
 
 ## Governance
 
@@ -72,4 +99,4 @@ verify compliance with these principles; deviations require documented
 justification in the relevant spec's Complexity Tracking section (or
 equivalent) and reviewer sign-off.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-29 | **Last Amended**: 2026-10-29
+**Version**: 1.1.0 | **Ratified**: 2026-10-29 | **Last Amended**: 2026-10-29

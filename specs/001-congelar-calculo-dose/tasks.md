@@ -89,10 +89,10 @@ in [spec.md's Test Cases table](./spec.md#test-cases-reference-data-for-implemen
 **Purpose**: Final verification against the spec's Definition of Done / Success
 Criteria — no new test content, only checks.
 
-- [ ] T018 Run `git diff --stat` and confirm only `package.json`, the yarn lockfile, `vitest.config.ts`, and files under `src/utils/__tests__/` appear — no other `src/` file was modified (SC-002), per [quickstart.md Step 6](./quickstart.md#step-6--confirm-no-production-files-changed)
-- [ ] T019 On a throwaway branch (never committed), apply each of the three sensitivity-test mutations to `src/utils/validateUnits.ts` one at a time (`>=`→`>`, `Math.floor`→`Math.round`, flip the `limit < result` ternary), run `yarn test` after each, confirm at least one test fails each time, then discard the branch (SC-003), per [quickstart.md Step 7](./quickstart.md#step-7--sensitivity-check-manual-discardable-branch--never-commit)
-- [ ] T020 [P] Review `src/utils/__tests__/validateUnits.knownIssues.test.ts` to confirm every `ISSUE-1`..`ISSUE-5` test has an explanatory comment (current + expected behavior) and that B5/I4/T7 are correctly present and labeled as help-screen examples (SC-004, SC-005)
-- [ ] T021 Final run of `yarn test` and `yarn type-check` together, confirming both are green, satisfying Constitution Principle III (Green Gates Always) and this feature's Definition of Done
+- [X] T018 Run `git diff --stat` and confirm only `package.json`, the yarn lockfile, `vitest.config.ts`, and files under `src/utils/__tests__/` appear — no other `src/` file was modified (SC-002), per [quickstart.md Step 6](./quickstart.md#step-6--confirm-no-production-files-changed)
+- [X] T019 On a throwaway branch (never committed), apply each of the three sensitivity-test mutations to `src/utils/validateUnits.ts` one at a time (`>=`→`>`, `Math.floor`→`Math.round`, flip the `limit < result` ternary), run `yarn test` after each, confirm at least one test fails each time, then discard the branch (SC-003), per [quickstart.md Step 7](./quickstart.md#step-7--sensitivity-check-manual-discardable-branch--never-commit)
+- [X] T020 [P] Review `src/utils/__tests__/validateUnits.knownIssues.test.ts` to confirm every `ISSUE-1`..`ISSUE-5` test has an explanatory comment (current + expected behavior) and that B5/I4/T7 are correctly present and labeled as help-screen examples (SC-004, SC-005)
+- [X] T021 Final run of `yarn test` and `yarn type-check` together, confirming both are green, satisfying Constitution Principle III (Green Gates Always) and this feature's Definition of Done
 
 ---
 
