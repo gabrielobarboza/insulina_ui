@@ -33,11 +33,11 @@ Single existing Next.js project. All new files live under `src/utils/__tests__/`
 **Purpose**: Capture baseline, install the test runner, wire configuration — no test
 content yet.
 
-- [ ] T001 Capture baseline by running `yarn type-check` and recording the result (expected: exit 0, matches prior session) — no file changes, verification only, per [quickstart.md Step 1](./quickstart.md#step-1--capture-the-baseline)
-- [ ] T002 Add `vitest@1.6.1` to `devDependencies` in [package.json](../../package.json) via `yarn add -D vitest@1.6.1` (do NOT add `@vitest/ui` or `@vitest/coverage-v8` — out of scope per [research.md §1](./research.md#1-test-runner-version-vitest))
-- [ ] T003 Add `"test": "vitest run"` to the `scripts` section of [package.json](../../package.json) (no watch mode, per FR-007)
-- [ ] T004 Create `vitest.config.ts` at the repo root configuring `resolve.alias` to map `@` → absolute path of `src/`, Node test environment, matching test files only under `src/**/__tests__/**/*.test.ts` (per [research.md §2](./research.md#2-path-alias--→-src))
-- [ ] T005 Re-run `yarn type-check` and compare against the T001 baseline — if it newly fails, apply the fallback in [research.md §1](./research.md#1-test-runner-version-vitest) (downgrade to `vitest@0.34.6`, re-verify, and update [research.md](./research.md) with the version actually used and why)
+- [X] T001 Capture baseline by running `yarn type-check` and recording the result (expected: exit 0, matches prior session) — no file changes, verification only, per [quickstart.md Step 1](./quickstart.md#step-1--capture-the-baseline)
+- [X] T002 Add `vitest@1.6.1` to `devDependencies` in [package.json](../../package.json) via `yarn add -D vitest@1.6.1` (do NOT add `@vitest/ui` or `@vitest/coverage-v8` — out of scope per [research.md §1](./research.md#1-test-runner-version-vitest))
+- [X] T003 Add `"test": "vitest run"` to the `scripts` section of [package.json](../../package.json) (no watch mode, per FR-007)
+- [X] T004 Create `vitest.config.ts` at the repo root configuring `resolve.alias` to map `@` → absolute path of `src/`, Node test environment, matching test files only under `src/**/__tests__/**/*.test.ts` (per [research.md §2](./research.md#2-path-alias--→-src))
+- [X] T005 Re-run `yarn type-check` and compare against the T001 baseline — if it newly fails, apply the fallback in [research.md §1](./research.md#1-test-runner-version-vitest) (downgrade to `vitest@0.34.6`, re-verify, and update [research.md](./research.md) with the version actually used and why)
 
 **Checkpoint**: Test runner installed and configured; `yarn type-check` still green; `yarn test` runs (with zero test files, trivially passes/no-ops).
 
