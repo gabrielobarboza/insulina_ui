@@ -22,7 +22,7 @@ e `aud`.
 | campo     | uso                                         |
 |-----------|---------------------------------------------|
 | `sub`     | obrigatório, string não vazia → `sub` da sessão |
-| `email`   | opcional → `email` da sessão                |
+| `email`   | obrigatório, string não vazia → email da sessão (sem e-mail, a troca é recusada) |
 | `name` / `given_name` | opcional → `name` (prefere `given_name`, como hoje) |
 | `picture` | opcional → `picture`                        |
 
@@ -35,11 +35,11 @@ JWT compacto, cabeçalho `{ "typ": "JWT", "alg": "HS256" }`, assinado com `sessi
 | claim     | tipo   | regra                                                      |
 |-----------|--------|------------------------------------------------------------|
 | `sub`     | string | obrigatório, não vazio (A8)                                |
-| `email`   | string | opcional (vazio se o Google não informar)                  |
+| `email`   | string | obrigatório, não vazio (garantido na emissão, FR-003b)     |
 | `name`    | string | opcional, só para a interface                              |
 | `picture` | string | opcional, só para a interface                              |
 | `iat`     | number | segundos; momento da emissão                               |
-| `exp`     | number | obrigatório; `iat + SESSION_TTL_SECONDS` (G1, FR-022)       |
+| `exp`     | number | obrigatório; `iat + SESSION_TTL_SECONDS` (G1, FR-022)      |
 
 **Validação no servidor** (`verifySession`), nesta ordem. Qualquer falha resulta em `UNAUTHENTICATED`:
 

@@ -157,8 +157,7 @@ C1–C4 rodem em Vitest com ambiente Node, sem jsdom.
    encontrada', 'NOT_FOUND')`.
 5. **Gravar usuário** (R5): `setUser` não recebe `id` nem `email` do cliente (removidos do schema, R7). Usa
    `context.user.id` (`sub`) e `context.user.email`, que `createSession` copia do payload do token Google
-   **verificado** para as claims da sessão. Se a claim `email` não existir no token, o e-mail não é gravado; a
-   operação não falha por isso. O `SettingsProvider` deixa de enviar `userData.email` na mutation.
+   **verificado** para as claims da sessão. O e-mail vem sempre preenchido: `createSession` recusa o token do Google que não traga `email` (FR-003b).
    
 ## Ordem de implementação sugerida (para `/speckit-tasks`)
 

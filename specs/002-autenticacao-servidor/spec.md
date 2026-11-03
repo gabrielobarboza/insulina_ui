@@ -193,6 +193,8 @@ dados. Depende das histórias 1 a 3 estarem prontas.
   foto e expiração em 24 horas a partir da emissão, assinada com o segredo do servidor.
 - **FR-003**: Se o token do Google for ausente, malformado, inválido, expirado ou emitido para outro público, o
   servidor MUST responder `UNAUTHENTICATED` e MUST NOT emitir sessão.
+- **FR-003b**: Se o token do Google verificado não trouxer `e-mail`, a troca MUST ser recusada com
+  `UNAUTHENTICATED`, nenhuma sessão é emitida e nada é gravado. O app exige conta Google com e-mail.
 - **FR-004**: Se o ID do cliente OAuth ou o segredo de sessão não estiverem configurados, ou se o segredo tiver menos
   de 32 bytes, o servidor MUST recusar todas as requisições (criação de sessão e API de dados) e MUST registrar um
   erro de configuração sem expor detalhes ao cliente.
