@@ -199,7 +199,7 @@ nos testes de `src/server/__tests__/` (com valores fictícios), nunca em `next.c
 - US1: T007, T008 e T009 em paralelo.
 - US2: T018, T019 e T020 em paralelo; US2 inteira em paralelo com US1 (exceto o cliente, ver acima).
 - US3: T031 em paralelo com T029/T030.
-- Polish: T038, T039, T040 e T041 em paralelo depois de T037.
+- Polish: T038, T039, T040 ,T041 e T042 em paralelo depois de T037.
 
 ---
 
