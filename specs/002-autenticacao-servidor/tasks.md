@@ -162,13 +162,13 @@ depois do login, fazer logout e conferir que a mensagem de sessão expirada não
 
 **Purpose**: gates da constituição e Definição de pronto 1–3, antes de T033.
 
-- [ ] T037 Rodar `yarn test` (36 testes da Spec 01 + novos) e `yarn type-check`; ambos verdes (DoD 1; SC-007)
+- [X] T037 Rodar `yarn test` (36 testes da Spec 01 + novos) e `yarn type-check`; ambos verdes (DoD 1; SC-007)
 - [ ] T038 [P] Conferir que `git diff --stat main -- src/utils/validateUnits.ts src/utils/__tests__/ ':(exclude)src/utils/__tests__/session.test.ts'` sai vazio (DoD 2)
-- [ ] T039 [P] Conferir que `git ls-files src/pages | grep -iE "auth|session|__tests__"` lista só `src/pages/api/session.ts` e o já existente `src/pages/api/utils/service/auth.ts` (DoD 3)
-- [ ] T040 [P] Revisar `src/server/**`, `src/pages/api/resolvers/**`, `src/utils/session.ts` e `src/contexts/AuthProvider/**` com `grep -rn "console\." ` e confirmar que nenhum log inclui token, sessão, e-mail, id ou erro de `verifyIdToken` (FR-023); confirmar com `grep -rn "SESSION_SECRET" src next.config.js` que o nome só aparece em `src/server/auth/config.ts` e
+- [X] T039 [P] Conferir que `git ls-files src/pages | grep -iE "auth|session|__tests__"` lista só `src/pages/api/session.ts` e o já existente `src/pages/api/utils/service/auth.ts` (DoD 3)
+- [X] T040 [P] Revisar `src/server/**`, `src/pages/api/resolvers/**`, `src/utils/session.ts` e `src/contexts/AuthProvider/**` com `grep -rn "console\." ` e confirmar que nenhum log inclui token, sessão, e-mail, id ou erro de `verifyIdToken` (FR-023); confirmar com `grep -rn "SESSION_SECRET" src next.config.js` que o nome só aparece em `src/server/auth/config.ts` e
 nos testes de `src/server/__tests__/` (com valores fictícios), nunca em `next.config.js` (Princípio VII)
-- [ ] T041 [P] Atualizar `specs/002-autenticacao-servidor/checklists/requirements.md` marcando os itens atendidos e registrar no fim de `research.md` (R10) qualquer pendência descoberta na implementação
-- [ ] T042 [P] Com `yarn dev`, chamar diretamente `GET` e `POST` em `/api/utils/dynamoDB`,
+- [X] T041 [P] Atualizar `specs/002-autenticacao-servidor/checklists/requirements.md` marcando os itens atendidos e registrar no fim de `research.md` (R10) qualquer pendência descoberta na implementação
+- [X] T042 [P] Com `yarn dev`, chamar diretamente `GET` e `POST` em `/api/utils/dynamoDB`,
   `/api/utils/dynamoDB/PutOrUpdate` e `/api/utils/connectors` (sem sessão) e confirmar status ≥ 400 e corpo sem
   dados de tabela. Anotar o resultado em `research.md` (R10). Se algum devolver dado, parar e abrir spec futura
   antes do deploy (FR-005)

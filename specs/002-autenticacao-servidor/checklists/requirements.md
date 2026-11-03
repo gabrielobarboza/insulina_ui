@@ -41,3 +41,6 @@
 - Removido da v1: FR "cálculo continua com tabelas em memória após expirar" — era mitigação da sessão de 1h e não
   consta do pedido v2.
 - Validação feita em 1 iteração; todos os itens passam.
+- 2026-11-03 (Phase 7, pós-implementação): itens revalidados contra o código; todos continuam atendidos.
+  `yarn test` (106 testes) e `yarn type-check` verdes. Pendências descobertas na implementação ficaram em
+  `research.md` (R10), fora do escopo desta spec.

@@ -152,8 +152,39 @@ POST). O padrão é `register: true, skipWaiting: true`.
 
 ## R10. Registrado para specs futuras (descoberto aqui)
 
-- Comparação HMAC não constante no `jwt-simple` (R2, lacuna 3).
-- `getUserDocuments`, `saveUserDocument`, `getUser` e `setUser` ainda convertem **erros do banco** (não de
-  autenticação) em lista vazia, `{}` ou usuário padrão. A falha de autenticação já é explícita (FR-016) porque
-  acontece no contexto, antes dos resolvers.
-- `parseUser` quebra se o usuário ainda não estiver registrado (`Item` indefinido). O comportamento atual não muda.
+Pendências (fora do escopo desta spec; nenhuma bloqueia o deploy):
+
+1. `getUserDocuments`, `saveUserDocument`, `getUser` e `setUser` ainda convertem **erros do banco** (não de
+   autenticação) em lista vazia, `{}` ou usuário padrão. Só a falha de autenticação é erro explícito (FR-016),
+   porque acontece no contexto, antes dos resolvers. Esses `catch` também fazem `console.error` do objeto de erro
+   do SDK inteiro (código anterior à spec).
+2. O ramo de `handleSetUser` que devolve o usuário padrão é inalcançável: `id` e `email` sempre vêm da sessão.
+3. Uma resposta `UNAUTHENTICATED` atrasada, de uma requisição feita com a sessão anterior, pode apagar a sessão
+   nova obtida num novo login. Correção: só limpar se o token da requisição for igual ao token atual.
+4. A sessão não é sincronizada entre abas (login/logout/expiração numa aba não reflete nas outras).
+5. As tabelas locais (`dataToken` / `CalcTablesProvider`) persistem no logout explícito e na troca de conta.
+   Correção: limpar no logout explícito e quando o `sub` mudar; **não** limpar na expiração, para manter o uso
+   sem rede.
+6. Arquivos de utilitário em `src/pages/api/` viram rotas públicas (ver T042 abaixo). Mover para fora de
+   `src/pages/`.
+7. Apagar a mesma tabela duas vezes responde `NOT_FOUND` e a tabela continua na lista do cliente. Correção: refazer
+   a busca ao receber `NOT_FOUND`.
+8. Comparação HMAC não constante no `jwt-simple` (R2, lacuna 3).
+9. CORS com origem `*` e sem limite de requisições em `/api/session`.
+10. Código morto do Google Sheets e variáveis `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_*` (expostas ao bundle):
+    remover o código e rotacionar a chave.
+11. `getUserDocuments` faz `Scan` na tabela de documentos filtrando por `user_id`. Trocar por `Query` com índice.
+12. Verificar que a resposta de erro em produção não inclui stacktrace (quickstart §4/§5). Em `yarn dev` o corpo
+    traz stack (esperado em desenvolvimento).
+13. `parseUser` quebra se o usuário ainda não estiver registrado (`Item` indefinido). O comportamento atual não muda.
+
+**Resultado do T042** (2026-11-03, `yarn dev` local, sem sessão, `GET` e `POST` com corpo `{}`):
+
+| Rota | GET | POST | Erro | Dados de tabela no corpo |
+|------|-----|------|------|--------------------------|
+| `/api/utils/dynamoDB` | 500 | 500 | `TypeError: resolver is not a function` | não |
+| `/api/utils/dynamoDB/PutOrUpdate` | 500 | 500 | `TypeError: Cannot convert undefined or null to object` | não |
+| `/api/utils/connectors` | 500 | 500 | `TypeError: resolver is not a function` | não |
+
+Nenhuma devolve dado; nenhum valor de variável de ambiente apareceu no corpo. As rotas existem só por estarem em
+`src/pages/api/` (item 6) e falham antes de tocar o banco. O corpo de desenvolvimento traz stack (item 12).
