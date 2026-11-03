@@ -3,9 +3,12 @@ import { marshall } from "@aws-sdk/util-dynamodb";
 import {
   client,
   parseUser,
-  PutOrUpdate
+  PutOrUpdate,
+  User
 } from "../utils";
 import { GetItemCommand } from '@aws-sdk/client-dynamodb';
+import { AuthenticatedUser } from '@/server/auth/getAuthenticatedUser';
+import { GraphQLContext } from '@/server/graphqlContext';
 
 const dataUserInput = payload => ({
   TableName: process.env.AWS_USER_TABLE,
@@ -17,7 +20,7 @@ const defaultUserData = {
   email: ''
 }
 
-export async function handleGetUser(id: string) {
+export async function handleGetUser(id: string): Promise<User> {
   try {
     if(!id) return defaultUserData
     const { Item } = await client.send(
@@ -27,7 +30,7 @@ export async function handleGetUser(id: string) {
         })
       }))
     );
-    
+
     return parseUser(Item)
   } catch(err) {
     // throw err;
@@ -36,9 +39,9 @@ export async function handleGetUser(id: string) {
   }
 }
 
-export async function handleSetUser({ id, email }: Record<'id'|'email', string>) {
+export async function handleSetUser({ id, email }: AuthenticatedUser): Promise<User> {
   try {
-    if(!id || !email) return {}
+    if(!id || !email) return defaultUserData
     await PutOrUpdate(dataUserInput({
       Item: {
         uid: id,
@@ -55,9 +58,13 @@ export async function handleSetUser({ id, email }: Record<'id'|'email', string>)
   }
 }
 
-export async function getUser(_, { id }) {
+export async function getUser(
+  _parent: unknown,
+  _args: Record<string, unknown>,
+  { user }: GraphQLContext
+): Promise<User> {
   try {
-    const data = await handleGetUser(id)
+    const data = await handleGetUser(user.id)
     return data;
   } catch (_err) {
     console.error(_err)
@@ -65,9 +72,13 @@ export async function getUser(_, { id }) {
   }
 }
 
-export async function setUser(_, { id, email }) {
+export async function setUser(
+  _parent: unknown,
+  _args: Record<string, unknown>,
+  { user }: GraphQLContext
+): Promise<User> {
   try {
-    const data = await handleSetUser({ id, email })
+    const data = await handleSetUser({ id: user.id, email: user.email })
     return data;
   } catch (_err) {
     console.error(_err)

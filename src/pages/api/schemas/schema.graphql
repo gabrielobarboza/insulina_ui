@@ -29,12 +29,12 @@ input DocumentInput {
 }
 
 type Query {
-  getUser(id: ID!): User!
-  getUserDocuments(id: ID!): UserDocuments
+  getUser: User!
+  getUserDocuments: UserDocuments
 }
 
 type Mutation {
-  setUser(id: ID!, email: String!): User!
-  saveUserDocument(user: ID!, document: DocumentInput!): Document
-  deleteUserDocument(id: ID!, user: ID!): Boolean
+  setUser: User!
+  saveUserDocument(document: DocumentInput!): Document
+  deleteUserDocument(id: ID!): Boolean
 }

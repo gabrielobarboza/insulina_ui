@@ -4,11 +4,17 @@ import {
   DeleteItemCommand,
   ScanCommand
 } from '@aws-sdk/client-dynamodb';
+import { ApolloError } from 'apollo-server-micro';
 import {
   client,
   PutOrUpdate,
 } from "../utils";
-import { DocumentInput, Document } from '@/api/graphql';
+import {
+  Document,
+  MutationDeleteUserDocumentArgs,
+  MutationSaveUserDocumentArgs,
+} from '@/api/graphql';
+import { GraphQLContext } from '@/server/graphqlContext';
 
 type PDocument = Partial<Document>
 
@@ -36,9 +42,12 @@ const defaultUserDocumentsData: UserDocuments  = {
   documentsCount: 0
 }
 
-export async function getUserDocuments(_, { id } : Record<'id', string>) {
+export async function getUserDocuments(
+  _parent: unknown,
+  _args: Record<string, unknown>,
+  { user }: GraphQLContext
+): Promise<UserDocuments> {
   try {
-    if(!id) return defaultUserDocumentsData
     const { Items } = await client.send(
       new ScanCommand(dataDocumentInput({
         FilterExpression: '#USER = :ID',
@@ -46,7 +55,7 @@ export async function getUserDocuments(_, { id } : Record<'id', string>) {
             '#USER': 'user_id',
         },
         ExpressionAttributeValues: marshall({
-            ':ID': id,
+            ':ID': user.id,
         }),
       }))
     );
@@ -61,19 +70,18 @@ export async function getUserDocuments(_, { id } : Record<'id', string>) {
   }
 }
 
-type SaveUserDocumentParams = {
-  user: string
-  document: Partial<DocumentInput>
-}
-
-export async function saveUserDocument(_, args:SaveUserDocumentParams) : Promise<PDocument> {
-  const { user, document: { id, ...document }} = args  
+export async function saveUserDocument(
+  _parent: unknown,
+  { document: { id, ...document } }: MutationSaveUserDocumentArgs,
+  { user }: GraphQLContext
+): Promise<PDocument> {
   const currentItemId = id || randomBytes(16).toString("hex")
 
   try {
+    // `user_id` vem depois do corpo: um `user_id` enviado pelo cliente nunca vale.
     const updatedDocument = await putOrUpdateDocument({
       ...document,
-      user_id: user,
+      user_id: user.id,
       id: currentItemId,
     }, 'id')
 
@@ -86,21 +94,28 @@ export async function saveUserDocument(_, args:SaveUserDocumentParams) : Promise
   }
 }
 
-export async function deleteUserDocument(_, { id, user }: Record<'id'|'user', string>): Promise<Boolean> {
+export async function deleteUserDocument(
+  _parent: unknown,
+  { id }: MutationDeleteUserDocumentArgs,
+  { user }: GraphQLContext
+): Promise<boolean> {
   try {
-    if(!id) return false
-    client.send(
+    await client.send(
       new DeleteItemCommand(dataDocumentInput({
         Key: marshall({
           id,
-          user_id: user
-        })
+          user_id: user.id
+        }),
+        ConditionExpression: 'attribute_exists(id)'
       }))
     );
-    return true 
-  } catch (_err) {
-    // throw _err;
-    console.error(_err)
-    return false
+    return true
+  } catch (err) {
+    // Inexistente ou de outra pessoa: a chave inclui o user_id da sessão, então as duas dão no mesmo.
+    if (err instanceof Error && err.name === 'ConditionalCheckFailedException') {
+      throw new ApolloError('Tabela não encontrada', 'NOT_FOUND')
+    }
+    console.error('deleteUserDocument: falha no banco', err instanceof Error ? err.name : '')
+    throw new Error('Internal server error')
   }
 }

@@ -94,9 +94,6 @@ const SettingsProvider = ({ children }) => {
     loading: loadingUser,
     called: callUser,
   } = useGetUserQuery({
-    variables: {
-      id: userData.id
-    },
     skip: !userData.id
   })
   const {
@@ -104,9 +101,6 @@ const SettingsProvider = ({ children }) => {
     refetch: refetchTables,
     loading: loadingUserTables
   } = useGetUserDocumentsQuery({
-    variables: {
-      id: userData.id
-    },
     skip: !userData.id,
     fetchPolicy: 'no-cache'
   })
@@ -123,12 +117,7 @@ const SettingsProvider = ({ children }) => {
       && !loadingUser
       && !userQuery?.getUser?.id
     ) {
-      setUser({
-        variables:{
-          id: userData.id,
-          email: userData.email
-        }
-      })
+      setUser()
     }
   }, [userQuery, loadingUser, callUser])
 
