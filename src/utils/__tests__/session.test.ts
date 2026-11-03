@@ -7,6 +7,11 @@ import {
   clearSession,
   decodeSessionClaims,
   exchangeGoogleCredential,
+  expireSession,
+  getAuthorizationHeaders,
+  isSessionExpired,
+  isUnauthenticatedError,
+  onSessionExpired,
   readSession,
   saveSession,
 } from '@/utils/session'
@@ -130,5 +135,108 @@ describe('decodeSessionClaims (C1)', () => {
   it('devolve null para token inválido', () => {
     expect(decodeSessionClaims('não-é-jwt')).toBeNull()
     expect(decodeSessionClaims('')).toBeNull()
+  })
+})
+
+// Relógio real: sessões de C2–C4 assinadas com now = Date.now(), nunca data fixa antiga.
+function signedSession(now: number, ttlSeconds: number): string {
+  const iat = Math.floor(now / 1000)
+  return encode(
+    { sub: 'user-a', email: 'a@example.com', iat, exp: iat + ttlSeconds },
+    'segredo-de-teste-com-mais-de-32-bytes!!',
+    'HS256'
+  )
+}
+
+describe('getAuthorizationHeaders (C2)', () => {
+  it('com sessão válida devolve Authorization: Bearer <sessão>', () => {
+    const now = Date.now()
+    const token = signedSession(now, 86400)
+    const storage = memoryStorage()
+    saveSession(storage, token)
+
+    expect(getAuthorizationHeaders(storage, now)).toEqual({ authorization: `Bearer ${token}` })
+  })
+
+  it('sem sessão devolve {}', () => {
+    expect(getAuthorizationHeaders(memoryStorage(), Date.now())).toEqual({})
+  })
+})
+
+describe('isUnauthenticatedError (C3)', () => {
+  const unauthenticated = { extensions: { code: 'UNAUTHENTICATED' } }
+
+  it('reconhece UNAUTHENTICATED em graphQLErrors', () => {
+    expect(isUnauthenticatedError({ graphQLErrors: [unauthenticated] })).toBe(true)
+  })
+
+  it('reconhece UNAUTHENTICATED em networkError.result.errors (HTTP 400)', () => {
+    expect(
+      isUnauthenticatedError({ networkError: { statusCode: 400, result: { errors: [unauthenticated] } } })
+    ).toBe(true)
+  })
+
+  it('não reconhece erro 500 INTERNAL_SERVER_ERROR', () => {
+    const internal = { extensions: { code: 'INTERNAL_SERVER_ERROR' } }
+    expect(isUnauthenticatedError({ graphQLErrors: [internal] })).toBe(false)
+    expect(
+      isUnauthenticatedError({ networkError: { statusCode: 500, result: { errors: [internal] } } })
+    ).toBe(false)
+  })
+
+  it('não reconhece falha de rede sem result', () => {
+    expect(isUnauthenticatedError({ networkError: new TypeError('Failed to fetch') })).toBe(false)
+    expect(isUnauthenticatedError({ networkError: null })).toBe(false)
+  })
+
+  it('não reconhece NOT_FOUND', () => {
+    expect(isUnauthenticatedError({ graphQLErrors: [{ extensions: { code: 'NOT_FOUND' } }] })).toBe(false)
+  })
+})
+
+describe('expireSession e onSessionExpired (C3)', () => {
+  it('remove inui.session e chama os listeners; o cancelamento remove o listener', () => {
+    const storage = memoryStorage()
+    saveSession(storage, signedSession(Date.now(), 86400))
+    const listener = vi.fn()
+    const unsubscribe = onSessionExpired(listener)
+
+    expireSession(storage)
+    expect(storage.keys()).toEqual([])
+    expect(listener).toHaveBeenCalledTimes(1)
+
+    unsubscribe()
+    expireSession(storage)
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('isSessionExpired (C4)', () => {
+  it('é true para exp * 1000 <= now e para claims null', () => {
+    const now = Date.now()
+    const exp = Math.floor(now / 1000) + 60
+    expect(isSessionExpired({ sub: 'user-a', exp }, exp * 1000 - 1)).toBe(false)
+    expect(isSessionExpired({ sub: 'user-a', exp }, exp * 1000)).toBe(true)
+    expect(isSessionExpired({ sub: 'user-a', exp }, exp * 1000 + 1)).toBe(true)
+    expect(isSessionExpired(null, now)).toBe(true)
+  })
+
+  it('getAuthorizationHeaders com sessão expirada devolve {}, remove a sessão e notifica antes de devolver', () => {
+    const now = Date.now()
+    const storage = memoryStorage()
+    saveSession(storage, signedSession(now, 86400))
+    const later = now + 86400 * 1000 + 1000
+    let storedWhenNotified: string | null = 'não chamado'
+    const unsubscribe = onSessionExpired(() => {
+      storedWhenNotified = storage.getItem(SESSION_STORAGE_KEY)
+    })
+
+    try {
+      expect(getAuthorizationHeaders(storage, later)).toEqual({})
+      expect(storage.keys()).toEqual([])
+      expect(storedWhenNotified).toBeNull()
+    } finally {
+      unsubscribe()
+    }
   })
 })

@@ -73,3 +73,62 @@ export async function exchangeGoogleCredential(fetchFn: typeof fetch, credential
   }
   return session
 }
+
+export function isSessionExpired(claims: SessionUserClaims | null, now: number): boolean {
+  return claims === null || claims.exp * 1000 <= now
+}
+
+// Assinantes em nível de módulo: o link do Apollo expira a sessão e o AuthProvider reage.
+const sessionExpiredListeners = new Set<() => void>()
+
+export function onSessionExpired(listener: () => void): () => void {
+  sessionExpiredListeners.add(listener)
+  return () => {
+    sessionExpiredListeners.delete(listener)
+  }
+}
+
+export function expireSession(storage: StorageLike): void {
+  clearSession(storage)
+  for (const listener of Array.from(sessionExpiredListeners)) listener()
+}
+
+function hasUnauthenticatedCode(errors: unknown): boolean {
+  if (!Array.isArray(errors)) return false
+  return errors.some((error: unknown) => {
+    if (typeof error !== 'object' || error === null) return false
+    const extensions: unknown = (error as Record<string, unknown>).extensions
+    return (
+      typeof extensions === 'object' &&
+      extensions !== null &&
+      (extensions as Record<string, unknown>).code === 'UNAUTHENTICATED'
+    )
+  })
+}
+
+// Formato do `ErrorResponse` do Apollo. O servidor responde HTTP 400 em UNAUTHENTICATED e, nesse caso, o Apollo
+// Client deixa `graphQLErrors` vazio e põe o corpo em `networkError.result.errors`; por isso olhamos os dois.
+export type ApolloErrorLike = {
+  graphQLErrors?: ReadonlyArray<unknown>
+  networkError?: unknown
+}
+
+export function isUnauthenticatedError(error: ApolloErrorLike): boolean {
+  if (hasUnauthenticatedCode(error.graphQLErrors)) return true
+  const { networkError } = error
+  if (typeof networkError !== 'object' || networkError === null) return false
+  const result: unknown = (networkError as Record<string, unknown>).result
+  if (typeof result !== 'object' || result === null) return false
+  return hasUnauthenticatedCode((result as Record<string, unknown>).errors)
+}
+
+// Lida a cada requisição. Sessão expirada ou ilegível é descartada (e os assinantes avisados) antes da chamada.
+export function getAuthorizationHeaders(storage: StorageLike, now: number): { authorization?: string } {
+  const session = readSession(storage)
+  if (!session) return {}
+  if (isSessionExpired(decodeSessionClaims(session), now)) {
+    expireSession(storage)
+    return {}
+  }
+  return { authorization: `Bearer ${session}` }
+}

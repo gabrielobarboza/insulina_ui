@@ -11,6 +11,7 @@ export interface UserData extends Partial<Record<UserDataKeys, string>> {}
 export type AuthContextType = {
   authorized: boolean
   userData: UserData
+  sessionExpiredMessage: string
   onLoginSuccess: (params: CredentialResponse) => void
   onLoginError: (error?: unknown) => void
   handleLogout: () => void
