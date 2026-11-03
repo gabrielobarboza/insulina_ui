@@ -20,7 +20,7 @@ project's TypeScript 4.3.2.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 4.3.2 (existing, unchanged) on Node 20 LTS (project
+**Language/Version**: TypeScript 4.5.4 (existing, unchanged) on Node v22.23.4 (Jod) LTS (project
 constraint; locally available Node is v22.17.1, which satisfies Vitest's `engines`
 range for all candidate versions below — 20 LTS remains the target/CI baseline).
 

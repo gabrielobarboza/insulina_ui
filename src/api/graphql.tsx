@@ -48,35 +48,17 @@ export type Mutation = {
 
 export type MutationDeleteUserDocumentArgs = {
   id: Scalars['ID']['input'];
-  user: Scalars['ID']['input'];
 };
 
 
 export type MutationSaveUserDocumentArgs = {
   document: DocumentInput;
-  user: Scalars['ID']['input'];
-};
-
-
-export type MutationSetUserArgs = {
-  email: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
   getUser: User;
   getUserDocuments?: Maybe<UserDocuments>;
-};
-
-
-export type QueryGetUserArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryGetUserDocumentsArgs = {
-  id: Scalars['ID']['input'];
 };
 
 export type User = {
@@ -93,46 +75,37 @@ export type UserDocuments = {
 
 export type DeleteUserDocumentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
-  user: Scalars['ID']['input'];
 }>;
 
 
 export type DeleteUserDocumentMutation = { __typename?: 'Mutation', deleteUserDocument?: boolean | null };
 
 export type SaveUserDocumentMutationVariables = Exact<{
-  user: Scalars['ID']['input'];
   document: DocumentInput;
 }>;
 
 
 export type SaveUserDocumentMutation = { __typename?: 'Mutation', saveUserDocument?: { __typename?: 'Document', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null };
 
-export type SetUserMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
-  email: Scalars['String']['input'];
-}>;
+export type SetUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type SetUserMutation = { __typename?: 'Mutation', setUser: { __typename?: 'User', id: string, email: string } };
 
-export type GetUserQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
+export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, email: string } };
 
-export type GetUserDocumentsQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
+export type GetUserDocumentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserDocumentsQuery = { __typename?: 'Query', getUserDocuments?: { __typename?: 'UserDocuments', documentsCount?: number | null, documents?: Array<{ __typename?: 'Document', id: string, name: string, initial_ui: number, initial_mgdl: number, limit_ui?: number | null, increment_mgdl?: number | null, triggers_mgdl?: Array<number | null> | null } | null> | null } | null };
 
 
 export const DeleteUserDocumentDocument = /*#__PURE__*/ gql`
-    mutation deleteUserDocument($id: ID!, $user: ID!) {
-  deleteUserDocument(id: $id, user: $user)
+    mutation deleteUserDocument($id: ID!) {
+  deleteUserDocument(id: $id)
 }
     `;
 export type DeleteUserDocumentMutationFn = Apollo.MutationFunction<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>;
@@ -151,7 +124,6 @@ export type DeleteUserDocumentMutationFn = Apollo.MutationFunction<DeleteUserDoc
  * const [deleteUserDocumentMutation, { data, loading, error }] = useDeleteUserDocumentMutation({
  *   variables: {
  *      id: // value for 'id'
- *      user: // value for 'user'
  *   },
  * });
  */
@@ -163,8 +135,8 @@ export type DeleteUserDocumentMutationHookResult = ReturnType<typeof useDeleteUs
 export type DeleteUserDocumentMutationResult = Apollo.MutationResult<DeleteUserDocumentMutation>;
 export type DeleteUserDocumentMutationOptions = Apollo.BaseMutationOptions<DeleteUserDocumentMutation, DeleteUserDocumentMutationVariables>;
 export const SaveUserDocumentDocument = /*#__PURE__*/ gql`
-    mutation saveUserDocument($user: ID!, $document: DocumentInput!) {
-  saveUserDocument(user: $user, document: $document) {
+    mutation saveUserDocument($document: DocumentInput!) {
+  saveUserDocument(document: $document) {
     id
     name
     initial_ui
@@ -190,7 +162,6 @@ export type SaveUserDocumentMutationFn = Apollo.MutationFunction<SaveUserDocumen
  * @example
  * const [saveUserDocumentMutation, { data, loading, error }] = useSaveUserDocumentMutation({
  *   variables: {
- *      user: // value for 'user'
  *      document: // value for 'document'
  *   },
  * });
@@ -203,8 +174,8 @@ export type SaveUserDocumentMutationHookResult = ReturnType<typeof useSaveUserDo
 export type SaveUserDocumentMutationResult = Apollo.MutationResult<SaveUserDocumentMutation>;
 export type SaveUserDocumentMutationOptions = Apollo.BaseMutationOptions<SaveUserDocumentMutation, SaveUserDocumentMutationVariables>;
 export const SetUserDocument = /*#__PURE__*/ gql`
-    mutation setUser($id: ID!, $email: String!) {
-  setUser(id: $id, email: $email) {
+    mutation setUser {
+  setUser {
     id
     email
   }
@@ -225,8 +196,6 @@ export type SetUserMutationFn = Apollo.MutationFunction<SetUserMutation, SetUser
  * @example
  * const [setUserMutation, { data, loading, error }] = useSetUserMutation({
  *   variables: {
- *      id: // value for 'id'
- *      email: // value for 'email'
  *   },
  * });
  */
@@ -238,8 +207,8 @@ export type SetUserMutationHookResult = ReturnType<typeof useSetUserMutation>;
 export type SetUserMutationResult = Apollo.MutationResult<SetUserMutation>;
 export type SetUserMutationOptions = Apollo.BaseMutationOptions<SetUserMutation, SetUserMutationVariables>;
 export const GetUserDocument = /*#__PURE__*/ gql`
-    query getUser($id: ID!) {
-  getUser(id: $id) {
+    query getUser {
+  getUser {
     id
     email
   }
@@ -258,11 +227,10 @@ export const GetUserDocument = /*#__PURE__*/ gql`
  * @example
  * const { data, loading, error } = useGetUserQuery({
  *   variables: {
- *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
       }
@@ -274,8 +242,8 @@ export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const GetUserDocumentsDocument = /*#__PURE__*/ gql`
-    query getUserDocuments($id: ID!) {
-  getUserDocuments(id: $id) {
+    query getUserDocuments {
+  getUserDocuments {
     documents {
       id
       name
@@ -302,11 +270,10 @@ export const GetUserDocumentsDocument = /*#__PURE__*/ gql`
  * @example
  * const { data, loading, error } = useGetUserDocumentsQuery({
  *   variables: {
- *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetUserDocumentsQuery(baseOptions: Apollo.QueryHookOptions<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>) {
+export function useGetUserDocumentsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserDocumentsQuery, GetUserDocumentsQueryVariables>(GetUserDocumentsDocument, options);
       }

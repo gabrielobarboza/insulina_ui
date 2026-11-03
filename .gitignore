@@ -113,3 +113,6 @@ service-account.json
 public/sw.js
 public/workbox-*.js
 public/fallback-*.js
+
+# Claude
+.claude/omniroute.settings.local.json

@@ -6,7 +6,7 @@ shapes and [plan.md](./plan.md) for file layout.
 
 ## Prerequisites
 
-- Node 20 LTS (or compatible — locally verified against Node v22.17.1).
+- Node v22.23.4 (Jod) LTS (or compatible — locally verified against Node v22.17.1).
 - Repo dependencies installed (`yarn install`).
 - No network access required for the test run itself.
 - No environment variables required.

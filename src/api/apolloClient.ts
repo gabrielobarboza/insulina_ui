@@ -1,32 +1,35 @@
-// import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloLink, NormalizedCacheObject } from '@apollo/client'
 import { createUploadLink } from 'apollo-upload-client'
 import { useMemo } from 'react'
 import { setContext } from '@apollo/client/link/context'
+import { onError } from '@apollo/client/link/error'
 import { config } from 'config'
+import { expireSession, getAuthorizationHeaders, isUnauthenticatedError } from '@/utils/session'
 
-export let apolloClient
+export let apolloClient: ApolloClient<NormalizedCacheObject> | undefined
 
 const uploadLink = createUploadLink({
   uri: config.ApiUrl
 })
 
-const authLink = setContext((_, { headers }) => {
+// Lê a sessão a cada requisição (nada guardado no módulo). Sem sessão válida, não envia Authorization; no SSR também não.
+const authLink = setContext((_, { headers }) => ({
+  headers: {
+    ...headers,
+    ...(typeof window === 'undefined' ? {} : getAuthorizationHeaders(window.localStorage, Date.now()))
+  }
+}))
 
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      // ...(token && token !== 'null'
-      //   ? { authorization: `Bearer ${token}` }
-      //   : {}),
-    }
+// Resposta UNAUTHENTICATED do servidor expira a sessão local; o AuthProvider leva à tela de login.
+const errorLink = onError((error) => {
+  if (typeof window !== 'undefined' && isUnauthenticatedError(error)) {
+    expireSession(window.localStorage)
   }
 })
 
 function createApolloClient() {
   return new ApolloClient({
-    link: ApolloLink.from([authLink, uploadLink]),
+    link: ApolloLink.from([errorLink, authLink, uploadLink]),
     cache: new InMemoryCache({
       addTypename: false,
       typePolicies: {
@@ -38,6 +41,11 @@ function createApolloClient() {
       }
     })
   })
+}
+
+// Ao sair ou expirar a sessão: descarta o cache para que dados de um usuário não apareçam para outro.
+export const clearApolloStore = (): void => {
+  apolloClient?.clearStore().catch(() => undefined)
 }
 
 export const initializeApollo = (initialState = null) => {

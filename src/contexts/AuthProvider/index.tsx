@@ -1,90 +1,108 @@
 import React, { useState, createContext, useEffect, useContext, useMemo, useCallback } from 'react'
 import { CredentialResponse, googleLogout } from '@react-oauth/google'
-import jwtDecode from 'jwt-decode'
 import {
   JwtData,
   UserData,
   AuthContextProps,
   AuthContextType
 } from './AuthContextProps'
-import { useLocalStorage } from '@/hooks'
+import {
+  clearLegacyKeys,
+  clearSession,
+  decodeSessionClaims,
+  exchangeGoogleCredential,
+  isSessionExpired,
+  onSessionExpired,
+  readSession,
+  saveSession
+} from '@/utils/session'
+import { clearApolloStore } from '@/api/apolloClient'
 
 export const AuthContext = createContext({} as AuthContextType)
 
-const validateTokenExp = (date: number): boolean =>
-  Boolean(date > Number(new Date()))
+export const SESSION_EXPIRED_MESSAGE = 'Sua sessão expirou. Entre novamente.'
+
+type InitialSession = { session: string | null; expired: boolean }
+
+// Só no navegador: remove as chaves antigas (token do Google), lê a sessão do app e descarta a já expirada.
+const readInitialSession = (): InitialSession => {
+  if (typeof window === 'undefined') return { session: null, expired: false }
+  clearLegacyKeys(window.localStorage)
+  const stored = readSession(window.localStorage)
+  if (stored && isSessionExpired(decodeSessionClaims(stored), Date.now())) {
+    clearSession(window.localStorage)
+    return { session: null, expired: true }
+  }
+  return { session: stored, expired: false }
+}
 
 export const AuthProvider = ({ children }: AuthContextProps) => {
-  const [userData, setUserData] = useState<Partial<UserData>>({})
-  const [inuiToken, setToken] = useLocalStorage<string>('inui.token', '')
-  const [tokenExp, setTokenExp] = useLocalStorage<number>('inui.token-exp', 0)
+  const [initial] = useState<InitialSession>(readInitialSession)
+  const [session, setSession] = useState<string | null>(initial.session)
+  const [sessionExpiredMessage, setSessionExpiredMessage] = useState<string>(
+    initial.expired ? SESSION_EXPIRED_MESSAGE : ''
+  )
 
-  useEffect(() => {
-    if (inuiToken && tokenExp && !validateTokenExp(tokenExp)) {
-      setToken('')
-      setTokenExp(0)
+  // Expiração vinda do Apollo (sessão vencida antes da chamada ou resposta UNAUTHENTICATED).
+  useEffect(() => onSessionExpired(() => {
+    setSession(null)
+    setSessionExpiredMessage(SESSION_EXPIRED_MESSAGE)
+  }), [])
+
+  const userData = useMemo<UserData>(() => {
+    const claims: JwtData | null = session ? decodeSessionClaims(session) : null
+    return {
+      id: claims?.sub || '',
+      email: claims?.email || '',
+      picture: claims?.picture || '',
+      name: claims?.name || ''
     }
-  }, [inuiToken, tokenExp])
+  }, [session])
 
-  const handleToken = useCallback((token: string) => {
-    if(token) {
-      const jwtData: JwtData = jwtDecode(token) || {}
-      
-      setUserData({
-        id: jwtData?.sub || '',
-        email: jwtData?.email || '',
-        picture: jwtData?.picture || '',
-        name: jwtData?.given_name || jwtData?.name || ''
-      })
+  const authorized = Boolean(session)
 
-      if(token !== inuiToken){
-        setToken(token)
-        const _d = new Date()
-        // Add one day to current date
-        setTokenExp(_d.setDate(_d.getDate() + 1))
-      }
-    }
-
-    return token
-  }, [inuiToken])
-
-  const authorized = useMemo(() => {
-    const _auth = Boolean(inuiToken)
-    if (_auth) handleToken(inuiToken)
-    return _auth
-  }, [inuiToken])
-
-  const onLoginSuccess = ({ credential }: CredentialResponse) => {
-    if (credential) handleToken(credential)
-  }
-
-  const onLoginError = (error: any): void => {
+  const onLoginError = useCallback((_error?: unknown): void => {
     window?.alert('Falha ao autenticar: Algo deu Errado!')
-    console.error(error)
-  }
+    // Nunca logar o erro original: pode conter o token.
+    console.error('Falha ao autenticar')
+  }, [])
 
-  const handleLogout = async () => {
-    setUserData({
-      email: '',
-      picture: '',
-      name: ''
-    })
-    
-    setTimeout(() => {
-      setTokenExp(0)
-      setToken('')
-    }, 1000)
-  }
+  // O token do Google só é enviado ao servidor; nunca é guardado (FR-017, FR-017b).
+  const onLoginSuccess = useCallback(({ credential }: CredentialResponse): void => {
+    if (!credential) {
+      onLoginError()
+      return
+    }
+    exchangeGoogleCredential(fetch, credential)
+      .then((newSession) => {
+        saveSession(window.localStorage, newSession)
+        setSessionExpiredMessage('')
+        setSession(newSession)
+      })
+      .catch(() => onLoginError())
+  }, [onLoginError])
 
+  const handleLogout = useCallback((): void => {
+    clearSession(window.localStorage)
+    // Logout não é expiração: nada de mensagem.
+    setSessionExpiredMessage('')
+    setSession(null)
+  }, [])
+
+  // Sem sessão (logout ou expiração): sai do Google e descarta o cache do Apollo do usuário anterior.
   useEffect(() => {
-    if(!inuiToken) googleLogout()
-  }, [inuiToken])
+    if (!session) {
+      googleLogout()
+      clearApolloStore()
+    }
+  }, [session])
 
   return (
     <AuthContext.Provider
       value={{
         authorized,
         userData,
+        sessionExpiredMessage,
         onLoginSuccess,
         onLoginError,
         handleLogout

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
-import { useAuth, useCalcTables } from '@/contexts';
+import { useCalcTables } from '@/contexts';
 import {
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
@@ -72,8 +72,6 @@ interface CalcTableListProps {
 }
 const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) => {
     const classes = useStyles();
-    const { userData } = useAuth()
-    
     const { dataTables, selectTableConfig, deleteCalcTable } = useCalcTables()
     const [expandTable, setExpandTable] = useState<Document>(null)
     const [openDialog, setOpenDialog] = useState<boolean>(false)
@@ -82,7 +80,7 @@ const CalcTableList = ({ editable = true, list = null } : CalcTableListProps) =>
 
     const handleExcludeConfirm = useCallback(() => {
         if(expandTable?.name === deleteTableName) {
-            deleteCalcTable(expandTable.id, userData.id)
+            deleteCalcTable(expandTable.id)
             setDeleteTableName('')
             setOpenDialog(false)
         }

@@ -6,7 +6,6 @@ import {
   useState
 } from 'react'
 import { DocumentList, Document, DocumentItem } from "@/interfaces";
-import { useAuth } from '@/contexts'
 
 import {
   FormControl,
@@ -33,7 +32,7 @@ interface TableSelectProps extends React.Component {
 type CalcTablesContextType = {
   dataTables: DocumentList,
   createCalcTable: (table:Document) => Document,
-  deleteCalcTable: (_id?:string, user?:string) => void,
+  deleteCalcTable: (_id?:string) => Promise<void>,
   getCalcTable: (_id?:string) => Promise<Document|null>,
   loadingTables: boolean,
   saveCalcTable: (table:Document) => Promise<Document>,
@@ -53,7 +52,6 @@ export const CalcTablesProvider = ({ children }) => {
   const [ dataTables, setDataTables ] = useState<DocumentList|null>(null)
   const [ selectedConfig, setSelectedConfig ] = useState<Document|null>(null)
   const [ tableSelected, setTableSelected ] = useState<Document|null>(null)
-  const { userData } = useAuth()
 
   const [saveUserTable, { loading: loadingSaveTable }] = useSaveUserDocumentMutation()
   const [deleteUserTable, { loading: loadingDeleteTable }] = useDeleteUserDocumentMutation()
@@ -83,7 +81,6 @@ export const CalcTablesProvider = ({ children }) => {
 
     await saveUserTable({
       variables: {
-        user: userData.id,
         document: {
           ...(currTable?.id ? { id: currTable.id } : {}),
           ...(currTable?.name ? { name: currTable.name } : {}),
@@ -134,20 +131,20 @@ export const CalcTablesProvider = ({ children }) => {
     }
   }
 
-  const deleteCalcTable = async (id, user) => {
+  const deleteCalcTable = async (id: string) => {
     if(id)
       setSelectedConfig(null)
 
-      await deleteUserTable({
-        variables: {
-          id,
-          user
-        }
-      }).then(data => {
-        if(data?.data?.deleteUserDocument)
-          setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
-        sendMessage('saveCalcTable', { status: true }) 
-      })     
+    try {
+      const data = await deleteUserTable({
+        variables: { id }
+      })
+      if(data?.data?.deleteUserDocument)
+        setDataTables(dataTables.filter(({ id: _id }) => (_id !== id)))
+    } catch {
+      // NOT_FOUND ou falha do servidor: a tabela continua na lista e a tela segue normal.
+    }
+    sendMessage('saveCalcTable', { status: true })
   }
 
   const TableSelect = ({ helperText } : TableSelectProps) => {

@@ -4,12 +4,14 @@ import { PageConfig } from "next";
 import { resolvers } from "./resolvers";
 import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 import { typeDefs } from './schemas'
+import { buildContext } from "@/server/graphqlContext";
 
 const isProduction =  process.env.NODE_ENV === 'production'
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  context: buildContext,
   introspection: !isProduction,
   plugins: isProduction
     ? [ ApolloServerPluginLandingPageDisabled() ]

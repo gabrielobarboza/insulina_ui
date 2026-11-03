@@ -1,5 +1,5 @@
-query getUser($id: ID!){
-    getUser(id: $id){
+query getUser{
+    getUser{
         id
         email
     }

@@ -1,5 +1,5 @@
-mutation setUser($id: ID!, $email: String!){
-    setUser(id: $id, email: $email){
+mutation setUser{
+    setUser{
         id
         email
     }
