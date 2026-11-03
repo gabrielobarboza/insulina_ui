@@ -1,84 +1,72 @@
 import React, { useState, createContext, useEffect, useContext, useMemo, useCallback } from 'react'
 import { CredentialResponse, googleLogout } from '@react-oauth/google'
-import jwtDecode from 'jwt-decode'
 import {
   JwtData,
   UserData,
   AuthContextProps,
   AuthContextType
 } from './AuthContextProps'
-import { useLocalStorage } from '@/hooks'
+import {
+  clearLegacyKeys,
+  clearSession,
+  decodeSessionClaims,
+  exchangeGoogleCredential,
+  readSession,
+  saveSession
+} from '@/utils/session'
 
 export const AuthContext = createContext({} as AuthContextType)
 
-const validateTokenExp = (date: number): boolean =>
-  Boolean(date > Number(new Date()))
+// Só no navegador: remove as chaves antigas (token do Google) e lê a sessão do app.
+const readInitialSession = (): string | null => {
+  if (typeof window === 'undefined') return null
+  clearLegacyKeys(window.localStorage)
+  return readSession(window.localStorage)
+}
 
 export const AuthProvider = ({ children }: AuthContextProps) => {
-  const [userData, setUserData] = useState<Partial<UserData>>({})
-  const [inuiToken, setToken] = useLocalStorage<string>('inui.token', '')
-  const [tokenExp, setTokenExp] = useLocalStorage<number>('inui.token-exp', 0)
+  const [session, setSession] = useState<string | null>(readInitialSession)
 
-  useEffect(() => {
-    if (inuiToken && tokenExp && !validateTokenExp(tokenExp)) {
-      setToken('')
-      setTokenExp(0)
+  const userData = useMemo<UserData>(() => {
+    const claims: JwtData | null = session ? decodeSessionClaims(session) : null
+    return {
+      id: claims?.sub || '',
+      email: claims?.email || '',
+      picture: claims?.picture || '',
+      name: claims?.name || ''
     }
-  }, [inuiToken, tokenExp])
+  }, [session])
 
-  const handleToken = useCallback((token: string) => {
-    if(token) {
-      const jwtData: JwtData = jwtDecode(token) || {}
-      
-      setUserData({
-        id: jwtData?.sub || '',
-        email: jwtData?.email || '',
-        picture: jwtData?.picture || '',
-        name: jwtData?.given_name || jwtData?.name || ''
-      })
+  const authorized = Boolean(session)
 
-      if(token !== inuiToken){
-        setToken(token)
-        const _d = new Date()
-        // Add one day to current date
-        setTokenExp(_d.setDate(_d.getDate() + 1))
-      }
-    }
-
-    return token
-  }, [inuiToken])
-
-  const authorized = useMemo(() => {
-    const _auth = Boolean(inuiToken)
-    if (_auth) handleToken(inuiToken)
-    return _auth
-  }, [inuiToken])
-
-  const onLoginSuccess = ({ credential }: CredentialResponse) => {
-    if (credential) handleToken(credential)
-  }
-
-  const onLoginError = (error: any): void => {
+  const onLoginError = useCallback((_error?: unknown): void => {
     window?.alert('Falha ao autenticar: Algo deu Errado!')
-    console.error(error)
-  }
+    // Nunca logar o erro original: pode conter o token.
+    console.error('Falha ao autenticar')
+  }, [])
 
-  const handleLogout = async () => {
-    setUserData({
-      email: '',
-      picture: '',
-      name: ''
-    })
-    
-    setTimeout(() => {
-      setTokenExp(0)
-      setToken('')
-    }, 1000)
-  }
+  // O token do Google só é enviado ao servidor; nunca é guardado (FR-017, FR-017b).
+  const onLoginSuccess = useCallback(({ credential }: CredentialResponse): void => {
+    if (!credential) {
+      onLoginError()
+      return
+    }
+    exchangeGoogleCredential(fetch, credential)
+      .then((newSession) => {
+        saveSession(window.localStorage, newSession)
+        setSession(newSession)
+      })
+      .catch(() => onLoginError())
+  }, [onLoginError])
+
+  const handleLogout = useCallback((): void => {
+    clearSession(window.localStorage)
+    setSession(null)
+  }, [])
 
   useEffect(() => {
-    if(!inuiToken) googleLogout()
-  }, [inuiToken])
+    if (!session) googleLogout()
+  }, [session])
 
   return (
     <AuthContext.Provider
