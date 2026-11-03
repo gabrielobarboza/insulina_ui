@@ -8,8 +8,9 @@ modelo: [data-model.md](./data-model.md).
 ```bash
 yarn test          # 36 testes da Spec 01 + G1–G5, A1–A11, R1–R7, C1–C4
 yarn type-check
-git diff --stat spec-02-autenticacao-no-servidor -- src/utils/validateUnits.ts src/utils/__tests__/   # tem de sair vazio
-git ls-files src/pages | grep -iE "auth|session|__tests__"   # só src/pages/api/session.ts (novo) e src/pages/api/utils/service/auth.ts (já existia, legado da conta de serviço)```
+git fetch origin
+git diff --stat origin/main -- src/utils/validateUnits.ts src/utils/__tests__/ ':(exclude)src/utils/__tests__/session.test.ts'   # tem de sair vazio
+git ls-files src/pages | grep -iE "auth|session|__tests__"   # só src/pages/api/session.ts (novo) e src/pages/api/utils/service/auth.ts (já existia, legado da conta de serviço)
 ```
 
 Esperado: tudo verde, e as duas últimas verificações saem como indicado. Os testes não leem `.env.local`: a
@@ -44,6 +45,9 @@ curl -i http://localhost:9090/api/session
 # esperado: HTTP 405, Allow: POST
 ```
 
+No preview e na produção o corpo da resposta NÃO pode conter `stacktrace` nem caminhos de arquivo (em `yarn dev` o
+stacktrace aparece e é esperado).
+
 ## 4. Preview da Vercel (sem gravar nada) (DoD 5)
 
 1. Faça push do branch e abra o deploy de preview.
@@ -52,16 +56,23 @@ curl -i http://localhost:9090/api/session
    fixa do branch (`insulina-ui-git-<branch>-<conta>.vercel.app`). Sem isso o login falha com `origin_mismatch`.
    Alternativa: testar o login com `yarn dev` (confirme `http://localhost:9090` nas origens) e usar o preview só
    para as duas chamadas `curl`.
-3. Rode as duas chamadas da seção 3 contra a URL do preview: 400 `UNAUTHENTICATED` e 405.
+3. Rode as duas chamadas da seção 3 contra a URL do preview: 400 `UNAUTHENTICATED` e 405. No preview e na produção
+   o corpo da resposta NÃO pode conter `stacktrace` nem caminhos de arquivo (em `yarn dev` o stacktrace aparece e é
+   esperado).
 4. Abra o preview no navegador, entre com o Google e confira:
    - as tabelas existentes aparecem; nome e foto aparecem no topo;
    - em DevTools → Application → Local Storage existe `inui.session` e **não** existe `inui.token`;
    - em DevTools → Network, as chamadas a `/api/graphql` levam `Authorization: Bearer …`.
-5. Teste da mensagem de expiração: em DevTools, troque o valor de `inui.session` por um texto qualquer e recarregue
-   uma tela que chame a API. Esperado: tela de login com "Sua sessão expirou. Entre novamente.".
-6. Teste do logout: saia pelo botão do app e confirme que a mensagem "Sua sessão expirou" **não** aparece e que
-   `inui.session` foi removido.
-7. **Não** crie, edite nem apague tabelas no preview: ele usa as mesmas tabelas da produção.
+5. Sessão ilegível: em DevTools, coloque `"abc"` (COM aspas, o valor é uma string JSON) em `inui.session` e
+   recarregue. Esperado: tela de login com "Sua sessão expirou. Entre novamente.".
+6. Recusa do servidor: entre de novo, copie o valor de `inui.session`, mude o último caractere da assinatura (trecho
+   depois do segundo ponto), salve e recarregue. Esperado: o servidor responde 400 `UNAUTHENTICATED` e aparece a tela
+   de login com a mesma mensagem. Depois entre de novo.
+7. Logout: saia pelo botão do app; a mensagem de sessão expirada **não** pode aparecer e `inui.session` deve ter sido
+   removido.
+8. Falha da troca (FR-017b): em DevTools → Network → Request blocking, bloqueie `/api/session` e tente entrar.
+   Esperado: alerta de erro, continua no login, `inui.session` não é criado. Desbloqueie depois.
+9. **Não** crie, edite nem apague tabelas no preview: ele usa as mesmas tabelas da produção.
 
 ## 5. Produção (DoD 6 e 7)
 
@@ -70,7 +81,8 @@ curl -i http://localhost:9090/api/session
    por dia.
 2. Anote o deployment de produção atual (Vercel → Deployments): é o alvo da reversão.
 3. Faça merge em `main` e aguarde o deploy de produção.
-4. Repita as chamadas da seção 3 contra a produção.
+4. Repita as chamadas da seção 3 contra a produção. No preview e na produção o corpo da resposta NÃO pode conter
+   `stacktrace` nem caminhos de arquivo (em `yarn dev` o stacktrace aparece e é esperado).
 5. No celular com o PWA instalado: feche o app por completo e abra de novo (o service worker novo assume com
    `skipWaiting`). Se a tela antiga continuar, feche e abra mais uma vez. Faça login e confira que as tabelas
    aparecem.

@@ -121,7 +121,7 @@ continua mostrando nome e foto.
 `UNAUTHENTICATED` leva à tela de login com "Sua sessão expirou. Entre novamente.".
 
 **Independent Test**: C2–C4 em `src/utils/__tests__/session.test.ts` verdes; no preview, adulterar `inui.session`
-mostra a tela de login com a mensagem (quickstart §4.4).
+mostra a tela de login com a mensagem (quickstart §4.5–4.6).
 
 ### Tests for User Story 3 ⚠️ (escrever primeiro; devem falhar)
 
@@ -142,7 +142,7 @@ mostra a tela de login com a mensagem (quickstart §4.4).
 ---
 
 ## Phase 6: User Story 4 - Implantação segura, sem deixar a pessoa sem acesso (Priority: P3)
-> Executar **depois** da Phase 7 (T037–T041). T033 pode ser feita antes, sem risco.
+> Executar **depois** da Phase 7 (T037–T042). T033 pode ser feita antes, sem risco.
 
 **Goal**: publicar sem deixar a pessoa sem calcular a dose, com verificação no preview e no PWA e reversão
 conhecida.
@@ -150,9 +150,7 @@ conhecida.
 **Independent Test**: roteiro da quickstart §4–§6 executado e registrado.
 
 - [ ] T033 [US4] Gerar dois segredos com `openssl rand -base64 48` e criar `SESSION_SECRET` como **Sensitive** na Vercel (Preview = segredo 1, Production = segredo 2, valores diferentes); confirmar `NEXT_PUBLIC_OAUTH_ID` em Preview e Production (quickstart §2; DoD 4)
-- [ ] T034 [US4] Deploy de preview: rodar as chamadas da quickstart §3 contra a URL do preview (400 `UNAUTHENTICATED` em `/api/graphql` sem sessão; 405 em `GET /api/session`); entrar com o Google e conferir tabelas, nome e foto, `inui.session` presente e `inui.token` ausente, `Authorization: Bearer` nas chamadas; adulterar `inui.session` e ver a mensagem de expiração. Antes do login, conferir a origem do preview nas Origens JavaScript autorizadas do cliente OAuth (quickstart §4.2); Teste da falha de troca (FR-017b): em DevTools → Network → bloquear a URL `/api/session` (Request blocking) e
-tentar entrar; esperado: continua na tela de login, o alerta de erro aparece e o Local Storage não tem `inui.session`. Desbloquear depois.
-depois do login, fazer logout e conferir que a mensagem de sessão expirada não aparece. **Não** criar, editar nem apagar tabelas (quickstart §4; DoD 5)
+- [ ] T034 [US4] Deploy de preview: antes do login, conferir a origem do preview nas Origens JavaScript autorizadas do cliente OAuth (quickstart §4.2); rodar as chamadas da quickstart §3 contra a URL do preview (400 `UNAUTHENTICATED` em `/api/graphql` sem sessão; 405 em `GET /api/session`), com corpo sem `stacktrace` nem caminhos de arquivo; entrar com o Google e conferir tabelas, nome e foto, `inui.session` presente e `inui.token` ausente, `Authorization: Bearer` nas chamadas; adulterar `inui.session` de duas formas e ver a mensagem de expiração em ambas: `"abc"` (com aspas) e a assinatura com o último caractere trocado (servidor responde 400 `UNAUTHENTICATED`); fazer logout e conferir que a mensagem de sessão expirada não aparece e `inui.session` foi removido; teste da falha de troca (FR-017b): em DevTools → Network → Request blocking, bloquear `/api/session` e tentar entrar; esperado: alerta de erro, continua na tela de login e `inui.session` não é criado; desbloquear depois. **Não** criar, editar nem apagar tabelas (quickstart §4; DoD 5)
 - [ ] T035 [US4] Antes da produção: combinar a janela fora do horário das refeições com a pessoa que usa o app e avisar sobre o login único pós-deploy; anotar o deployment de produção atual como alvo de reversão (quickstart §5.1–5.2, §6; DoD 7)
 - [ ] T036 [US4] Merge em `main`, aguardar o deploy de produção, repetir as chamadas da §3 contra produção; no celular com o PWA instalado, fechar e reabrir até o service worker novo assumir, fazer login e conferir as tabelas; acompanhar almoço e jantar sem novo login (quickstart §5.3–5.6; DoD 6; SC-004, SC-005). Em falha, executar a reversão da quickstart §6
 
@@ -163,7 +161,7 @@ depois do login, fazer logout e conferir que a mensagem de sessão expirada não
 **Purpose**: gates da constituição e Definição de pronto 1–3, antes de T033.
 
 - [X] T037 Rodar `yarn test` (36 testes da Spec 01 + novos) e `yarn type-check`; ambos verdes (DoD 1; SC-007)
-- [ ] T038 [P] Conferir que `git diff --stat main -- src/utils/validateUnits.ts src/utils/__tests__/ ':(exclude)src/utils/__tests__/session.test.ts'` sai vazio (DoD 2)
+- [X] T038 [P] Depois de `git fetch origin`, conferir que `git diff --stat origin/main -- src/utils/validateUnits.ts src/utils/__tests__/ ':(exclude)src/utils/__tests__/session.test.ts'` sai vazio (DoD 2)
 - [X] T039 [P] Conferir que `git ls-files src/pages | grep -iE "auth|session|__tests__"` lista só `src/pages/api/session.ts` e o já existente `src/pages/api/utils/service/auth.ts` (DoD 3)
 - [X] T040 [P] Revisar `src/server/**`, `src/pages/api/resolvers/**`, `src/utils/session.ts` e `src/contexts/AuthProvider/**` com `grep -rn "console\." ` e confirmar que nenhum log inclui token, sessão, e-mail, id ou erro de `verifyIdToken` (FR-023); confirmar com `grep -rn "SESSION_SECRET" src next.config.js` que o nome só aparece em `src/server/auth/config.ts` e
 nos testes de `src/server/__tests__/` (com valores fictícios), nunca em `next.config.js` (Princípio VII)
