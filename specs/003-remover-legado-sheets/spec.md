@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Draft
+**Status**: Approved (2026-11-16)
 
 **Input**: User description: "Spec 03: remover o legado do Google Sheets e impor o Princípio VII por teste. Os dados vivem no DynamoDB; sobrou código morto do tempo em que o banco era Google Sheets (conectores nunca importados, um arquivo que cria uma credencial de conta de serviço a partir de variáveis públicas a cada importação dos resolvers, e as dependências da biblioteca de planilhas). Nenhuma variável pública pode carregar nome de segredo, exceto uma lista explícita e justificada, verificada por teste automatizado. O comportamento do app não muda. Ação manual do dono após o deploy: revogar a chave da conta de serviço, remover as variáveis e revogar o compartilhamento das planilhas."
 
@@ -45,7 +45,8 @@
   `specs/` (registro histórico das specs 01–03, que citam esses nomes para descrevê-los). O lockfile entra no
   alcance.
 - **D3 — O teste também protege contra a volta do legado.** Além da regra de nomes públicos, o mesmo teste
-  automatizado falha se os nomes proibidos de FR-001 reaparecerem nos arquivos que ele varre.
+  automatizado falha se os nomes proibidos de FR-001 reaparecerem nos arquivos-fonte que ele varre ou no
+  `package.json` (FR-006b).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -120,9 +121,10 @@ quebraria a reversão; por isso vem depois da P1.
 
 - O próprio arquivo de teste precisa citar os nomes proibidos e as exceções: ele é excluído da varredura (ou monta
   os nomes de forma que não casem), sem abrir brecha para outros arquivos.
-- Uma referência `process.env.NEXT_PUBLIC_*` (ou `process.env['NEXT_PUBLIC_*']`) dentro de comentário conta como
-  violação: o teste não distingue código de comentário. Um nome solto, sem `process.env` e fora do bloco `env`,
-  não é alvo da regra de FR-005.
+- Qualquer ocorrência de um nome `NEXT_PUBLIC_*` com palavra proibida conta como violação, inclusive em
+  desestruturação (`const { NEXT_PUBLIC_API_TOKEN } = process.env`), texto ou comentário: o teste não tenta
+  entender o código. Um falso positivo custa uma exceção justificada; um falso negativo custaria um segredo no
+  navegador.
 - Se uma mudança na varredura ou no coletor fizer o teste não encontrar `NEXT_PUBLIC_API_URL` e
   `NEXT_PUBLIC_OAUTH_ID`, o teste falha em vez de passar sem ter verificado nada.
 - Uma palavra proibida no meio do nome (`NEXT_PUBLIC_PRIVATEKEY_X`, `NEXT_PUBLIC_X_TOKEN_URL`) é detectada: vale
@@ -152,15 +154,18 @@ quebraria a reversão; por isso vem depois da P1.
   seu uso nem seu valor nesta spec; trocar esse mecanismo fica para spec futura (mexe no PWA e no uso sem rede).
   Um teste automatizado (Vitest) varre TODOS os arquivos-fonte rastreados (`.ts`, `.tsx`, `.js`, `.mjs`), exceto
   `node_modules`, `.next`, o próprio teste e arquivos gerados: inclui `src/`, o `config.ts` da raiz e o
-  `next.config.js`. Ele coleta todo nome `NEXT_PUBLIC_*` referenciado por `process.env.NOME`, por
-  `process.env['NOME']` ou como chave do bloco `env` do `next.config.js`, e falha se algum nome contiver `KEY`,
+  `next.config.js`. Ele coleta todo token que case com `NEXT_PUBLIC_[A-Z0-9_]+` em qualquer lugar dos
+  arquivos varridos (uso direto, `process.env['NOME']`, desestruturação, bloco `env`, texto ou comentário), e
+  falha se algum nome contiver `KEY`,
   `SECRET`, `PRIVATE` ou `TOKEN` fora da lista de exceções. O teste também se protege de "passar vazio": ele
   confere que o coletor encontrou pelo menos `NEXT_PUBLIC_API_URL` e `NEXT_PUBLIC_OAUTH_ID` (variáveis conhecidas
   do `config.ts`); se o coletor não achar nada, o teste falha. A exceção fica no próprio teste, com um comentário explicando o motivo, e nova exceção exige alterar o
   teste de propósito.
 - **FR-006**: O teste de FR-005, executado por `yarn test`, DEVE falhar SE:
   (a) encontrar uma violação de FR-005, informando nome e arquivo;
-  (b) encontrar um nome proibido de FR-001, informando nome e arquivo (D3);
+  (b) encontrar um nome proibido de FR-001, informando nome e arquivo (D3), nos arquivos-fonte varridos E em
+      `package.json` (lido como texto). O `yarn.lock` fica fora do teste: sua ausência de ocorrências é verificada
+      na conferência manual de SC-001;
   (c) uma exceção listada não for encontrada em nenhum arquivo varrido (exceção obsoleta).
 - **FR-007**: O comportamento observável do app NÃO DEVE mudar: login, sessão, leitura e gravação de tabelas e
   cálculo de dose funcionam como antes; as 106 verificações existentes continuam passando.
