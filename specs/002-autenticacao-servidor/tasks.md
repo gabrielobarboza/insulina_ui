@@ -149,10 +149,10 @@ conhecida.
 
 **Independent Test**: roteiro da quickstart §4–§6 executado e registrado.
 
-- [ ] T033 [US4] Gerar dois segredos com `openssl rand -base64 48` e criar `SESSION_SECRET` como **Sensitive** na Vercel (Preview = segredo 1, Production = segredo 2, valores diferentes); confirmar `NEXT_PUBLIC_OAUTH_ID` em Preview e Production (quickstart §2; DoD 4)
-- [ ] T034 [US4] Deploy de preview: antes do login, conferir a origem do preview nas Origens JavaScript autorizadas do cliente OAuth (quickstart §4.2); rodar as chamadas da quickstart §3 contra a URL do preview (400 `UNAUTHENTICATED` em `/api/graphql` sem sessão; 405 em `GET /api/session`), com corpo sem `stacktrace` nem caminhos de arquivo; entrar com o Google e conferir tabelas, nome e foto, `inui.session` presente e `inui.token` ausente, `Authorization: Bearer` nas chamadas; adulterar `inui.session` de duas formas e ver a mensagem de expiração em ambas: `"abc"` (com aspas) e a assinatura com o último caractere trocado (servidor responde 400 `UNAUTHENTICATED`); fazer logout e conferir que a mensagem de sessão expirada não aparece e `inui.session` foi removido; teste da falha de troca (FR-017b): em DevTools → Network → Request blocking, bloquear `/api/session` e tentar entrar; esperado: alerta de erro, continua na tela de login e `inui.session` não é criado; desbloquear depois. **Não** criar, editar nem apagar tabelas (quickstart §4; DoD 5)
-- [ ] T035 [US4] Antes da produção: combinar a janela fora do horário das refeições com a pessoa que usa o app e avisar sobre o login único pós-deploy; anotar o deployment de produção atual como alvo de reversão (quickstart §5.1–5.2, §6; DoD 7)
-- [ ] T036 [US4] Merge em `main`, aguardar o deploy de produção, repetir as chamadas da §3 contra produção; no celular com o PWA instalado, fechar e reabrir até o service worker novo assumir, fazer login e conferir as tabelas; acompanhar almoço e jantar sem novo login (quickstart §5.3–5.6; DoD 6; SC-004, SC-005). Em falha, executar a reversão da quickstart §6
+- [x] T033 [US4] Gerar dois segredos com `openssl rand -base64 48` e criar `SESSION_SECRET` como **Sensitive** na Vercel (Preview = segredo 1, Production = segredo 2, valores diferentes); confirmar `NEXT_PUBLIC_OAUTH_ID` em Preview e Production (quickstart §2; DoD 4)
+- [x] T034 [US4] Deploy de preview: antes do login, conferir a origem do preview nas Origens JavaScript autorizadas do cliente OAuth (quickstart §4.2); rodar as chamadas da quickstart §3 contra a URL do preview (400 `UNAUTHENTICATED` em `/api/graphql` sem sessão; 405 em `GET /api/session`), com corpo sem `stacktrace` nem caminhos de arquivo; entrar com o Google e conferir tabelas, nome e foto, `inui.session` presente e `inui.token` ausente, `Authorization: Bearer` nas chamadas; adulterar `inui.session` de duas formas e ver a mensagem de expiração em ambas: `"abc"` (com aspas) e a assinatura com o último caractere trocado (servidor responde 400 `UNAUTHENTICATED`); fazer logout e conferir que a mensagem de sessão expirada não aparece e `inui.session` foi removido; teste da falha de troca (FR-017b): em DevTools → Network → Request blocking, bloquear `/api/session` e tentar entrar; esperado: alerta de erro, continua na tela de login e `inui.session` não é criado; desbloquear depois. **Não** criar, editar nem apagar tabelas (quickstart §4; DoD 5)
+- [x] T035 [US4] Antes da produção: combinar a janela fora do horário das refeições com a pessoa que usa o app e avisar sobre o login único pós-deploy; anotar o deployment de produção atual como alvo de reversão (quickstart §5.1–5.2, §6; DoD 7)
+- [x] T036 [US4] Merge em `main`, aguardar o deploy de produção, repetir as chamadas da §3 contra produção; no celular com o PWA instalado, fechar e reabrir até o service worker novo assumir, fazer login e conferir as tabelas; acompanhar almoço e jantar sem novo login (quickstart §5.3–5.6; DoD 6; SC-004, SC-005). Em falha, executar a reversão da quickstart §6
 
 ---
 
@@ -199,7 +199,7 @@ nos testes de `src/server/__tests__/` (com valores fictícios), nunca em `next.c
 - US1: T007, T008 e T009 em paralelo.
 - US2: T018, T019 e T020 em paralelo; US2 inteira em paralelo com US1 (exceto o cliente, ver acima).
 - US3: T031 em paralelo com T029/T030.
-- Polish: T038, T039, T040 e T041 em paralelo depois de T037.
+- Polish: T038, T039, T040 ,T041 e T042 em paralelo depois de T037.
 
 ---
 

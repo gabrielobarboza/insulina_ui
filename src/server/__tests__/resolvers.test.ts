@@ -17,9 +17,6 @@ import {
 import { buildContext } from '@/server/graphqlContext'
 import { signSession } from '@/server/auth/session'
 
-// Evita que `../utils` crie o JWT da conta de serviço na importação.
-vi.mock('@/pages/api/utils/service', () => ({}))
-
 // Valores fictícios, só para teste.
 const SECRET = 'segredo-ficticio-de-teste-com-32-bytes-ou-mais'
 const A = 'user-a'
