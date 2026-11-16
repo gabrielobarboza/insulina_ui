@@ -34,7 +34,7 @@ código atual e ficar verde só depois da limpeza.
 
 **Purpose**: confirmar a linha de base antes de qualquer mudança.
 
-- [ ] T001 Confirmar a linha de base no branch `003-remover-legado-sheets`: `git fetch origin`; `git status` sem mudanças em `src/`, `package.json` e `yarn.lock`; `yarn test` = 106 verificações em 11 arquivos; `yarn type-check` sem erros. Registrar os números em "Evidências"
+- [X] T001 Confirmar a linha de base no branch `003-remover-legado-sheets`: `git fetch origin`; `git status` sem mudanças em `src/`, `package.json` e `yarn.lock`; `yarn test` = 106 verificações em 11 arquivos; `yarn type-check` sem erros. Registrar os números em "Evidências"
 
 ---
 
@@ -51,10 +51,10 @@ Não há pré-requisito bloqueante além da Phase 1: nenhuma dependência nova, 
 **Independent Test**: `yarn test src/__tests__/publicEnv.test.ts` falha citando
 `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY` e os nomes do legado com arquivo; E1–E6 e E8 passam.
 
-- [ ] T002 [US2] Criar `src/__tests__/publicEnv.test.ts` com a infraestrutura do teste (research R1–R7; data-model): `ROOT = path.resolve(__dirname, '..', '..')`; `EXCLUDED_DIRS = ['node_modules', '.next', '.git', 'public']`; `SOURCE_EXTENSIONS = ['.ts', '.tsx', '.js', '.mjs']`; `EXCLUDED_FILES = ['src/__tests__/publicEnv.test.ts', 'src/api/graphql.tsx']`; `toPosix(rel)` com `split(path.sep).join('/')`; `listSourceFiles(): ScannedFile[]` com `fs.readdirSync(dir, { withFileTypes: true })` recursivo, pulando `EXCLUDED_DIRS` em qualquer nível, filtrando extensões e `EXCLUDED_FILES`, ordenado por `path`; tipo `ScannedFile = { path: string; text: string }` ("`path` relativo à raiz, separador `/`"); `collectPublicEnvNames(text: string): string[]` com `/NEXT_PUBLIC_[A-Z0-9_]+/g` no texto inteiro; `isForbiddenPublicName(name)` = parte após `NEXT_PUBLIC_` contém `KEY`, `SECRET`, `PRIVATE` ou `TOKEN` (substring, maiúsculas); `findPublicEnvViolations(files): Violation[]` (proibido e fora das exceções); `findLegacyNames(files): Violation[]` por substring; tipo `Violation = { name: string; path: string }` e formatação `nome em caminho`. Exportar `PUBLIC_ENV_EXCEPTIONS = ['NEXT_PUBLIC_APP_KEY'] as const` com o comentário: chave de assinatura do `dataToken`, o token de configuração das tabelas guardado no navegador; por ser `NEXT_PUBLIC_` é pública por definição e não protege nada; uso e valor não mudam nesta spec; trocar o mecanismo fica para spec futura (PWA e uso sem rede); nova exceção exige alterar este teste de propósito. Constantes `LEGACY_NAMES` (os seis nomes do FR-001: `google-spreadsheet`, `serviceAccountAuth`, `connectors/`, `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_`, `NEXT_PUBLIC_USERS_SHEET_ID`, `NEXT_PUBLIC_TABLES_SHEET_ID`) e `ANCHOR_NAMES = ['NEXT_PUBLIC_API_URL', 'NEXT_PUBLIC_OAUTH_ID']`
-- [ ] T003 [US2] Em `src/__tests__/publicEnv.test.ts`, escrever os casos com texto sintético em memória, sem ler disco (contrato E1–E4): **E1** um texto com `const { NEXT_PUBLIC_X_TOKEN } = process.env`, `process.env.NEXT_PUBLIC_A_SECRET`, `process.env['NEXT_PUBLIC_B_PRIVATE']`, bloco `env: { NEXT_PUBLIC_C_KEY: 1 }`, comentário `// NEXT_PUBLIC_D_TOKEN` e string solta `'NEXT_PUBLIC_E_KEY'` → o coletor devolve os seis nomes; **E2** `NEXT_PUBLIC_PRIVATEKEY_X` e `NEXT_PUBLIC_X_TOKEN_URL` são violações; **E3** `NEXT_PUBLIC_API_URL` não é violação e `NEXT_PUBLIC_APP_KEY` não é violação (exceção); **E4** `findLegacyNames([{ path: 'package.json', text: '"google-spreadsheet": "^4.0.2"' }])` devolve `google-spreadsheet em package.json`
-- [ ] T004 [US2] Em `src/__tests__/publicEnv.test.ts`, escrever os casos contra o repositório real (contrato E5–E9): **E5** os caminhos varridos incluem `config.ts`, `next.config.js` e ao menos um `src/...`; nenhum começa por `node_modules/`, `.next/`, `.git/` ou `public/`; não incluem `EXCLUDED_FILES`; **E6** os nomes coletados incluem `ANCHOR_NAMES` (anti "passar vazio"); **E7** `findPublicEnvViolations` vazio, com a mensagem de falha listando cada `nome em caminho`; **E8** cada item de `PUBLIC_ENV_EXCEPTIONS` aparece em algum arquivo varrido, senão falha com `exceção obsoleta: NOME`; **E9** `findLegacyNames` sobre os arquivos varridos mais `package.json` (lido como texto da raiz) vazio, listando `nome em caminho`. `yarn.lock` NÃO entra (FR-006b)
-- [ ] T005 [US2] Rodar `yarn test src/__tests__/publicEnv.test.ts` contra o código ATUAL (antes de qualquer remoção). Esperado: **FALHA**; E7 cita `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY em src/pages/api/utils/service/auth.ts`; E9 cita os nomes do legado em `src/pages/api/utils/connectors/*`, `src/pages/api/utils/service/*` e `package.json`; E1–E6 e E8 passam. Se falhar por outro motivo (ou passar), corrigir o teste antes de seguir. Registrar em "Evidências" a lista de falhas (nomes e caminhos, sem valores)
+- [X] T002 [US2] Criar `src/__tests__/publicEnv.test.ts` com a infraestrutura do teste (research R1–R7; data-model): `ROOT = path.resolve(__dirname, '..', '..')`; `EXCLUDED_DIRS = ['node_modules', '.next', '.git', 'public']`; `SOURCE_EXTENSIONS = ['.ts', '.tsx', '.js', '.mjs']`; `EXCLUDED_FILES = ['src/__tests__/publicEnv.test.ts', 'src/api/graphql.tsx']`; `toPosix(rel)` com `split(path.sep).join('/')`; `listSourceFiles(): ScannedFile[]` com `fs.readdirSync(dir, { withFileTypes: true })` recursivo, pulando `EXCLUDED_DIRS` em qualquer nível, filtrando extensões e `EXCLUDED_FILES`, ordenado por `path`; tipo `ScannedFile = { path: string; text: string }` ("`path` relativo à raiz, separador `/`"); `collectPublicEnvNames(text: string): string[]` com `/NEXT_PUBLIC_[A-Z0-9_]+/g` no texto inteiro; `isForbiddenPublicName(name)` = parte após `NEXT_PUBLIC_` contém `KEY`, `SECRET`, `PRIVATE` ou `TOKEN` (substring, maiúsculas); `findPublicEnvViolations(files): Violation[]` (proibido e fora das exceções); `findLegacyNames(files): Violation[]` por substring; tipo `Violation = { name: string; path: string }` e formatação `nome em caminho`. Exportar `PUBLIC_ENV_EXCEPTIONS = ['NEXT_PUBLIC_APP_KEY'] as const` com o comentário: chave de assinatura do `dataToken`, o token de configuração das tabelas guardado no navegador; por ser `NEXT_PUBLIC_` é pública por definição e não protege nada; uso e valor não mudam nesta spec; trocar o mecanismo fica para spec futura (PWA e uso sem rede); nova exceção exige alterar este teste de propósito. Constantes `LEGACY_NAMES` (os seis nomes do FR-001: `google-spreadsheet`, `serviceAccountAuth`, `connectors/`, `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_`, `NEXT_PUBLIC_USERS_SHEET_ID`, `NEXT_PUBLIC_TABLES_SHEET_ID`) e `ANCHOR_NAMES = ['NEXT_PUBLIC_API_URL', 'NEXT_PUBLIC_OAUTH_ID']`
+- [X] T003 [US2] Em `src/__tests__/publicEnv.test.ts`, escrever os casos com texto sintético em memória, sem ler disco (contrato E1–E4): **E1** um texto com `const { NEXT_PUBLIC_X_TOKEN } = process.env`, `process.env.NEXT_PUBLIC_A_SECRET`, `process.env['NEXT_PUBLIC_B_PRIVATE']`, bloco `env: { NEXT_PUBLIC_C_KEY: 1 }`, comentário `// NEXT_PUBLIC_D_TOKEN` e string solta `'NEXT_PUBLIC_E_KEY'` → o coletor devolve os seis nomes; **E2** `NEXT_PUBLIC_PRIVATEKEY_X` e `NEXT_PUBLIC_X_TOKEN_URL` são violações; **E3** `NEXT_PUBLIC_API_URL` não é violação e `NEXT_PUBLIC_APP_KEY` não é violação (exceção); **E4** `findLegacyNames([{ path: 'package.json', text: '"google-spreadsheet": "^4.0.2"' }])` devolve `google-spreadsheet em package.json`
+- [X] T004 [US2] Em `src/__tests__/publicEnv.test.ts`, escrever os casos contra o repositório real (contrato E5–E9): **E5** os caminhos varridos incluem `config.ts`, `next.config.js` e ao menos um `src/...`; nenhum começa por `node_modules/`, `.next/`, `.git/` ou `public/`; não incluem `EXCLUDED_FILES`; **E6** os nomes coletados incluem `ANCHOR_NAMES` (anti "passar vazio"); **E7** `findPublicEnvViolations` vazio, com a mensagem de falha listando cada `nome em caminho`; **E8** cada item de `PUBLIC_ENV_EXCEPTIONS` aparece em algum arquivo varrido, senão falha com `exceção obsoleta: NOME`; **E9** `findLegacyNames` sobre os arquivos varridos mais `package.json` (lido como texto da raiz) vazio, listando `nome em caminho`. `yarn.lock` NÃO entra (FR-006b)
+- [X] T005 [US2] Rodar `yarn test src/__tests__/publicEnv.test.ts` contra o código ATUAL (antes de qualquer remoção). Esperado: **FALHA**; E7 cita `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY em src/pages/api/utils/service/auth.ts`; E9 cita os nomes do legado em `src/pages/api/utils/connectors/*`, `src/pages/api/utils/service/*` e `package.json`; E1–E6 e E8 passam. Se falhar por outro motivo (ou passar), corrigir o teste antes de seguir. Registrar em "Evidências" a lista de falhas (nomes e caminhos, sem valores)
 
 **Checkpoint**: o teste vermelho prova que detecta o problema real. Só então começa a Phase 4.
 
@@ -66,16 +66,16 @@ Não há pré-requisito bloqueante além da Phase 1: nenhuma dependência nova, 
 
 **Independent Test**: `yarn test` = 106 + E1–E9 verdes; rotas `/api/utils/connectors/*` respondem 404 em local.
 
-- [ ] T006 [P] [US1] Apagar `src/pages/api/utils/connectors/` inteiro (`index.ts`, `tablesConnect.ts`, `usersConnect.ts`) (FR-002)
-- [ ] T007 [P] [US1] Apagar `src/pages/api/utils/service/` inteiro (`index.ts`, `auth.ts`) e remover a linha `export * from './service'` de `src/pages/api/utils/index.ts`, mantendo `./parsers` e `./dynamoDB` (FR-002)
-- [ ] T008 [P] [US1] Em `src/server/__tests__/resolvers.test.ts`, remover `vi.mock('@/pages/api/utils/service', () => ({}))` e o comentário acima dele; nenhuma outra linha muda (FR-009)
-- [ ] T009 [US1] Em `package.json`, remover `google-spreadsheet` e `@types/google-spreadsheet` de `dependencies`, mantendo `google-auth-library`; rodar `yarn install` (Yarn 1) para regravar `yarn.lock` (FR-004)
-- [ ] T010 [US1] Conferir `git diff yarn.lock` (depende de T009): `git diff yarn.lock | grep -nE "^[+-].*google-auth-library"` vazio (entrada e versão de `google-auth-library` intactas); o diff só REMOVE blocos inteiros (`@types/google-spreadsheet`, `google-spreadsheet` e dependências usadas só por
+- [X] T006 [P] [US1] Apagar `src/pages/api/utils/connectors/` inteiro (`index.ts`, `tablesConnect.ts`, `usersConnect.ts`) (FR-002)
+- [X] T007 [P] [US1] Apagar `src/pages/api/utils/service/` inteiro (`index.ts`, `auth.ts`) e remover a linha `export * from './service'` de `src/pages/api/utils/index.ts`, mantendo `./parsers` e `./dynamoDB` (FR-002)
+- [X] T008 [P] [US1] Em `src/server/__tests__/resolvers.test.ts`, remover `vi.mock('@/pages/api/utils/service', () => ({}))` e o comentário acima dele; nenhuma outra linha muda (FR-009)
+- [X] T009 [US1] Em `package.json`, remover `google-spreadsheet` e `@types/google-spreadsheet` de `dependencies`, mantendo `google-auth-library`; rodar `yarn install` (Yarn 1) para regravar `yarn.lock` (FR-004)
+- [X] T010 [US1] Conferir `git diff yarn.lock` (depende de T009): `git diff yarn.lock | grep -nE "^[+-].*google-auth-library"` vazio (entrada e versão de `google-auth-library` intactas); o diff só REMOVE blocos inteiros (`@types/google-spreadsheet`, `google-spreadsheet` e dependências usadas só por
 eles). Uma linha `+` só é aceitável se for o cabeçalho de uma entrada que sobrou com a lista de intervalos de versão
 reduzida (mesma versão resolvida); qualquer `+` que traga versão nova ou entrada nova: parar e investigar.
-- [ ] T011 [US1] Rodar `yarn test src/__tests__/publicEnv.test.ts` de novo (depende de T006–T010): E1–E9 verdes. Registrar em "Evidências"
-- [ ] T012 [US1] Rodar `yarn test` completo: 12 arquivos, 106 verificações anteriores + E1–E9, tudo verde; os testes de `resolvers.test.ts` passam sem o `vi.mock` (FR-007, FR-009, SC-002). Registrar o total em "Evidências"
-- [ ] T013 [US1] Com `yarn dev` (porta 9090), rodar os três `curl` da quickstart §3 para `/api/utils/connectors`, `/api/utils/connectors/tablesConnect` e `/api/utils/connectors/usersConnect`: os três `404` (FR-003). Registrar em "Evidências". Encerrar o `yarn dev` ao final
+- [X] T011 [US1] Rodar `yarn test src/__tests__/publicEnv.test.ts` de novo (depende de T006–T010): E1–E9 verdes. Registrar em "Evidências"
+- [X] T012 [US1] Rodar `yarn test` completo: 12 arquivos, 106 verificações anteriores + E1–E9, tudo verde; os testes de `resolvers.test.ts` passam sem o `vi.mock` (FR-007, FR-009, SC-002). Registrar o total em "Evidências"
+- [X] T013 [US1] Com `yarn dev` (porta 9090), rodar os três `curl` da quickstart §3 para `/api/utils/connectors`, `/api/utils/connectors/tablesConnect` e `/api/utils/connectors/usersConnect`: os três `404` (FR-003). Registrar em "Evidências". Encerrar o `yarn dev` ao final
 
 **Checkpoint**: limpeza feita e coberta por teste; comportamento local inalterado.
 
@@ -85,10 +85,10 @@ reduzida (mesma versão resolvida); qualquer `+` que traga versão nova ou entra
 
 **Purpose**: gates da constituição e conferências da quickstart §1 antes de entregar para o dono.
 
-- [ ] T014 Rodar `yarn type-check`: sem erros (FR-010)
-- [ ] T015 Rodar `yarn build`: termina sem erro (dependências removidas não quebram o build)
-- [ ] T016 Rodar `git fetch origin` e `git diff --stat origin/main -- src/utils/validateUnits.ts src/utils/__tests__/`: saída vazia (FR-008). Rodar a busca SC-001 da quickstart §1 (`git grep` dos seis nomes, excluindo `specs/` e `src/__tests__/publicEnv.test.ts`): saída vazia, incluindo `package.json` e `yarn.lock`
-- [ ] T017 Limpeza do repositório: se o `yarn build` (T015) reescreveu `public/sw.js` ou `public/workbox-*.js(.map)`, rodar `git restore public/`; `git status` deve mostrar só: `src/__tests__/publicEnv.test.ts` (novo), as remoções de `connectors/` e `service/`, `src/pages/api/utils/index.ts`, `src/server/__tests__/resolvers.test.ts`, `package.json`, `yarn.lock` e os documentos desta spec. Nenhuma mudança em `.env.local`, `next.config.js` ou `config.ts`
+- [X] T014 Rodar `yarn type-check`: sem erros (FR-010)
+- [X] T015 Rodar `yarn build`: termina sem erro (dependências removidas não quebram o build)
+- [X] T016 Rodar `git fetch origin` e `git diff --stat origin/main -- src/utils/validateUnits.ts src/utils/__tests__/`: saída vazia (FR-008). Rodar a busca SC-001 da quickstart §1 (`git grep` dos seis nomes, excluindo `specs/` e `src/__tests__/publicEnv.test.ts`): saída vazia, incluindo `package.json` e `yarn.lock`
+- [X] T017 Limpeza do repositório: se o `yarn build` (T015) reescreveu `public/sw.js` ou `public/workbox-*.js(.map)`, rodar `git restore public/`; `git status` deve mostrar só: `src/__tests__/publicEnv.test.ts` (novo), as remoções de `connectors/` e `service/`, `src/pages/api/utils/index.ts`, `src/server/__tests__/resolvers.test.ts`, `package.json`, `yarn.lock` e os documentos desta spec. Nenhuma mudança em `.env.local`, `next.config.js` ou `config.ts`
 
 **Checkpoint**: entrega do código pronta para PR. O resto é do dono.
 
@@ -138,9 +138,27 @@ T008 Remover o vi.mock em src/server/__tests__/resolvers.test.ts
 
 > Preenchido durante a implementação. Só nomes, caminhos e contagens; nunca valores de variáveis.
 
-- T001 linha de base: _
-- T005 execução vermelha: _
-- T010 blocos removidos do `yarn.lock`: _
-- T011 execução verde: _
-- T012 total da suíte: _
-- T013 respostas dos `curl`: _
+- T001 linha de base: `yarn test` 11 arquivos, 106 verificações, verde; `yarn type-check` sem erros; working tree
+  limpa (2026-11-16).
+- T005 execução vermelha (`npx vitest run src/__tests__/publicEnv.test.ts`): 9 casos, 2 falharam, 7 passaram
+  (E1–E6, E8).
+  - E7: `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_KEY em src/pages/api/utils/service/auth.ts`
+  - E9: `google-spreadsheet`, `serviceAccountAuth` e `NEXT_PUBLIC_TABLES_SHEET_ID` em
+    `src/pages/api/utils/connectors/tablesConnect.ts`; `google-spreadsheet`, `serviceAccountAuth` e
+    `NEXT_PUBLIC_USERS_SHEET_ID` em `src/pages/api/utils/connectors/usersConnect.ts`; `serviceAccountAuth` e
+    `NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_` em `src/pages/api/utils/service/auth.ts`; `google-spreadsheet` em
+    `package.json`
+- T010 blocos removidos do `yarn.lock` (7 inserções, 67 remoções): `@types/google-spreadsheet`,
+  `google-spreadsheet`, `axios`, `asynckit`, `combined-stream`, `delayed-stream`, `follow-redirects`, `form-data`,
+  `proxy-from-env`. Único `+`: cabeçalho `mime-types@~2.1.24` (antes `mime-types@^2.1.12, mime-types@~2.1.24`),
+  mesma versão 2.1.35 e mesmo hash. `google-auth-library`: nenhuma linha alterada (instalado 9.0.0).
+- T011 execução verde: `publicEnv.test.ts` 9/9 passaram.
+- T012 total da suíte: 12 arquivos, 115 verificações (106 + 9), todas verdes; `resolvers.test.ts` passa sem o
+  `vi.mock`.
+- T013 respostas dos `curl` (`yarn dev`, porta 9090): `/api/utils/connectors` 404,
+  `/api/utils/connectors/tablesConnect` 404, `/api/utils/connectors/usersConnect` 404; controle `/api/graphql`
+  (GET sem query) 400, rota viva.
+- T014–T017: `yarn type-check` sem erros; `yarn build` concluído, sem rotas `connectors` nem `service` na lista;
+  `git diff --stat origin/main -- src/utils/validateUnits.ts src/utils/__tests__/` vazio; busca SC-001 vazia
+  (incluindo `package.json` e `yarn.lock`); o build reescreveu `public/sw.js` e apagou `public/sw.js.map` e
+  `public/workbox-9a8b0a38.js.map`, restaurados com `git restore public/`.
